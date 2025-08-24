@@ -5,7 +5,6 @@ import Link from "next/link";
 import productos from "../data/productos.json";
 import maderas from "../data/maderas.json";
 
-// Importamos Swiper para carrusel
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
@@ -120,6 +119,9 @@ export default function Home() {
                   <p className="text-sm text-gray-700">
                     <strong>Origen:</strong> {madera.origen}
                   </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {madera.descripcion}
+                  </p>
                 </div>
               </div>
             </Link>
@@ -144,14 +146,16 @@ export default function Home() {
           {productos.map((prod) => (
             <SwiperSlide key={prod.id}>
               <div className="bg-[#fff2e6] p-4 rounded-xl text-center shadow-md hover:shadow-lg transition">
-                <Image
-                  src={prod.img}
-                  alt={prod.nombre}
-                  width={250}
-                  height={200}
-                  className="rounded-lg mx-auto mb-4"
-                />
-                <div className="text-sm text-gray-600 mb-2">{prod.sku}</div>
+                {prod.img && (
+                  <Image
+                    src={prod.img}
+                    alt={prod.nombre}
+                    width={250}
+                    height={200}
+                    className="rounded-lg mx-auto mb-4"
+                  />
+                )}
+                <div className="text-sm text-gray-600 mb-2">{prod.id}</div>
                 <h3 className="font-bold text-lg text-[#5d3b2d]">
                   {prod.nombre}
                 </h3>
@@ -200,7 +204,7 @@ export default function Home() {
               name="nombre"
               placeholder="Escribe tu nombre"
               required
-              className="w-full px-4 py-2 border rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5d3b2d]"
+              className="w-full px-4 py-2 border rounded-md"
             />
           </div>
 
@@ -217,7 +221,7 @@ export default function Home() {
               name="apellido"
               placeholder="Escribe tu apellido"
               required
-              className="w-full px-4 py-2 border rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5d3b2d]"
+              className="w-full px-4 py-2 border rounded-md"
             />
           </div>
 
@@ -234,7 +238,7 @@ export default function Home() {
               name="telefono"
               placeholder="+52 55 1234 5678"
               required
-              className="w-full px-4 py-2 border rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5d3b2d]"
+              className="w-full px-4 py-2 border rounded-md"
             />
           </div>
 
@@ -251,7 +255,7 @@ export default function Home() {
               name="_replyto"
               placeholder="tucorreo@ejemplo.com"
               required
-              className="w-full px-4 py-2 border rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5d3b2d]"
+              className="w-full px-4 py-2 border rounded-md"
             />
           </div>
 
@@ -268,7 +272,7 @@ export default function Home() {
               rows={5}
               placeholder="Cuéntanos cómo podemos ayudarte..."
               required
-              className="w-full px-4 py-2 border rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5d3b2d]"
+              className="w-full px-4 py-2 border rounded-md"
             ></textarea>
           </div>
 
