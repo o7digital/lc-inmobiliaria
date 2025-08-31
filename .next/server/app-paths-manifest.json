@@ -1,0 +1,5 @@
+{
+  "/page": "app/page.js",
+  "/listing_06/page": "app/listing_06/page.js",
+  "/[...not-found]/page": "app/[...not-found]/page.js"
+}

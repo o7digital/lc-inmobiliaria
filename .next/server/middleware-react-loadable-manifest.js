@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"../utils/utils.ts -> wowjs\":{\"id\":\"../utils/utils.ts -> wowjs\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_wowjs_dist_wow_js.js\"]}}"

@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 const PropertyDetailPage = () => {
-  const { id } = useParams();
+  // ✅ Corrección: tipamos params para evitar error en build
+  const params = useParams() as { id?: string };
+  const id = params?.id;
+
   const [property, setProperty] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,10 +44,7 @@ const PropertyDetailPage = () => {
       )}
 
       <h3>Precio</h3>
-      <p>
-        {property.operations?.[0]?.formatted_amount ||
-          "Precio no disponible"}
-      </p>
+      <p>{property.operations?.[0]?.formatted_amount || "Precio no disponible"}</p>
 
       <h3>Descripción</h3>
       <p>{property.description || "Sin descripción disponible"}</p>
@@ -55,8 +55,7 @@ const PropertyDetailPage = () => {
         <li>Baños: {property.bathrooms || "N/A"}</li>
         <li>Estacionamientos: {property.parking_spaces || "N/A"}</li>
         <li>
-          Área: {property.building_size?.size || "N/A"}{" "}
-          {property.building_size?.unit}
+          Área: {property.building_size?.size || "N/A"} {property.building_size?.unit}
         </li>
       </ul>
     </div>
