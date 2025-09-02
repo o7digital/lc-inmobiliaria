@@ -6,10 +6,8 @@ import BLockFeatureOne from "./BLockFeatureOne";
 import PropertyListingOne from "./PropertyListingOne";
 import FancyBannerOne from "./FancyBannerOne";
 import BLockFeatureTwo from "./BLockFeatureTwo"; // ← Servicios original del template
-import Category from "../home-four/Category";
 import BLockFeatureFour from "../home-one/BLockFeatureFour";
 import FancyBannerTwo from "../home-two/FancyBannerTwo";
-import Blog from "../home-two/Blog";
 import FooterThree from "@/layouts/footers/FooterThree";
 import Feedback from "./Feedback";
 
@@ -27,10 +25,8 @@ const HomeEight = () => {
       <PropertyListingOne />
       <FancyBannerOne />
       <BLockFeatureTwo />   {/* 👈 Mantiene el bloque de Servicios original */}
-      <Category />
       <BLockFeatureFour />
       <Feedback />
-      <Blog style={true} />
       <FancyBannerTwo />
       <FooterThree />
     </div>
