@@ -35,11 +35,6 @@ const HeaderFive = ({ style }: any) => {
                                  <i className="fa-regular fa-lock"></i> <span>Login</span>
                               </Link>
                            </li>
-                           <li className="d-none d-md-inline-block ms-3">
-                              <Link href="/dashboard/add-property" className="btn-two" target="_blank">
-                                 <span>Add Listing</span> <i className="fa-thin fa-arrow-up-right"></i>
-                              </Link>
-                           </li>
                         </ul>
                      </div>
 
