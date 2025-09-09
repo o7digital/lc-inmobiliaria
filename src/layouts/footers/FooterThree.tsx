@@ -19,7 +19,6 @@ const FooterThree = () => {
                               <Image src={footerLogo} alt="LC Inmobiliaria" />
                            </Link>
                         </div>
-                        <p className="mb-45 lg-mb-30">Av. Paseo de la Reforma 350, Piso 8, Col. Juárez, CDMX, México</p>
                         <ul className="style-none d-flex align-items-center social-icon">
                            <li><Link href="#"><i className="fa-brands fa-facebook-f"></i></Link></li>
                            <li><Link href="#"><i className="fa-brands fa-twitter"></i></Link></li>
@@ -60,7 +59,7 @@ const FooterThree = () => {
                      <li><Link href="/faq">Privacidad y Términos</Link></li>
                      <li><Link href="/contact">Contáctanos</Link></li>
                   </ul>
-                  <p className="mb-15 text-center text-lg-start fs-16 order-md-first">Copyright ©2024 LC Inmobiliaria. Todos los derechos reservados.</p>
+                  <p className="mb-15 text-center text-lg-start fs-16 order-md-first">Copyright ©2025 LC Inmobiliaria. Todos los derechos reservados.</p>
                </div>
             </div>
          </div>
