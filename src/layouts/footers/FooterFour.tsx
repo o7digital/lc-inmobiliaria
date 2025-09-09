@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 
 import footerLogo from "@/assets/images/logo/logo_06.svg"
@@ -18,7 +19,6 @@ const FooterFour = () => {
                               <Image src={footerLogo} alt="LC Inmobiliaria" />
                            </Link>
                         </div>
-                        <p className="mb-30 xs-mb-20">Av. Paseo de la Reforma 350, Piso 8, Col. Juárez, CDMX, México</p>
                         <Link href="mailto:contacto@lcinmobiliaria.com" className="email tran3s mb-60 md-mb-30">contacto@lcinmobiliaria.com</Link>
                         <ul className="style-none d-flex align-items-center social-icon">
                            <li><Link href="#"><i className="fa-brands fa-facebook-f"></i></Link></li>
@@ -42,7 +42,7 @@ const FooterFour = () => {
                </div>
             </div>
             <div className="bottom-footer">
-               <p className="m0 text-center fs-16">Copyright ©2024 LC Inmobiliaria. Todos los derechos reservados.</p>
+               <p className="m0 text-center fs-16">Copyright ©2025 LC Inmobiliaria. Todos los derechos reservados.</p>
             </div>
          </div>
          <Image src={footerShape} alt="" className="lazy-img shapes shape_01" />
