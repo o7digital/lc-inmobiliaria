@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 const ListingSixArea = () => {
   const [properties, setProperties] = useState<any[]>([]);
@@ -43,12 +42,14 @@ const ListingSixArea = () => {
                     {prop.operations[0]?.formatted_amount || "Precio no disponible"}
                   </strong>
                 </p>
-                <Link
-                  href={`/property/${prop.public_id}`}
+                <a
+                  href={`https://www.easybroker.com/property/${prop.public_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="btn-one mt-3 d-block text-center"
                 >
                   Ver detalles
-                </Link>
+                </a>
               </div>
             </div>
           ))}
