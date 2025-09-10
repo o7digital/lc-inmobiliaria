@@ -1,21 +1,29 @@
 "use client";
 import { useEffect, useState } from "react";
 
+type EBProperty = {
+  public_id: string;
+  title: string;
+  location?: string;
+  title_image_thumb?: string;
+  operations?: { type?: "rent" | "sale"; formatted_amount?: string }[];
+  public_url?: string; // <- URL navegable en EasyBroker
+};
+
 const ListingSixArea = () => {
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<EBProperty[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/properties")
       .then((res) => res.json())
       .then((data) => {
-        setProperties(data.content || []);
-        setLoading(false);
+        setProperties(data?.content || []);
       })
       .catch((err) => {
         console.error("Error cargando propiedades:", err);
-        setLoading(false);
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -25,37 +33,46 @@ const ListingSixArea = () => {
 
         {loading && <p className="text-center">Cargando propiedades...</p>}
         {!loading && properties.length === 0 && (
-          <p>No se encontraron propiedades.</p>
+          <p className="text-center">No se encontraron propiedades.</p>
         )}
 
         <div className="row">
-          {properties.map((prop) => (
-            <div key={prop.public_id} className="col-md-4 mb-4">
-              <div className="property-card p-3 bg-white shadow-sm rounded">
-                <img
-                  src={prop.title_image_thumb || "/images/default-property.jpg"}
-                  alt={prop.title}
-                  className="img-fluid mb-3 rounded"
-                />
-                <h5>{prop.title}</h5>
-                <p>{prop.location}</p>
-                <p>
-                  <strong>
-                    {prop.operations[0]?.formatted_amount ||
-                      "Precio no disponible"}
-                  </strong>
-                </p>
-                <a
-                  href={prop.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-one mt-3 d-block text-center"
-                >
-                  Ver detalles
-                </a>
+          {properties.map((prop) => {
+            const url =
+              prop.public_url ||
+              (prop.public_id
+                ? `https://www.easybroker.com/property/${prop.public_id}`
+                : "#");
+
+            return (
+              <div key={prop.public_id} className="col-md-4 mb-4">
+                <div className="property-card p-3 bg-white shadow-sm rounded h-100 d-flex flex-column">
+                  <img
+                    src={prop.title_image_thumb || "/images/default-property.jpg"}
+                    alt={prop.title}
+                    className="img-fluid mb-3 rounded"
+                  />
+                  <h5 className="mb-1">{prop.title}</h5>
+                  <p className="mb-2">{prop.location}</p>
+                  <p className="mb-3">
+                    <strong>
+                      {prop.operations?.[0]?.formatted_amount ||
+                        "Precio no disponible"}
+                    </strong>
+                  </p>
+
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-one mt-auto d-block text-center"
+                  >
+                    Ver detalles
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
