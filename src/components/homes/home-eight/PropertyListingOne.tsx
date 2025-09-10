@@ -1,23 +1,6 @@
 import Link from "next/link";
 
-interface Property {
-  id: number;
-  public_id: string;
-  title: string;
-  location: string;
-  operations: {
-    type: string;
-    prices: { amount: number; currency: string }[];
-  }[];
-  property_images: { url: string }[];
-  property_info: { feature: string; total_feature: string }[];
-}
-
-interface Props {
-  properties: Property[];
-}
-
-const PropertyListingOne = ({ properties }: Props) => {
+const PropertyListingOne = ({ properties }: any) => {
   return (
     <div className="property-listing-one mt-170 xl-mt-120">
       <div className="container container-large">
@@ -28,17 +11,18 @@ const PropertyListingOne = ({ properties }: Props) => {
           </div>
 
           <div className="row gx-xxl-5">
-            {properties.map((item) => (
+            {properties.map((item: any) => (
               <div
                 key={item.id}
                 className="col-lg-4 col-md-6 mt-40 wow fadeInUp"
+                data-wow-delay="0.1s"
               >
                 <div className="listing-card-four overflow-hidden d-flex align-items-end position-relative z-1">
-                  {/* tag traducido */}
+                  {/* Tag traducido */}
                   <div className="tag fw-500">
-                    {item.operations[0]?.type === "rent"
+                    {item.operations?.[0]?.type === "rent"
                       ? "Renta"
-                      : item.operations[0]?.type === "sale"
+                      : item.operations?.[0]?.type === "sale"
                       ? "Venta"
                       : ""}
                   </div>
@@ -49,7 +33,7 @@ const PropertyListingOne = ({ properties }: Props) => {
                         <h4 className="title fw-500 tran4s">{item.title}</h4>
                         <div className="address tran4s">{item.location}</div>
                       </div>
-                      {/* Botón ver más: abre EasyBroker */}
+                      {/* Botón Ver más → EasyBroker */}
                       <Link
                         href={`https://www.easybroker.com/property/${item.public_id}`}
                         target="_blank"
@@ -63,7 +47,7 @@ const PropertyListingOne = ({ properties }: Props) => {
 
                     <div className="pl-footer tran4s">
                       <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between">
-                        {item.property_info?.map((info, i) => (
+                        {item.property_info?.map((info: any, i: number) => (
                           <li key={i}>
                             <strong className="color-dark fw-500">
                               {info.total_feature}
