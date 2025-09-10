@@ -6,11 +6,7 @@ import footerLogo from "@/assets/images/logo/logo_06.svg"
 import footerShape_1 from "@/assets/images/shape/shape_52.svg"
 
 const FooterThree = () => {
-   const [activeSection, setActiveSection] = useState<string | null>(null);
-
-   const toggleSection = (section: string) => {
-      setActiveSection(activeSection === section ? null : section);
-   };
+   const [showPrivacy, setShowPrivacy] = useState(false);
 
    return (
       <div className="footer-three">
@@ -42,40 +38,25 @@ const FooterThree = () => {
                      </div>
                   </div>
 
-                  {/* Links */}
-                  <div className="col-lg-2 col-md-6 mb-30">
-                     <div className="footer-nav">
-                        <h5 className="footer-title">Links</h5>
-                        <ul className="footer-nav-link style-none">
-                           <li><Link href="/">Inicio</Link></li>
-                        </ul>
-                     </div>
-                  </div>
-
-                  {/* Propiedades */}
-                  <div className="col-lg-2 col-md-6 mb-30">
-                     <div className="footer-nav">
-                        <h5 className="footer-title">Propiedades</h5>
-                        <ul className="footer-nav-link style-none">
-                           <li><Link href="/properties">Ver Propiedades</Link></li>
-                        </ul>
-                     </div>
-                  </div>
-
                   {/* Legal */}
-                  <div className="col-lg-2 col-md-6 mb-30">
+                  <div className="col-lg-3 col-md-6 mb-30">
                      <div className="footer-nav">
                         <h5 className="footer-title">Legal</h5>
                         <ul className="footer-nav-link style-none">
-                           <li><button onClick={() => toggleSection("privacy")} className="btn btn-link p-0">Aviso de Privacidad</button></li>
-                           <li><button onClick={() => toggleSection("terms")} className="btn btn-link p-0">Términos y Condiciones</button></li>
-                           <li><button onClick={() => toggleSection("cookies")} className="btn btn-link p-0">Política de Cookies</button></li>
+                           <li>
+                              <button
+                                 onClick={() => setShowPrivacy(!showPrivacy)}
+                                 className="btn btn-link p-0"
+                              >
+                                 Aviso de Privacidad
+                              </button>
+                           </li>
                         </ul>
                      </div>
                   </div>
 
                   {/* Boletín */}
-                  <div className="col-xl-3 col-lg-4 col-md-6 mb-30">
+                  <div className="col-xl-6 col-lg-6 col-md-6 mb-30">
                      <h5 className="footer-title">Boletín</h5>
                      <p className="pt-5">Suscríbete y recibe noticias importantes regularmente</p>
                      <form onSubmit={(e) => e.preventDefault()} className="newsletter-form position-relative">
@@ -86,36 +67,54 @@ const FooterThree = () => {
                   </div>
                </div>
 
-               {/* Contenido dinámico de legal */}
-               {activeSection === "privacy" && (
+               {/* Contenido dinámico: Aviso de Privacidad + Cookies */}
+               {showPrivacy && (
                   <div className="mt-4 p-4 border rounded bg-light text-dark">
                      <h4>Aviso de Privacidad</h4>
                      <p>
-                        LC INMOBILIARIA es responsable del tratamiento de los datos personales en cumplimiento con la Ley 
-                        Federal de Protección de Datos Personales en Posesión de los Particulares (México), la CCPA (USA) y 
-                        el RGPD (UE). Usted puede ejercer sus derechos ARCO escribiendo a{" "}
-                        <a href="mailto:ventas@lcinmobiliaria.com.mx">ventas@lcinmobiliaria.com.mx</a>.
+                        LC INMOBILIARIA es responsable del tratamiento de los datos personales que
+                        usted nos proporcione, en cumplimiento con las siguientes normativas:
                      </p>
-                  </div>
-               )}
-               {activeSection === "terms" && (
-                  <div className="mt-4 p-4 border rounded bg-light text-dark">
-                     <h4>Términos y Condiciones</h4>
+                     <ul>
+                        <li>
+                           <strong>México:</strong> Ley Federal de Protección de Datos Personales
+                           en Posesión de los Particulares (LFPDPPP) y el ejercicio de los
+                           Derechos ARCO (Acceso, Rectificación, Cancelación y Oposición).
+                        </li>
+                        <li>
+                           <strong>Estados Unidos:</strong> California Consumer Privacy Act
+                           (CCPA/CPRA), que le otorga derechos sobre el acceso, eliminación y
+                           portabilidad de su información personal.
+                        </li>
+                        <li>
+                           <strong>Unión Europea:</strong> Reglamento General de Protección de
+                           Datos (RGPD), incluyendo los derechos de acceso, rectificación,
+                           supresión, limitación, portabilidad y oposición.
+                        </li>
+                     </ul>
                      <p>
-                        El acceso y uso del sitio implica la aceptación de estos términos. Todo el contenido del sitio es 
-                        propiedad de LC INMOBILIARIA y no podrá ser reproducido sin autorización. LC INMOBILIARIA no se hace 
-                        responsable por el contenido de enlaces externos ni garantiza que la información esté libre de errores. 
-                        Este aviso se rige por las leyes de México, complementado con CCPA (USA) y RGPD (UE).
+                        Los datos que recabamos serán utilizados únicamente para fines
+                        relacionados con la prestación de servicios inmobiliarios, atención al
+                        cliente, envío de información comercial y cumplimiento de obligaciones
+                        legales. No compartimos su información con terceros sin su consentimiento
+                        expreso, salvo por requerimiento de autoridad competente o mandato legal.
                      </p>
-                  </div>
-               )}
-               {activeSection === "cookies" && (
-                  <div className="mt-4 p-4 border rounded bg-light text-dark">
-                     <h4>Política de Cookies</h4>
                      <p>
-                        Este sitio utiliza cookies para mejorar la experiencia del usuario, analizar tráfico y personalizar 
-                        contenido. Usted puede configurar su navegador para rechazar cookies, sin embargo algunas funciones 
-                        del sitio pueden no estar disponibles. Al continuar navegando, acepta el uso de cookies de LC INMOBILIARIA.
+                        Usted puede ejercer en cualquier momento sus derechos ARCO, así como los
+                        derechos reconocidos en CCPA y RGPD, escribiendo a{" "}
+                        <a href="mailto:ventas@lcinmobiliaria.com.mx">
+                           ventas@lcinmobiliaria.com.mx
+                        </a>.
+                     </p>
+
+                     <h5 className="mt-3">Política de Cookies</h5>
+                     <p>
+                        Este sitio utiliza cookies propias y de terceros con el objetivo de
+                        mejorar su experiencia de navegación, personalizar el contenido y analizar
+                        el tráfico. Usted puede configurar su navegador para rechazar el uso de
+                        cookies; sin embargo, algunas funcionalidades del sitio pueden no estar
+                        disponibles. Al continuar navegando en nuestro sitio web, usted acepta el
+                        uso de cookies conforme a la presente política.
                      </p>
                   </div>
                )}
@@ -125,9 +124,14 @@ const FooterThree = () => {
             <div className="bottom-footer mt-4">
                <div className="d-md-flex justify-content-center justify-content-md-between align-items-center">
                   <ul className="style-none bottom-nav d-flex justify-content-center">
-                     <li><button onClick={() => toggleSection("privacy")} className="btn btn-link p-0">Aviso de Privacidad</button></li>
-                     <li><button onClick={() => toggleSection("terms")} className="btn btn-link p-0">Términos y Condiciones</button></li>
-                     <li><button onClick={() => toggleSection("cookies")} className="btn btn-link p-0">Política de Cookies</button></li>
+                     <li>
+                        <button
+                           onClick={() => setShowPrivacy(!showPrivacy)}
+                           className="btn btn-link p-0"
+                        >
+                           Aviso de Privacidad
+                        </button>
+                     </li>
                   </ul>
                   <p className="mb-15 text-center text-lg-start fs-16 order-md-first">
                      Copyright ©2025 LC Inmobiliaria. Todos los derechos reservados.
