@@ -7,12 +7,12 @@ const ListingSixArea = () => {
 
   useEffect(() => {
     fetch("/api/properties")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setProperties(data.content || []);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error cargando propiedades:", err);
         setLoading(false);
       });
@@ -24,7 +24,9 @@ const ListingSixArea = () => {
         <h2 className="mb-40 text-center">Propiedades disponibles</h2>
 
         {loading && <p className="text-center">Cargando propiedades...</p>}
-        {!loading && properties.length === 0 && <p>No se encontraron propiedades.</p>}
+        {!loading && properties.length === 0 && (
+          <p>No se encontraron propiedades.</p>
+        )}
 
         <div className="row">
           {properties.map((prop) => (
@@ -39,11 +41,12 @@ const ListingSixArea = () => {
                 <p>{prop.location}</p>
                 <p>
                   <strong>
-                    {prop.operations[0]?.formatted_amount || "Precio no disponible"}
+                    {prop.operations[0]?.formatted_amount ||
+                      "Precio no disponible"}
                   </strong>
                 </p>
                 <a
-                  href={`https://www.easybroker.com/property/${prop.public_id}`}
+                  href={prop.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-one mt-3 d-block text-center"

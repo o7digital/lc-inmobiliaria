@@ -34,9 +34,9 @@ const PropertyListingOne = ({ properties = [] }: any) => {
                           <h4 className="title fw-500 tran4s">{item.title}</h4>
                           <div className="address tran4s">{item.location}</div>
                         </div>
-                        {/* Botón Ver más → EasyBroker */}
+                        {/* Botón Ver más → usar URL de EasyBroker */}
                         <a
-                          href={`https://www.easybroker.com/property/${item.public_id}`}
+                          href={item.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="btn-four inverse"
@@ -46,7 +46,7 @@ const PropertyListingOne = ({ properties = [] }: any) => {
                         </a>
                       </div>
 
-                      <div className="pl-footer tran4s">
+                      <div className="pl-footer tran3s">
                         <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between">
                           {item.property_info?.map((info: any, i: number) => (
                             <li key={i}>
