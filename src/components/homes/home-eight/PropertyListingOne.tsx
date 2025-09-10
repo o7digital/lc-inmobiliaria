@@ -34,7 +34,7 @@ const PropertyListingOne = ({ properties }: any) => {
                         <div className="address tran4s">{item.location}</div>
                       </div>
                       {/* Botón Ver más → EasyBroker */}
-                      <Link
+                      <a
                         href={`https://www.easybroker.com/property/${item.public_id}`}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -42,7 +42,7 @@ const PropertyListingOne = ({ properties }: any) => {
                       >
                         <span>Ver más</span>{" "}
                         <i className="bi bi-arrow-up-right"></i>
-                      </Link>
+                      </a>
                     </div>
 
                     <div className="pl-footer tran4s">
