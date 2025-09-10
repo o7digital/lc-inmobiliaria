@@ -11,6 +11,9 @@ type EBProperty = {
 };
 
 const PropertyListingOne = ({ properties = [] as EBProperty[] }: any) => {
+  // 🔍 DEBUG: mostrar las propiedades recibidas
+  console.log("👉 Propiedades destacadas recibidas:", properties);
+
   return (
     <div className="property-listing-one mt-170 xl-mt-120">
       <div className="container container-large">
@@ -36,6 +39,7 @@ const PropertyListingOne = ({ properties = [] as EBProperty[] }: any) => {
                     data-wow-delay="0.1s"
                   >
                     <div className="listing-card-four overflow-hidden d-flex align-items-end position-relative z-1">
+                      {/* Tag traducido */}
                       <div className="tag fw-500">
                         {item.operations?.[0]?.type === "rent"
                           ? "Renta"
@@ -51,6 +55,7 @@ const PropertyListingOne = ({ properties = [] as EBProperty[] }: any) => {
                             <div className="address tran4s">{item.location}</div>
                           </div>
 
+                          {/* Botón Ver más */}
                           <a
                             href={url}
                             target="_blank"

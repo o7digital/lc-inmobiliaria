@@ -18,6 +18,7 @@ const ListingSixArea = () => {
     fetch("/api/properties")
       .then((res) => res.json())
       .then((data) => {
+        console.log("👉 Datos recibidos de EasyBroker:", data); // 🔍 DEBUG
         setProperties(data?.content || []);
       })
       .catch((err) => {
