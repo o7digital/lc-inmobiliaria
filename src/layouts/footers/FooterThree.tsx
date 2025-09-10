@@ -90,9 +90,21 @@ const FooterThree = () => {
             <div className="bottom-footer mt-4">
                <div className="d-md-flex justify-content-center justify-content-md-between align-items-center">
                   <ul className="style-none bottom-nav d-flex justify-content-center">
-                     <li><button onClick={() => openModal("privacy")} className="btn btn-link p-0">Aviso de Privacidad</button></li>
-                     <li><button onClick={() => openModal("terms")} className="btn btn-link p-0">Términos y Condiciones</button></li>
-                     <li><button onClick={() => openModal("cookies")} className="btn btn-link p-0">Política de Cookies</button></li>
+                     <li>
+                        <button onClick={() => openModal("privacy")} className="btn btn-link p-0">
+                           Aviso de Privacidad
+                        </button>
+                     </li>
+                     <li>
+                        <button onClick={() => openModal("terms")} className="btn btn-link p-0">
+                           Términos y Condiciones
+                        </button>
+                     </li>
+                     <li>
+                        <button onClick={() => openModal("cookies")} className="btn btn-link p-0">
+                           Política de Cookies
+                        </button>
+                     </li>
                   </ul>
                   <p className="mb-15 text-center text-lg-start fs-16 order-md-first">
                      Copyright ©2025 LC Inmobiliaria. Todos los derechos reservados.
@@ -103,26 +115,16 @@ const FooterThree = () => {
 
          {/* MODALS */}
          {activeModal && (
-            <div className="modal-overlay" style={{
-               position: "fixed",
-               top: 0, left: 0, right: 0, bottom: 0,
-               background: "rgba(0,0,0,0.6)",
-               display: "flex",
-               justifyContent: "center",
-               alignItems: "center",
-               zIndex: 9999
-            }}>
-               <div className="modal-content bg-white p-4 rounded shadow-lg" style={{ maxWidth: "800px", maxHeight: "80vh", overflowY: "auto" }}>
-                  <button onClick={closeModal} style={{ float: "right", fontSize: "18px", border: "none", background: "transparent", cursor: "pointer" }}>✕</button>
+            <div className="modal-overlay">
+               <div className="modal-content">
+                  <button onClick={closeModal} className="modal-close">✕</button>
 
                   {activeModal === "privacy" && (
                      <>
                         <h3>Aviso de Privacidad</h3>
                         <p>
                            LC INMOBILIARIA es responsable del tratamiento de los datos personales en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (México), la CCPA (EE.UU.) y el RGPD (UE).
-                        </p>
-                        <p>
-                           Usted puede ejercer sus derechos ARCO escribiendo a <a href="mailto:ventas@lcinmobiliaria.com.mx">ventas@lcinmobiliaria.com.mx</a>.
+                           Puede ejercer sus derechos ARCO escribiendo a <a href="mailto:ventas@lcinmobiliaria.com.mx">ventas@lcinmobiliaria.com.mx</a>.
                         </p>
                      </>
                   )}
@@ -131,13 +133,12 @@ const FooterThree = () => {
                      <>
                         <h3>Términos y Condiciones</h3>
                         <p>
-                           El acceso y uso del sitio web de LC INMOBILIARIA implica la aceptación de estos Términos y Condiciones. El sitio tiene como finalidad proporcionar información sobre servicios inmobiliarios y propiedades en venta o renta.
+                           El acceso y uso del sitio web de LC INMOBILIARIA implica la aceptación de estos Términos y Condiciones. 
+                           El sitio tiene como finalidad proporcionar información sobre servicios inmobiliarios y propiedades en venta o renta.
                         </p>
                         <p>
-                           Todos los contenidos son propiedad exclusiva de LC INMOBILIARIA y están protegidos por leyes de propiedad intelectual. El usuario se compromete a usar el sitio solo para fines lícitos. LC INMOBILIARIA no garantiza que el sitio esté libre de errores o interrupciones y no será responsable de daños derivados de su uso.
-                        </p>
-                        <p>
-                           Estos términos se rigen por las leyes de México y se complementan con CCPA (EE.UU.) y RGPD (UE).
+                           Todos los contenidos son propiedad exclusiva de LC INMOBILIARIA y están protegidos por leyes de propiedad intelectual. 
+                           El usuario se compromete a usar el sitio solo para fines lícitos. LC INMOBILIARIA no garantiza que el sitio esté libre de errores o interrupciones y no será responsable de daños derivados de su uso.
                         </p>
                      </>
                   )}
@@ -146,10 +147,12 @@ const FooterThree = () => {
                      <>
                         <h3>Política de Cookies</h3>
                         <p>
-                           Este sitio utiliza cookies para mejorar la experiencia del usuario, analizar tráfico y personalizar contenido. Al navegar en este sitio, usted acepta el uso de cookies conforme a esta política.
+                           Este sitio utiliza cookies para mejorar la experiencia del usuario, analizar tráfico y personalizar contenido. 
+                           Al navegar en este sitio, usted acepta el uso de cookies conforme a esta política.
                         </p>
                         <p>
-                           Tipos de cookies: técnicas (funcionamiento), de análisis (medición de tráfico), de personalización (preferencias) y publicitarias (anuncios relevantes). Puede configurar su navegador para bloquear cookies, pero algunas funciones pueden verse afectadas.
+                           Tipos de cookies: técnicas (funcionamiento), de análisis (medición de tráfico), de personalización (preferencias) y publicitarias (anuncios relevantes). 
+                           Puede configurar su navegador para bloquear cookies, pero algunas funciones pueden verse afectadas.
                         </p>
                      </>
                   )}
