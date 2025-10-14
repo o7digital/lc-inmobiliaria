@@ -1,75 +1,41 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL;
-const DIRECTUS_STATIC_TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN;
-const DIRECTUS_SERVICE_EMAIL = process.env.DIRECTUS_SERVICE_EMAIL;
-const DIRECTUS_SERVICE_PASSWORD = process.env.DIRECTUS_SERVICE_PASSWORD;
+const DIRECTUS_TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN;
 
-let cachedToken: string | null = null;
-let cachedTokenExpiry = 0;
-
-const getDirectusAuthUrl = () => {
-  if (!DIRECTUS_URL) {
-    throw new Error("Missing NEXT_PUBLIC_DIRECTUS_URL environment variable");
-  }
-  return `${DIRECTUS_URL.replace(/\/$/, "")}/auth/login`;
-};
-
-const shouldUseStaticToken = () => {
-  return !DIRECTUS_SERVICE_EMAIL || !DIRECTUS_SERVICE_PASSWORD;
-};
-
-const getDirectusToken = async () => {
-  console.log('Directus credentials present:', {
-    serviceEmail: Boolean(DIRECTUS_SERVICE_EMAIL),
-    servicePassword: Boolean(DIRECTUS_SERVICE_PASSWORD),
-    staticToken: Boolean(DIRECTUS_STATIC_TOKEN),
-  });
-
-  if (shouldUseStaticToken()) {
-    if (!DIRECTUS_STATIC_TOKEN) {
-      console.error('Directus auth configuration error: missing both service credentials and DIRECTUS_TOKEN');
-      throw new Error("DIRECTUS_TOKEN is not defined");
-    }
-    console.log('Directus auth: using static token');
-    return DIRECTUS_STATIC_TOKEN;
-  }
-
-  const now = Date.now();
-  if (cachedToken && now < cachedTokenExpiry - 60_000) {
-    return cachedToken;
-  }
-
-  const response = await fetch(getDirectusAuthUrl(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: DIRECTUS_SERVICE_EMAIL,
-      password: DIRECTUS_SERVICE_PASSWORD,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`Directus login failed: ${response.status} ${response.statusText} - ${errorText}`);
-    throw new Error(`Failed to authenticate with Directus: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  const accessToken = data?.data?.access_token;
-  const expiresIn = data?.data?.expires;
-
-  if (!accessToken) {
-    throw new Error("Directus authentication response missing access_token");
-  }
-
-  cachedToken = accessToken;
-  cachedTokenExpiry = now + (typeof expiresIn === "number" ? expiresIn * 1000 : 10 * 60 * 1000);
-
-  return accessToken;
-};
+interface DirectusProperty {
+  id: number;
+  status: string;
+  Title: string;
+  Slug?: string;
+  Address?: string;
+  Neigborohood?: string | null;
+  City?: string;
+  State?: string;
+  Country?: string;
+  Zipcode?: string;
+  Property_type?: string[];
+  Operation_type?: string[];
+  Price?: string;
+  Currency?: string[];
+  Maintenance_fee?: string;
+  Bedrooms?: number;
+  Bathrooms?: number;
+  Half_bathrooms?: string;
+  Parking_spaces?: number;
+  Construccion_area?: number;
+  Land_area?: number;
+  Floor?: number | null;
+  Year_built?: number | null;
+  Descripcion?: string | null;
+  highlights?: string | null;
+  video_url_?: string | null;
+  Virtual_tour_url?: string | null;
+  Amenidades?: string[];
+  Status?: string | null;
+  Pet_Friendly?: boolean | null;
+  Featured?: boolean;
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -77,85 +43,66 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const useStaticToken = shouldUseStaticToken();
-    console.log(`Directus auth mode: ${useStaticToken ? 'static-token' : 'service-credentials'}`);
-
-    // Construction des paramètres de requête pour Directus
-    const searchParams = new URLSearchParams({
-      fields: 'id,Title,Slug,Address,City,State,Country,Price,Currency,Bedrooms,Bathrooms,Parking_spaces,Featured,Image,Operation_type,Property_type',
-      // Afficher toutes les propriétés (pas de filtre sur status pour le moment)
-    });
-
-    // Ajouter des filtres optionnels basés sur les paramètres de requête
-    if (req.query.featured === 'true') {
-      searchParams.append('filter[featured][_eq]', 'true');
-    }
-
-    if (req.query.operation_type) {
-      searchParams.append('filter[operation_type][_eq]', req.query.operation_type as string);
-    }
-
-    if (req.query.property_type) {
-      searchParams.append('filter[property_type][_eq]', req.query.property_type as string);
-    }
-
-    if (req.query.city) {
-      searchParams.append('filter[city][_icontains]', req.query.city as string);
-    }
-
-    if (req.query.min_price) {
-      searchParams.append('filter[price][_gte]', req.query.min_price as string);
-    }
-
-    if (req.query.max_price) {
-      searchParams.append('filter[price][_lte]', req.query.max_price as string);
-    }
-
-    // Pagination
-    if (req.query.limit) {
-      searchParams.append('limit', req.query.limit as string);
-    }
-
-    if (req.query.offset) {
-      searchParams.append('offset', req.query.offset as string);
-    }
-
-    const directusToken = await getDirectusToken();
+    // Vérifier la configuration
     if (!DIRECTUS_URL) {
-      throw new Error('NEXT_PUBLIC_DIRECTUS_URL is not defined');
+      throw new Error('NEXT_PUBLIC_DIRECTUS_URL is not configured');
     }
 
-    const directusUrl = `${DIRECTUS_URL}/items/propriedades?${searchParams.toString()}`;
+    if (!DIRECTUS_TOKEN) {
+      throw new Error('NEXT_PUBLIC_DIRECTUS_TOKEN is not configured');
+    }
 
-    const makeRequest = async (token: string) => fetch(directusUrl, {
+    // Construire l'URL avec les filtres
+    const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
+    
+    // Ajouter les paramètres de recherche si présents
+    const { operation_type, property_type, city, min_price, max_price } = req.query;
+    
+    if (operation_type) {
+      url.searchParams.append('filter[Operation_type][_contains]', operation_type as string);
+    }
+    
+    if (property_type) {
+      url.searchParams.append('filter[Property_type][_contains]', property_type as string);
+    }
+    
+    if (city) {
+      url.searchParams.append('filter[City][_icontains]', city as string);
+    }
+    
+    if (min_price) {
+      url.searchParams.append('filter[Price][_gte]', min_price as string);
+    }
+    
+    if (max_price) {
+      url.searchParams.append('filter[Price][_lte]', max_price as string);
+    }
+
+    console.log('Fetching from Directus:', url.toString());
+
+    // Faire l'appel à l'API Directus
+    const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
+        'Authorization': `Bearer ${DIRECTUS_TOKEN}`,
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
       },
     });
 
-    let response = await makeRequest(directusToken);
-
-    if (response.status === 401 && !shouldUseStaticToken()) {
-      cachedToken = null;
-      cachedTokenExpiry = 0;
-      const refreshedToken = await getDirectusToken();
-      response = await makeRequest(refreshedToken);
-    }
-
     if (!response.ok) {
+      console.error(`Directus API error: ${response.status} ${response.statusText}`);
       throw new Error(`Directus API error: ${response.status}`);
     }
 
-    const directusData = await response.json();
-    
-    // Retourner seulement les données, pas l'enveloppe Directus
-    res.status(200).json(directusData.data || []);
+    const data = await response.json();
+    console.log(`Successfully fetched ${data.data?.length || 0} properties`);
+
+    // Retourner les données
+    res.status(200).json(data.data || []);
 
   } catch (error) {
     console.error('Error fetching Directus properties:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error fetching properties',
       error: error instanceof Error ? error.message : 'Unknown error'
     });
