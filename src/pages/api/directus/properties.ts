@@ -49,7 +49,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const token = await getDirectusToken();
     
+        // Construire l'URL avec les filtres et inclure les images
     const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
+    
+    // Ajouter les champs d'images dans la requête
+    url.searchParams.append('fields', '*,images.directus_files_id.*');
     
     // Ajouter les paramètres de recherche si présents
     const { operation_type, property_type, city, min_price, max_price, featured, limit } = req.query;

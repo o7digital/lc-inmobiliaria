@@ -27,6 +27,13 @@ type DirectusProperty = {
   Bathrooms?: number;
   Featured?: boolean;
   Image?: DirectusImageField;
+  images?: Array<{
+    directus_files_id: {
+      id: string;
+      filename_download: string;
+      type: string;
+    };
+  }>;
 };
 
 type FeaturedProperty = {
@@ -94,8 +101,20 @@ const extractFileId = (image?: DirectusImageField): string | null => {
 };
 
 const mapDirectusProperty = (property: DirectusProperty): FeaturedProperty => {
-  const fileId = extractFileId(property.Image);
-  const imageUrl = buildDirectusAssetUrl(fileId ?? undefined) || fallbackImage;
+  // Priorité : nouvelles images > ancien champ Image > fallback
+  let imageUrl = fallbackImage;
+  
+  if (property.images && property.images.length > 0) {
+    // Utiliser la première image du nouveau système
+    const firstImage = property.images[0];
+    if (firstImage?.directus_files_id?.id) {
+      imageUrl = buildDirectusAssetUrl(firstImage.directus_files_id.id) || fallbackImage;
+    }
+  } else {
+    // Fallback sur l'ancien système Image
+    const fileId = extractFileId(property.Image);
+    imageUrl = buildDirectusAssetUrl(fileId ?? undefined) || fallbackImage;
+  }
   
   // Operation_type est un tableau, on prend le premier élément
   const operationType = Array.isArray(property.Operation_type) && property.Operation_type.length > 0 
