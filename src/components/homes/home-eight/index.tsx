@@ -3,7 +3,7 @@ import Hero from "./Hero";
 import AboutSection from "./AboutSection";
 import ConsultoriaSection from "./ConsultoriaSection";
 import BLockFeatureOne from "./BLockFeatureOne";
-import PropertyListingOne from "./PropertyListingOne";
+import ListingSixAreaDirectus from "@/components/inner-listing/listing-06/ListingSixAreaDirectus";
 import FancyBannerOne from "./FancyBannerOne";
 import BLockFeatureTwo from "./BLockFeatureTwo"; // ← Servicios original del template
 import BLockFeatureFour from "../home-one/BLockFeatureFour";
@@ -22,7 +22,8 @@ const HomeEight = () => {
       <ConsultoriaSection />
 
       <BLockFeatureOne />
-      <PropertyListingOne />
+  {/* Section Propriedades destacadas (Directus) */}
+  <ListingSixAreaDirectus />
       <FancyBannerOne />
       <BLockFeatureTwo />   {/* 👈 Mantiene el bloque de Servicios original */}
       <BLockFeatureFour />

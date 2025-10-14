@@ -136,8 +136,10 @@ const ListingSixAreaDirectus = () => {
           throw new Error('Error al cargar las propiedades');
         }
 
-        const data = await response.json();
-        setProperties(data);
+  const data = await response.json();
+  // Filtrer uniquement les propriétés Featured
+  const featured = Array.isArray(data) ? data.filter((p: any) => p.Featured === true) : [];
+  setProperties(featured);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
