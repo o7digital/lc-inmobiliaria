@@ -21,7 +21,7 @@ type DirectusProperty = {
   id: number | string;
   Title: string;
   Address?: string;
-  Operation?: string;
+  Operation_type?: string[];
   Price?: number | string;
   Bedrooms?: number;
   Bathrooms?: number;
@@ -96,12 +96,17 @@ const extractFileId = (image?: DirectusImageField): string | null => {
 const mapDirectusProperty = (property: DirectusProperty): FeaturedProperty => {
   const fileId = extractFileId(property.Image);
   const imageUrl = buildDirectusAssetUrl(fileId ?? undefined) || fallbackImage;
+  
+  // Operation_type est un tableau, on prend le premier élément
+  const operationType = Array.isArray(property.Operation_type) && property.Operation_type.length > 0 
+    ? property.Operation_type[0] 
+    : undefined;
 
   return {
     id: String(property.id),
     title: property.Title || "Propiedad sin título",
     address: property.Address || "Dirección no disponible",
-    operation: normalizeOperationLabel(property.Operation),
+    operation: normalizeOperationLabel(operationType),
     priceLabel: formatPrice(property.Price),
     bedrooms: property.Bedrooms,
     bathrooms: property.Bathrooms,
@@ -117,31 +122,29 @@ const PropertyListingOne = () => {
   const directusBaseUrl = useMemo(() => getDirectusBaseUrl(), []);
 
   useEffect(() => {
-    if (!directusBaseUrl) {
-      setLoading(false);
-      setError("Directus no está configurado.");
-      return;
-    }
-
     const controller = new AbortController();
 
     const fetchProperties = async () => {
       try {
-        const url = buildDirectusUrl(
-          "items/propriedades?filter[Featured][_eq]=true&fields=id,Title,Address,Operation,Price,Bedrooms,Bathrooms,Image.directus_files_id.id,Image.id,Image.directus_files_id&sort=-date_created&limit=6",
-        );
-
-        const response = await fetch(url, { signal: controller.signal });
+        // Utiliser notre API Next.js qui gère l'authentification
+        const response = await fetch('/api/directus/properties?featured=true&limit=6', { 
+          signal: controller.signal 
+        });
+        
         if (!response.ok) {
-          throw new Error(`Error Directus ${response.status}`);
+          throw new Error(`Error API ${response.status}`);
         }
 
-        const payload = await response.json();
-        const data = Array.isArray(payload?.data) ? payload.data : [];
-        setProperties(data.map(mapDirectusProperty));
+        const data = await response.json();
+        const properties = Array.isArray(data) ? data : [];
+        
+        // Filtrer seulement les propriétés Featured=true
+        const featuredProperties = properties.filter(prop => prop.Featured === true);
+        
+        setProperties(featuredProperties.map(mapDirectusProperty));
       } catch (fetchError: any) {
         if (fetchError.name === "AbortError") return;
-        console.error("Error cargando propiedades desde Directus:", fetchError);
+        console.error("Error cargando propiedades:", fetchError);
         setError("No se pudieron cargar las propiedades destacadas.");
       } finally {
         setLoading(false);
@@ -151,7 +154,7 @@ const PropertyListingOne = () => {
     fetchProperties();
 
     return () => controller.abort();
-  }, [directusBaseUrl]);
+  }, []);
 
   if (loading) {
     return (
