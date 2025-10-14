@@ -1,4 +1,5 @@
-import { buildDirectusUrl } from '@/lib/directus';
+import { buildDirectusUrl, getDirectusToken } from '@/lib/directus';
+import { getValidToken } from './directusAuth';
 
 export interface DirectusProperty {
   id: number;
@@ -34,29 +35,59 @@ export interface DirectusProperty {
   Featured?: boolean;
 }
 
-export const testDirectusConnection = async (): Promise<{ success: boolean; message: string; url?: string }> => {
+const getAuthHeaders = async (): Promise<HeadersInit> => {
+  // Essayer d'abord le token static depuis les variables d'environnement
+  let token = getDirectusToken();
+  
+  // Si pas de token static, essayer de se connecter automatiquement
+  if (!token) {
+    token = await getValidToken();
+  }
+  
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
+};
+
+export const testDirectusConnection = async (): Promise<{ success: boolean; message: string; url?: string; hasToken: boolean }> => {
   try {
     const url = buildDirectusUrl('/items/propriedades?limit=1');
+    const token = getDirectusToken();
     
     if (!url) {
       return {
         success: false,
-        message: 'Directus URL not configured'
+        message: 'Directus URL not configured',
+        hasToken: !!token
       };
     }
 
+    const headers = await getAuthHeaders();
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     });
 
     if (!response.ok) {
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      if (response.status === 401) {
+        errorMessage = 'Authentication failed - Invalid or missing token';
+      } else if (response.status === 403) {
+        errorMessage = 'Access forbidden - Check permissions';
+      }
+      
       return {
         success: false,
-        message: `HTTP error! status: ${response.status}`,
-        url
+        message: errorMessage,
+        url,
+        hasToken: !!token
       };
     }
 
@@ -65,12 +96,14 @@ export const testDirectusConnection = async (): Promise<{ success: boolean; mess
     return {
       success: true,
       message: `Connection successful. Found ${data.data?.length || 0} properties.`,
-      url
+      url,
+      hasToken: !!token
     };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message : 'Unknown error',
+      hasToken: !!getDirectusToken()
     };
   }
 };
@@ -85,16 +118,20 @@ export const fetchProperties = async (): Promise<DirectusProperty[]> => {
     }
 
     console.log('Fetching properties from:', url);
+    console.log('Has token:', !!getDirectusToken());
 
+    const headers = await getAuthHeaders();
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
+      headers,
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Authentication failed - Invalid or missing token');
+      } else if (response.status === 403) {
+        throw new Error('Access forbidden - Check permissions');
+      }
       throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
     }
 
@@ -117,9 +154,18 @@ export const fetchPropertyById = async (id: number): Promise<DirectusProperty | 
       return null;
     }
 
-    const response = await fetch(url);
+    const headers = await getAuthHeaders();
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Authentication failed - Invalid or missing token');
+      } else if (response.status === 403) {
+        throw new Error('Access forbidden - Check permissions');
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 

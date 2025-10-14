@@ -5,6 +5,10 @@ export const getDirectusBaseUrl = (): string => {
   return url ? stripSlashes(url) : "";
 };
 
+export const getDirectusToken = (): string => {
+  return process.env.NEXT_PUBLIC_DIRECTUS_TOKEN?.trim() ?? "";
+};
+
 export const buildDirectusUrl = (path: string): string => {
   const base = getDirectusBaseUrl();
   if (!base) return "";

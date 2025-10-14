@@ -2,18 +2,19 @@
 
 import React, { useState } from 'react';
 import useDirectusProperties from '@/hooks/useDirectusProperties';
-import { getDirectusBaseUrl } from '@/lib/directus';
+import { getDirectusBaseUrl, getDirectusToken } from '@/lib/directus';
 import { testDirectusConnection } from '@/services/directusService';
 
 const TestDirectusPage = () => {
   const { properties, loading, error, refetch } = useDirectusProperties();
   const directusUrl = getDirectusBaseUrl();
+  const directusToken = getDirectusToken();
   const [testResult, setTestResult] = useState<string>('');
 
   const testDirectConnection = async () => {
     setTestResult('Testing...');
     const result = await testDirectusConnection();
-    setTestResult(`${result.success ? '✅' : '❌'} ${result.message}${result.url ? ` (${result.url})` : ''}`);
+    setTestResult(`${result.success ? '✅' : '❌'} ${result.message} | Token: ${result.hasToken ? '✅' : '❌'}${result.url ? ` (${result.url})` : ''}`);
   };
 
   return (
@@ -23,7 +24,9 @@ const TestDirectusPage = () => {
       <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#f5f5f5' }}>
         <h3>Configuration</h3>
         <p><strong>NEXT_PUBLIC_DIRECTUS_URL:</strong> {directusUrl || 'Non configuré'}</p>
-        <p><strong>Status:</strong> {directusUrl ? '✅ Configuré' : '❌ Non configuré'}</p>
+        <p><strong>NEXT_PUBLIC_DIRECTUS_TOKEN:</strong> {directusToken ? `${directusToken.substring(0, 10)}...` : 'Non configuré'}</p>
+        <p><strong>URL Status:</strong> {directusUrl ? '✅ Configuré' : '❌ Non configuré'}</p>
+        <p><strong>Token Status:</strong> {directusToken ? '✅ Configuré' : '❌ Non configuré'}</p>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
