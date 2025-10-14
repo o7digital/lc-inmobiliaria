@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import Wrapper from "@/layouts/Wrapper";
+import HeaderFive from "@/layouts/headers/HeaderFive";
+import FooterThree from "@/layouts/footers/FooterThree";
 
 async function getProperty(id: string) {
   try {
@@ -18,7 +18,8 @@ export default async function PropertyDirectusPage({ params }: { params: { id: s
   if (!property) return notFound();
 
   return (
-    <Wrapper>
+    <>
+      <HeaderFive />
       <div className="container py-5">
         <h1 className="mb-4">{property.Title || "Propriété"}</h1>
         <p><b>Adresse:</b> {property.Address}</p>
@@ -30,12 +31,13 @@ export default async function PropertyDirectusPage({ params }: { params: { id: s
           <div className="row mt-4">
             {property.images.map((img: any, i: number) => (
               <div className="col-md-4 mb-3" key={i}>
-                <img src={`https://directus-backend-production.up.railway.app/assets/${img.directus_files_id.id}`} alt="photo" className="img-fluid rounded" />
+                <img src={`https://directus-backend-production.up.railway.app/assets/${img.directus_files_id.id}`} alt={`photo-${i+1}`} className="img-fluid rounded" />
               </div>
             ))}
           </div>
         )}
       </div>
-    </Wrapper>
+      <FooterThree />
+    </>
   );
 }
