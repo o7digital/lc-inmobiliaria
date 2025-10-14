@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL;
 const DIRECTUS_STATIC_TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN;
-const DIRECTUS_SERVICE_EMAIL = process.env.NEXT_PUBLIC_DIRECTUS_EMAIL;
-const DIRECTUS_SERVICE_PASSWORD = process.env.NEXT_PUBLIC_DIRECTUS_PASSWORD;
+const DIRECTUS_SERVICE_EMAIL = process.env.DIRECTUS_SERVICE_EMAIL;
+const DIRECTUS_SERVICE_PASSWORD = process.env.DIRECTUS_SERVICE_PASSWORD;
 
 let cachedToken: string | null = null;
 let cachedTokenExpiry = 0;
