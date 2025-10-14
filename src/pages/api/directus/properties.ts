@@ -51,7 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
     
-    const { operation_type, property_type, city, min_price, max_price } = req.query;
+    // Ajouter les paramètres de recherche si présents
+    const { operation_type, property_type, city, min_price, max_price, featured, limit } = req.query;
     
     if (operation_type) {
       url.searchParams.append('filter[Operation_type][_contains]', operation_type as string);
@@ -72,6 +73,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (max_price) {
       url.searchParams.append('filter[Price][_lte]', max_price as string);
     }
+    
+    if (featured === 'true') {
+      url.searchParams.append('filter[Featured][_eq]', 'true');
+    }
+    
+    if (limit) {
+      url.searchParams.append('limit', limit as string);
+    }
+
+    console.log('Fetching from Directus:', url.toString());
 
     const response = await fetch(url.toString(), {
       method: 'GET',
