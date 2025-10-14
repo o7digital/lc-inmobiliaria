@@ -37,7 +37,7 @@ export interface DirectusProperty {
 
 const getAuthHeaders = async (): Promise<HeadersInit> => {
   // Essayer d'abord le token static depuis les variables d'environnement
-  let token = getDirectusToken();
+  let token: string | null = getDirectusToken();
   
   // Si pas de token static, essayer de se connecter automatiquement
   if (!token) {

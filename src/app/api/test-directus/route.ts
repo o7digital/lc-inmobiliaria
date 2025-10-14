@@ -3,7 +3,7 @@ import { buildDirectusUrl } from '@/lib/directus';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
     const limit = searchParams.get('limit') || '10';
     
     const url = buildDirectusUrl(`/items/propriedades?limit=${limit}`);
