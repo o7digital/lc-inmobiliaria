@@ -1,41 +1,45 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL;
-const DIRECTUS_TOKEN = process.env.NEXT_PUBLIC_DIRECTUS_TOKEN;
+const DIRECTUS_EMAIL = process.env.DIRECTUS_SERVICE_EMAIL;
+const DIRECTUS_PASSWORD = process.env.DIRECTUS_SERVICE_PASSWORD;
 
-interface DirectusProperty {
-  id: number;
-  status: string;
-  Title: string;
-  Slug?: string;
-  Address?: string;
-  Neigborohood?: string | null;
-  City?: string;
-  State?: string;
-  Country?: string;
-  Zipcode?: string;
-  Property_type?: string[];
-  Operation_type?: string[];
-  Price?: string;
-  Currency?: string[];
-  Maintenance_fee?: string;
-  Bedrooms?: number;
-  Bathrooms?: number;
-  Half_bathrooms?: string;
-  Parking_spaces?: number;
-  Construccion_area?: number;
-  Land_area?: number;
-  Floor?: number | null;
-  Year_built?: number | null;
-  Descripcion?: string | null;
-  highlights?: string | null;
-  video_url_?: string | null;
-  Virtual_tour_url?: string | null;
-  Amenidades?: string[];
-  Status?: string | null;
-  Pet_Friendly?: boolean | null;
-  Featured?: boolean;
-}
+// Cache pour le token
+let cachedToken: string | null = null;
+let tokenExpiry = 0;
+
+const getDirectusToken = async (): Promise<string> => {
+  const now = Date.now();
+  if (cachedToken && now < tokenExpiry - 60000) {
+    return cachedToken;
+  }
+
+  if (!DIRECTUS_URL || !DIRECTUS_EMAIL || !DIRECTUS_PASSWORD) {
+    throw new Error('Missing Directus configuration');
+  }
+
+  const response = await fetch(`${DIRECTUS_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: DIRECTUS_EMAIL,
+      password: DIRECTUS_PASSWORD,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Login failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+  const { access_token, expires } = data.data;
+
+  cachedToken = access_token;
+  tokenExpiry = now + (expires || 900000);
+
+  console.log('Directus token obtained');
+  return access_token;
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -43,19 +47,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Vérifier la configuration
-    if (!DIRECTUS_URL) {
-      throw new Error('NEXT_PUBLIC_DIRECTUS_URL is not configured');
-    }
-
-    if (!DIRECTUS_TOKEN) {
-      throw new Error('NEXT_PUBLIC_DIRECTUS_TOKEN is not configured');
-    }
-
-    // Construire l'URL avec les filtres
+    const token = await getDirectusToken();
+    
     const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
     
-    // Ajouter les paramètres de recherche si présents
     const { operation_type, property_type, city, min_price, max_price } = req.query;
     
     if (operation_type) {
@@ -78,30 +73,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url.searchParams.append('filter[Price][_lte]', max_price as string);
     }
 
-    console.log('Fetching from Directus:', url.toString());
-
-    // Faire l'appel à l'API Directus
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${DIRECTUS_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      console.error(`Directus API error: ${response.status} ${response.statusText}`);
-      throw new Error(`Directus API error: ${response.status}`);
+      if (response.status === 401) {
+        cachedToken = null;
+        tokenExpiry = 0;
+      }
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log(`Successfully fetched ${data.data?.length || 0} properties`);
+    console.log(`Fetched ${data.data?.length || 0} properties`);
 
-    // Retourner les données
     res.status(200).json(data.data || []);
 
   } catch (error) {
-    console.error('Error fetching Directus properties:', error);
+    console.error('Error:', error);
     res.status(500).json({
       message: 'Error fetching properties',
       error: error instanceof Error ? error.message : 'Unknown error'
