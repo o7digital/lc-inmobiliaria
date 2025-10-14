@@ -11,14 +11,47 @@ Pour que l'application fonctionne correctement sur Vercel, vous devez configurer
    - Type: Environment Variable
    - Environnements: Production, Preview, Development
 
+2. **NEXT_PUBLIC_DIRECTUS_EMAIL** (optionnel - pour login automatique)
+   - Valeur: `olivier.steineur@gmail.com`
+   - Type: Environment Variable
+   - Environnements: Production, Preview, Development
+
+3. **NEXT_PUBLIC_DIRECTUS_PASSWORD** (optionnel - pour login automatique)
+   - Valeur: `2Ai0n928@!`
+   - Type: Environment Variable
+   - Environnements: Production, Preview, Development
+
+4. **NEXT_PUBLIC_DIRECTUS_TOKEN** (optionnel - alternative au login)
+   - Valeur: Token statique généré depuis Directus Admin
+   - Type: Environment Variable
+   - Environnements: Production, Preview, Development
+
 ### Comment configurer sur Vercel
 
 1. Aller sur [vercel.com](https://vercel.com)
 2. Sélectionner votre projet
 3. Aller dans Settings → Environment Variables
-4. Ajouter la variable:
+4. Ajouter les variables suivantes:
+
+**Variables requises :**
    - Name: `NEXT_PUBLIC_DIRECTUS_URL`
    - Value: `https://lc-directus-backend-production.up.railway.app`
+   - Environments: Cocher Production, Preview, Development
+
+**Variables d'authentification (au choix) :**
+
+*Option A - Login automatique:*
+   - Name: `NEXT_PUBLIC_DIRECTUS_EMAIL`
+   - Value: `olivier.steineur@gmail.com`
+   - Environments: Cocher Production, Preview, Development
+   
+   - Name: `NEXT_PUBLIC_DIRECTUS_PASSWORD`
+   - Value: `2Ai0n928@!`
+   - Environments: Cocher Production, Preview, Development
+
+*Option B - Token statique:*
+   - Name: `NEXT_PUBLIC_DIRECTUS_TOKEN`
+   - Value: [Token généré depuis Directus Admin → Settings → Access Tokens]
    - Environments: Cocher Production, Preview, Development
 
 ### Redéployer
