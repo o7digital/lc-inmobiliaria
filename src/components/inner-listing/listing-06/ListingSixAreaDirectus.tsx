@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DirectusProperty } from "@/types/directus";
+import { buildDirectusAssetUrl } from "@/lib/directus";
 
 const initialFilterState = {
   type: "",
@@ -69,31 +70,28 @@ const extractFileId = (imageField: any): string | null => {
 };
 
 const getDirectusImageUrl = (property: DirectusProperty, width: number = 1200) => {
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL;
-  
   // Debug: Log pour vérifier les images
   console.log(`Property ${property.Title}:`, {
     images: property.images,
-    Image: property.Image,
-    directusUrl
+    Image: property.Image
   });
   
   // Priorité : nouvelles images > ancien champ Image > image par défaut
   if (property.images && property.images.length > 0) {
     const firstImage = property.images[0];
     if (firstImage?.directus_files_id?.id) {
-      const imageUrl = `${directusUrl}/assets/${firstImage.directus_files_id.id}?fit=cover&width=${width}&height=800`;
+      const imageUrl = buildDirectusAssetUrl(firstImage.directus_files_id.id);
       console.log(`Using new images system: ${imageUrl}`);
-      return imageUrl;
+      return imageUrl || "/assets/images/listing/img_large_07.jpg";
     }
   }
   
   // Fallback sur l'ancien système Image
   const fileId = extractFileId(property.Image);
   if (fileId) {
-    const imageUrl = `${directusUrl}/assets/${fileId}?fit=cover&width=${width}&height=800`;
+    const imageUrl = buildDirectusAssetUrl(fileId);
     console.log(`Using legacy Image system: ${imageUrl}`);
-    return imageUrl;
+    return imageUrl || "/assets/images/listing/img_large_07.jpg";
   }
   
   // Image par défaut
