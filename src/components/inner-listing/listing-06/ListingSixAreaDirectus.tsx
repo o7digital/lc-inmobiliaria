@@ -35,23 +35,69 @@ const formatPrice = (price: number | string, currency: string[] = ["MXN"]) => {
   }).format(priceNum);
 };
 
+const extractFileId = (imageField: any): string | null => {
+  if (!imageField) return null;
+  
+  if (typeof imageField === 'string') {
+    return imageField;
+  }
+  
+  if (Array.isArray(imageField)) {
+    const firstItem = imageField[0];
+    if (firstItem?.directus_files_id?.id) {
+      return firstItem.directus_files_id.id;
+    }
+  }
+  
+  if (typeof imageField === 'object' && imageField !== null) {
+    if ('id' in imageField && imageField.id) {
+      return imageField.id;
+    }
+    
+    if ('directus_files_id' in imageField) {
+      const filesId = imageField.directus_files_id;
+      if (typeof filesId === 'string') {
+        return filesId;
+      }
+      if (filesId && typeof filesId === 'object' && 'id' in filesId && filesId.id) {
+        return filesId.id;
+      }
+    }
+  }
+  
+  return null;
+};
+
 const getDirectusImageUrl = (property: DirectusProperty, width: number = 1200) => {
   const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL;
+  
+  // Debug: Log pour vérifier les images
+  console.log(`Property ${property.Title}:`, {
+    images: property.images,
+    Image: property.Image,
+    directusUrl
+  });
   
   // Priorité : nouvelles images > ancien champ Image > image par défaut
   if (property.images && property.images.length > 0) {
     const firstImage = property.images[0];
     if (firstImage?.directus_files_id?.id) {
-      return `${directusUrl}/assets/${firstImage.directus_files_id.id}?fit=cover&width=${width}&height=800`;
+      const imageUrl = `${directusUrl}/assets/${firstImage.directus_files_id.id}?fit=cover&width=${width}&height=800`;
+      console.log(`Using new images system: ${imageUrl}`);
+      return imageUrl;
     }
   }
   
   // Fallback sur l'ancien système Image
-  if (property.Image?.id) {
-    return `${directusUrl}/assets/${property.Image.id}?fit=cover&width=${width}&height=800`;
+  const fileId = extractFileId(property.Image);
+  if (fileId) {
+    const imageUrl = `${directusUrl}/assets/${fileId}?fit=cover&width=${width}&height=800`;
+    console.log(`Using legacy Image system: ${imageUrl}`);
+    return imageUrl;
   }
   
   // Image par défaut
+  console.log('Using fallback image');
   return "/assets/images/listing/img_large_07.jpg";
 };
 
