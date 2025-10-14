@@ -18,7 +18,11 @@ export const buildDirectusUrl = (path: string): string => {
 };
 
 export const buildDirectusAssetUrl = (fileId: string | null | undefined): string => {
-  const base = getDirectusBaseUrl();
+  // Côté client, utiliser directement l'URL hardcodée
+  const base = typeof window !== 'undefined' 
+    ? 'https://lc-directus-backend-production.up.railway.app'
+    : getDirectusBaseUrl();
+    
   if (!base || !fileId) return "";
 
   return `${base}/assets/${fileId}`;
