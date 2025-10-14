@@ -85,6 +85,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (limit) {
       url.searchParams.append('limit', limit as string);
     }
+    
+    // Exclure les propriétés archivées
+    url.searchParams.append('filter[status][_neq]', 'archived');
 
     console.log('Fetching from Directus:', url.toString());
 
