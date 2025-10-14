@@ -15,6 +15,13 @@ export interface DirectusProperty {
   Operation_type: string[]; // ["venta"] | ["renta"]
   Property_type: string[]; // ["casa"] | ["departamento"] | etc.
   Image?: any;
+  images?: Array<{
+    directus_files_id: {
+      id: string;
+      filename_download: string;
+      type: string;
+    };
+  }>;
   Amenidades?: string[];
   Descripcion?: string;
 }

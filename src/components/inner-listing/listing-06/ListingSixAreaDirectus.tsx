@@ -35,10 +35,24 @@ const formatPrice = (price: number | string, currency: string[] = ["MXN"]) => {
   }).format(priceNum);
 };
 
-const getDirectusImageUrl = (imageId?: string, width: number = 1200) => {
-  if (!imageId) return "/assets/images/listing/img_large_07.jpg"; // imagen por defecto
+const getDirectusImageUrl = (property: DirectusProperty, width: number = 1200) => {
   const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL;
-  return `${directusUrl}/assets/${imageId}?fit=cover&width=${width}&height=800`;
+  
+  // Priorité : nouvelles images > ancien champ Image > image par défaut
+  if (property.images && property.images.length > 0) {
+    const firstImage = property.images[0];
+    if (firstImage?.directus_files_id?.id) {
+      return `${directusUrl}/assets/${firstImage.directus_files_id.id}?fit=cover&width=${width}&height=800`;
+    }
+  }
+  
+  // Fallback sur l'ancien système Image
+  if (property.Image?.id) {
+    return `${directusUrl}/assets/${property.Image.id}?fit=cover&width=${width}&height=800`;
+  }
+  
+  // Image par défaut
+  return "/assets/images/listing/img_large_07.jpg";
 };
 
 const ListingSixAreaDirectus = () => {
@@ -222,7 +236,7 @@ const ListingSixAreaDirectus = () => {
                             </div>
                           )}
                           <img 
-                            src={getDirectusImageUrl(property.Image?.id)} 
+                            src={getDirectusImageUrl(property)} 
                             alt={property.Title}
                             className="w-100 rounded-4"
                             style={{ height: '240px', objectFit: 'cover' }}
