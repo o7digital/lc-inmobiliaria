@@ -17,7 +17,7 @@ export const buildDirectusUrl = (path: string): string => {
   return `${base}/${normalizedPath}`;
 };
 
-export const buildDirectusAssetUrl = (fileId: string | null | undefined): string => {
+export const buildDirectusAssetUrl = (fileId: string | null | undefined, width: number = 1200, height: number = 800): string => {
   // Côté client, utiliser directement l'URL hardcodée
   const base = typeof window !== 'undefined' 
     ? 'https://lc-directus-backend-production.up.railway.app'
@@ -25,5 +25,5 @@ export const buildDirectusAssetUrl = (fileId: string | null | undefined): string
     
   if (!base || !fileId) return "";
 
-  return `${base}/assets/${fileId}`;
+  return `${base}/assets/${fileId}?fit=cover&width=${width}&height=${height}`;
 };
