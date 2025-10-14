@@ -1,24 +1,19 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import useDirectusProperties from '@/hooks/useDirectusProperties';
 import { getDirectusBaseUrl } from '@/lib/directus';
+import { testDirectusConnection } from '@/services/directusService';
 
 const TestDirectusPage = () => {
   const { properties, loading, error, refetch } = useDirectusProperties();
   const directusUrl = getDirectusBaseUrl();
+  const [testResult, setTestResult] = useState<string>('');
 
   const testDirectConnection = async () => {
-    try {
-      console.log('Testing direct connection to:', `${directusUrl}/items/propriedades?limit=1`);
-      const response = await fetch(`${directusUrl}/items/propriedades?limit=1`);
-      const data = await response.json();
-      console.log('Direct test result:', data);
-      alert(`Direct test: ${response.ok ? 'Success' : 'Failed'} - Check console for details`);
-    } catch (error) {
-      console.error('Direct test failed:', error);
-      alert('Direct test failed - Check console for details');
-    }
+    setTestResult('Testing...');
+    const result = await testDirectusConnection();
+    setTestResult(`${result.success ? '✅' : '❌'} ${result.message}${result.url ? ` (${result.url})` : ''}`);
   };
 
   return (
@@ -61,6 +56,18 @@ const TestDirectusPage = () => {
         </button>
       </div>
 
+      {testResult && (
+        <div style={{ 
+          marginBottom: '20px', 
+          padding: '10px', 
+          backgroundColor: testResult.includes('✅') ? '#d4edda' : '#f8d7da', 
+          border: `1px solid ${testResult.includes('✅') ? '#c3e6cb' : '#f5c6cb'}`,
+          borderRadius: '5px'
+        }}>
+          <p><strong>Résultat du test:</strong> {testResult}</p>
+        </div>
+      )}
+
       <div style={{ marginBottom: '20px' }}>
         <h3>État Redux</h3>
         <p><strong>Loading:</strong> {loading ? '⏳ Oui' : '✅ Non'}</p>
@@ -94,10 +101,15 @@ const TestDirectusPage = () => {
                   borderRadius: '5px' 
                 }}
               >
-                <h4>ID: {property.id}</h4>
-                <p><strong>Titre:</strong> {property.Title || property.title || 'Non défini'}</p>
-                <p><strong>Description:</strong> {property.Description || property.description || 'Non définie'}</p>
-                <p><strong>Prix:</strong> {property.Price || property.price || 'Non défini'}</p>
+                <h4>ID: {property.id} - {property.Title}</h4>
+                <p><strong>Adresse:</strong> {property.Address || 'Non définie'}</p>
+                <p><strong>Ville:</strong> {property.City || 'Non définie'}</p>
+                <p><strong>État:</strong> {property.State || 'Non défini'}</p>
+                <p><strong>Prix:</strong> {property.Price ? `${property.Price} ${property.Currency?.[0] || ''}` : 'Non défini'}</p>
+                <p><strong>Type:</strong> {property.Property_type?.join(', ') || 'Non défini'}</p>
+                <p><strong>Opération:</strong> {property.Operation_type?.join(', ') || 'Non définie'}</p>
+                <p><strong>Chambres:</strong> {property.Bedrooms || 'Non défini'} | <strong>Salles de bain:</strong> {property.Bathrooms || 'Non défini'}</p>
+                <p><strong>Surface:</strong> {property.Construccion_area ? `${property.Construccion_area} m²` : 'Non définie'}</p>
                 <details>
                   <summary>Voir JSON complet</summary>
                   <pre style={{ fontSize: '12px', backgroundColor: '#f8f9fa', padding: '10px', overflow: 'auto' }}>
