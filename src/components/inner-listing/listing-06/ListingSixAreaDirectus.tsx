@@ -204,7 +204,17 @@ const ListingSixAreaDirectus = () => {
           <div className="col-lg-8">
             <div className="ps-xxl-5">
               <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
-                <div>Mostrando <strong>{filteredAndSortedProperties.length}</strong> de <strong>{properties.length}</strong> resultados</div>
+                <div className="d-flex align-items-center">
+                  <span>Mostrando <strong>{filteredAndSortedProperties.length}</strong> de <strong>{properties.length}</strong> resultados</span>
+                  <button 
+                    className="btn btn-outline-primary btn-sm ms-3" 
+                    onClick={() => window.location.reload()}
+                    title="Sincronizar con Directus"
+                  >
+                    <i className="bi bi-arrow-clockwise me-1"></i>
+                    Sincronizar
+                  </button>
+                </div>
                 <div className="d-flex align-items-center xs-mt-20">
                   <div className="short-filter d-flex align-items-center">
                     <div className="fs-16 me-2">Ordenar por:</div>
@@ -226,21 +236,23 @@ const ListingSixAreaDirectus = () => {
                   <div key={property.id} className="col-lg-4 col-sm-6 d-flex mb-50 lg-mb-30">
                     <div className="listing-card-one theme-border-radius h-100 w-100">
                       <div className="img-gallery p-15">
-                        <div className="position-relative overflow-hidden">
-                          <div className="tag bg-white text-dark fw-500 fs-13">
-                            {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
-                          </div>
-                          {property.Featured && (
-                            <div className="feature-tag bg-primary text-white fw-500 fs-13">
-                              DESTACADA
+                        <div className="property-image-frame">
+                          <div className="media position-relative overflow-hidden">
+                            <div className="tag bg-white text-dark fw-500 fs-13">
+                              {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
                             </div>
-                          )}
-                          <img 
-                            src={getDirectusImageUrl(property)} 
-                            alt={property.Title}
-                            className="w-100 rounded-4"
-                            style={{ height: '240px', objectFit: 'cover' }}
-                          />
+                            {property.Featured && (
+                              <div className="feature-tag bg-primary text-white fw-500 fs-13">
+                                DESTACADA
+                              </div>
+                            )}
+                            <img 
+                              src={getDirectusImageUrl(property)} 
+                              alt={property.Title}
+                              className="w-100 rounded-4"
+                              style={{ height: '230px', objectFit: 'cover' }}
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="property-info p-25">

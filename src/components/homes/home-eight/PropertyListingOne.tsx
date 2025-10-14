@@ -208,6 +208,14 @@ const PropertyListingOne = () => {
             <p className="fs-22 mt-xs">
               Explora las propiedades más atractivas en venta y renta.
             </p>
+            <button 
+              className="btn btn-outline-primary btn-sm mt-2" 
+              onClick={() => window.location.reload()}
+              title="Actualizar propiedades"
+            >
+              <i className="bi bi-arrow-clockwise me-1"></i>
+              Sincronizar
+            </button>
           </div>
 
           <div className="row gx-xxl-5">
@@ -218,16 +226,18 @@ const PropertyListingOne = () => {
                 data-wow-delay="0.1s"
               >
                 <div className="listing-card-four overflow-hidden d-flex align-items-end position-relative z-1">
-                  <div
-                    className="bg-img"
-                    style={{
-                      backgroundImage: `url(${item.imageUrl || fallbackImage})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      height: "400px",
-                      width: "100%",
-                    }}
-                  />
+                  <div className="property-image-container">
+                    <div
+                      className="bg-img"
+                      style={{
+                        backgroundImage: `url(${item.imageUrl || fallbackImage})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        height: "380px",
+                        width: "100%",
+                      }}
+                    />
+                  </div>
 
                   <div className="property-info tran3s w-100 p-20 bg-white position-absolute bottom-0">
                     <div className="d-flex align-items-center justify-content-between">
