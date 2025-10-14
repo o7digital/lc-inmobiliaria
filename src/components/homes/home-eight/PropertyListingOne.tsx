@@ -104,16 +104,29 @@ const mapDirectusProperty = (property: DirectusProperty): FeaturedProperty => {
   // Priorité : nouvelles images > ancien champ Image > fallback
   let imageUrl = fallbackImage;
   
+  console.log(`[HomePage] Property: ${property.Title}`, {
+    images: property.images,
+    Image: property.Image
+  });
+  
   if (property.images && property.images.length > 0) {
     // Utiliser la première image du nouveau système
     const firstImage = property.images[0];
     if (firstImage?.directus_files_id?.id) {
-      imageUrl = buildDirectusAssetUrl(firstImage.directus_files_id.id) || fallbackImage;
+      const directusUrl = buildDirectusAssetUrl(firstImage.directus_files_id.id);
+      console.log(`[HomePage] Using new images: ${directusUrl}`);
+      imageUrl = directusUrl || fallbackImage;
     }
   } else {
     // Fallback sur l'ancien système Image
     const fileId = extractFileId(property.Image);
-    imageUrl = buildDirectusAssetUrl(fileId ?? undefined) || fallbackImage;
+    if (fileId) {
+      const directusUrl = buildDirectusAssetUrl(fileId);
+      console.log(`[HomePage] Using legacy Image: ${directusUrl}`);
+      imageUrl = directusUrl || fallbackImage;
+    } else {
+      console.log(`[HomePage] No images found, using fallback`);
+    }
   }
   
   // Operation_type est un tableau, on prend le premier élément
