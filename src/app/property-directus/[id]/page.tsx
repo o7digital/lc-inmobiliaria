@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import HeaderFive from "@/layouts/headers/HeaderFive";
 import FooterThree from "@/layouts/footers/FooterThree";
+import dynamic from "next/dynamic";
+const GalleryDirectus = dynamic(() => import("@/components/ListingDetails/GalleryDirectus"), { ssr: false });
 
 async function getProperty(id: string) {
   try {
@@ -28,13 +30,7 @@ export default async function PropertyDirectusPage({ params }: { params: { id: s
         <p><b>Chambres:</b> {property.Bedrooms}</p>
         <p><b>Salles de bain:</b> {property.Bathrooms}</p>
         {property.images && property.images.length > 0 && (
-          <div className="row mt-4">
-            {property.images.map((img: any, i: number) => (
-              <div className="col-md-4 mb-3" key={i}>
-                <img src={`https://directus-backend-production.up.railway.app/assets/${img.directus_files_id.id}`} alt={`photo-${i+1}`} className="img-fluid rounded" />
-              </div>
-            ))}
-          </div>
+          <GalleryDirectus images={property.images} />
         )}
       </div>
       <FooterThree />
