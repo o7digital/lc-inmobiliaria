@@ -21,16 +21,6 @@ const Hero = () => {
             </p>
           </div>
         </div>
-
-        {/* 🔥 Botón grande “Ver todas las propiedades” */}
-        <div className="d-flex justify-content-center mt-45 lg-mt-20">
-          <Link
-            href="/listing_06"
-            className="btn btn-lg btn-light fw-bold px-5 py-3 rounded"
-          >
-            Ver todas las propiedades
-          </Link>
-        </div>
       </div>
     </div>
   )
