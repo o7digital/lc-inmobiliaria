@@ -276,9 +276,9 @@ const ListingSixAreaDirectus = () => {
             </div>
           </div>
 
-          <div className="property-grid-5col">
+          <div className="property-grid-five">
             {filteredAndSortedProperties.map((property) => (
-              <div key={property.id} className="property-grid-item mb-50 lg-mb-30">
+              <div key={property.id} className="property-grid-item">
                 <div className="listing-card-one theme-border-radius h-100 w-100">
                   <div className="img-gallery p-15">
                     <div className="property-image-frame">
