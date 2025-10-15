@@ -116,7 +116,7 @@ const ListingSixFeaturedDirectus = () => {
         <div className="row">
           <div className="col-lg-8">
             <div className="ps-xxl-5">
-              <h3 className="mb-10" style={{fontWeight:700, fontSize:'2.2rem', letterSpacing:'0.01em', lineHeight:'1.1', textTransform:'uppercase'}}>PROPRIEDADES DESTACADAS</h3>
+              <h3 className="mb-10" style={{fontWeight:700, fontSize:'2.2rem', letterSpacing:'0.01em', lineHeight:'1.1', textTransform:'uppercase'}}>PROPIEDADES DESTACADAS</h3>
               <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
                 <div className="d-flex align-items-center">
                   <span>Mostrando <strong>{properties.length}</strong> de <strong>{properties.length}</strong> resultados</span>

@@ -22,7 +22,7 @@ const HomeEight = () => {
       <ConsultoriaSection />
 
       <BLockFeatureOne />
-  {/* Section Propriedades destacadas (Directus) */}
+  {/* Section Propiedades destacadas (Directus) */}
   <ListingSixFeaturedDirectus />
       <FancyBannerOne />
       <BLockFeatureTwo />   {/* 👈 Mantiene el bloque de Servicios original */}
