@@ -246,202 +246,107 @@ const ListingSixAreaDirectus = () => {
   return (
     <div className="property-listing-six bg-pink-two pt-110 lg-pt-80 pb-180 xl-pb-120 lg-pb-80">
       <div className="container container-large">
-        <div className="row">
-          <div className="col-lg-8">
-            <div className="ps-xxl-5">
-              <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
-                <div className="d-flex align-items-center">
-                  <span>Mostrando <strong>{filteredAndSortedProperties.length}</strong> de <strong>{properties.length}</strong> resultados</span>
-                  <button 
-                    className="btn btn-outline-primary btn-sm ms-3" 
-                    onClick={() => window.location.reload()}
-                    title="Sincronizar con Directus"
-                  >
-                    <i className="bi bi-arrow-clockwise me-1"></i>
-                    Sincronizar
-                  </button>
-                </div>
-                <div className="d-flex align-items-center xs-mt-20">
-                  <div className="short-filter d-flex align-items-center">
-                    <div className="fs-16 me-2">Ordenar por:</div>
-                    <select 
-                      className="nice-select"
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                    >
-                      <option value="newest">Más recientes</option>
-                      <option value="price-low">Precio: menor a mayor</option>
-                      <option value="price-high">Precio: mayor a menor</option>
-                    </select>
-                  </div>
-                </div>
+        <div>
+          <h3 className="mb-10" style={{fontWeight:700, fontSize:'2.2rem', letterSpacing:'0.01em', lineHeight:'1.1', textTransform:'uppercase'}}>PROPRIEDADES DESTACADAS</h3>
+          <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
+            <div className="d-flex align-items-center">
+              <span>Mostrando <strong>{filteredAndSortedProperties.length}</strong> de <strong>{properties.length}</strong> resultados</span>
+              <button 
+                className="btn btn-outline-primary btn-sm ms-3" 
+                onClick={() => window.location.reload()}
+                title="Sincronizar con Directus"
+              >
+                <i className="bi bi-arrow-clockwise me-1"></i>
+                Sincronizar
+              </button>
+            </div>
+            <div className="d-flex align-items-center xs-mt-20">
+              <div className="short-filter d-flex align-items-center">
+                <div className="fs-16 me-2">Ordenar por:</div>
+                <select 
+                  className="nice-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="newest">Más recientes</option>
+                  <option value="price-low">Precio: menor a mayor</option>
+                  <option value="price-high">Precio: mayor a menor</option>
+                </select>
               </div>
+            </div>
+          </div>
 
-              <div className="row gx-xxl-25">
-                {filteredAndSortedProperties.map((property) => (
-                  <div key={property.id} className="col-lg-4 col-sm-6 d-flex mb-50 lg-mb-30">
-                    <div className="listing-card-one theme-border-radius h-100 w-100">
-                      <div className="img-gallery p-15">
-                        <div className="property-image-frame">
-                          <div className="media position-relative overflow-hidden">
-                            <div className="tag bg-white text-dark fw-500 fs-13">
-                              {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
-                            </div>
-                            {property.Featured && (
-                              <div className="feature-tag bg-primary text-white fw-500 fs-13">
-                                DESTACADA
-                              </div>
-                            )}
-                            <img 
-                              src={getDirectusImageUrl(property)} 
-                              alt={property.Title}
-                              className="w-100 rounded-4"
-                              style={{ height: '230px', objectFit: 'cover' }}
-                            />
-                          </div>
+          <div className="property-grid-5col">
+            {filteredAndSortedProperties.map((property) => (
+              <div key={property.id} className="property-grid-item mb-50 lg-mb-30">
+                <div className="listing-card-one theme-border-radius h-100 w-100">
+                  <div className="img-gallery p-15">
+                    <div className="property-image-frame">
+                      <div className="media position-relative overflow-hidden">
+                        <div className="tag bg-white text-dark fw-500 fs-13">
+                          {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
                         </div>
+                        {property.Featured && (
+                          <div className="feature-tag bg-primary text-white fw-500 fs-13">
+                            DESTACADA
+                          </div>
+                        )}
+                        <img 
+                          src={getDirectusImageUrl(property)} 
+                          alt={property.Title}
+                          className="w-100 rounded-4"
+                          style={{ height: '230px', objectFit: 'cover' }}
+                        />
                       </div>
-                      <div className="property-info p-25">
-                        <a href={`/property-directus/${property.id}`} className="title tran3s">
-                          {property.Title}
-                        </a>
-                        <div className="address fs-15 mt-5 mb-25">
-                          <i className="bi bi-geo-alt"></i>
-                          {formatLocation(property)}
-                        </div>
-                        <div className="feature-list d-flex flex-wrap align-items-center justify-content-between">
-                          <div>
-                            <strong className="price fw-500 color-dark">
-                              {formatPrice(property.Price, property.Currency)}
-                            </strong>
+                    </div>
+                  </div>
+                  <div className="property-info p-25">
+                    <a href={`/property-directus/${property.id}`} className="title tran3s">
+                      {property.Title}
+                    </a>
+                    <div className="address fs-15 mt-5 mb-25">
+                      <i className="bi bi-geo-alt"></i>
+                      {formatLocation(property)}
+                    </div>
+                    <div className="feature-list d-flex flex-wrap align-items-center justify-content-between">
+                      <div>
+                        <strong className="price fw-500 color-dark">
+                          {formatPrice(property.Price, property.Currency)}
+                        </strong>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        {property.Bedrooms && (
+                          <div className="d-flex align-items-center me-3">
+                            <i className="bi bi-bed fs-18 me-1"></i>
+                            <span className="fs-15">{property.Bedrooms}</span>
                           </div>
+                        )}
+                        {property.Bathrooms && (
                           <div className="d-flex align-items-center">
-                            {property.Bedrooms && (
-                              <div className="d-flex align-items-center me-3">
-                                <i className="bi bi-bed fs-18 me-1"></i>
-                                <span className="fs-15">{property.Bedrooms}</span>
-                              </div>
-                            )}
-                            {property.Bathrooms && (
-                              <div className="d-flex align-items-center">
-                                <i className="bi bi-droplet fs-18 me-1"></i>
-                                <span className="fs-15">{property.Bathrooms}</span>
-                              </div>
-                            )}
+                            <i className="bi bi-droplet fs-18 me-1"></i>
+                            <span className="fs-15">{property.Bathrooms}</span>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {filteredAndSortedProperties.length === 0 && (
-                <div className="text-center py-5">
-                  <h4>No se encontraron propiedades</h4>
-                  <p>Intenta ajustar tus filtros de búsqueda</p>
-                  <button 
-                    className="btn btn-primary"
-                    onClick={clearFilters}
-                  >
-                    Limpiar filtros
-                  </button>
                 </div>
-              )}
-            </div>
-          </div>
-
-          <div className="col-lg-4">
-            <div className="advance-search-panel dot-bg md-mt-80">
-              <div className="main-bg rounded-3">
-                <form onSubmit={(e) => e.preventDefault()}>
-                  <div className="advance-search-form">
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="input-box-one">
-                          <div className="label">Tipo de Operación</div>
-                          <select 
-                            className="nice-select fw-normal"
-                            value={filters.operation}
-                            onChange={(e) => handleFilterChange('operation', e.target.value)}
-                          >
-                            <option value="">Todos</option>
-                            {uniqueOperationTypes.map(op => (
-                              <option key={op} value={op}>
-                                {op === 'venta' ? 'Venta' : 'Renta'}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className="input-box-one">
-                          <div className="label">Tipo de Propiedad</div>
-                          <select 
-                            className="nice-select fw-normal"
-                            value={filters.type}
-                            onChange={(e) => handleFilterChange('type', e.target.value)}
-                          >
-                            <option value="">Todos</option>
-                            {uniquePropertyTypes.map(type => (
-                              <option key={type} value={type}>
-                                {type.charAt(0).toUpperCase() + type.slice(1)}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className="input-box-one">
-                          <div className="label">Ciudad</div>
-                          <select 
-                            className="nice-select fw-normal"
-                            value={filters.location}
-                            onChange={(e) => handleFilterChange('location', e.target.value)}
-                          >
-                            <option value="">Todas las ciudades</option>
-                            {uniqueCities.map(city => (
-                              <option key={city} value={city}>{city}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="input-box-one">
-                          <div className="label">Precio mínimo</div>
-                          <input 
-                            type="number" 
-                            placeholder="Ej. 500000"
-                            value={filters.minPrice}
-                            onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <div className="input-box-one">
-                          <div className="label">Precio máximo</div>
-                          <input 
-                            type="number" 
-                            placeholder="Ej. 1500000"
-                            value={filters.maxPrice}
-                            onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <button 
-                      type="button"
-                      className="fw-500 text-uppercase tran3s search-btn-two w-100 d-block mb-25"
-                      onClick={clearFilters}
-                    >
-                      Limpiar filtros
-                    </button>
-                  </div>
-                </form>
               </div>
-            </div>
+            ))}
           </div>
+
+          {filteredAndSortedProperties.length === 0 && (
+            <div className="text-center py-5">
+              <h4>No se encontraron propiedades</h4>
+              <p>Intenta ajustar tus filtros de búsqueda</p>
+              <button 
+                className="btn btn-primary"
+                onClick={clearFilters}
+              >
+                Limpiar filtros
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

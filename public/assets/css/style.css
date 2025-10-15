@@ -1,3 +1,69 @@
+/* 5 colonnes pour la grille de propriétés en vedette (listing 06) */
+.property-grid-5col {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px 24px;
+}
+
+@media (max-width: 1399px) {
+  .property-grid-5col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 1199px) {
+  .property-grid-5col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 991px) {
+  .property-grid-5col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 575px) {
+  .property-grid-5col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.property-grid-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+/* 5 colonnes pour la grille de propriétés en vedette */
+.property-grid-5col {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px 24px;
+}
+
+@media (max-width: 1399px) {
+  .property-grid-5col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 1199px) {
+  .property-grid-5col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 991px) {
+  .property-grid-5col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 575px) {
+  .property-grid-5col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.property-grid-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap");
 @import url("../fonts/gordita/stylesheet.css");
 @import url("../fonts/bootstrap-icons-1.11.1/font/bootstrap-icons.css");

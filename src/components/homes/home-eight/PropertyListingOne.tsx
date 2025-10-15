@@ -218,11 +218,11 @@ const PropertyListingOne = () => {
             </button>
           </div>
 
-          <div className="row gx-xxl-5">
+          <div className="property-grid-5col">
             {properties.map((item) => (
               <div
                 key={item.id}
-                className="col-lg-4 col-md-6 mt-40 wow fadeInUp"
+                className="property-grid-item mt-40 wow fadeInUp"
                 data-wow-delay="0.1s"
               >
                 <div className="listing-card-four overflow-hidden d-flex align-items-end position-relative z-1">
