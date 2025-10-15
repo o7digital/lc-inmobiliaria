@@ -218,11 +218,11 @@ const PropertyListingOne = () => {
             </button>
           </div>
 
-          <div className="property-grid-5col">
+          <div className="row gx-xxl-5">
             {properties.map((item) => (
               <div
                 key={item.id}
-                className="property-grid-item mt-40 wow fadeInUp"
+                className="col-lg-4 col-md-6 mt-40 wow fadeInUp"
                 data-wow-delay="0.1s"
               >
                 <div className="listing-card-four overflow-hidden d-flex align-items-end position-relative z-1">
@@ -275,12 +275,7 @@ const PropertyListingOne = () => {
             ))}
           </div>
 
-          <div className="text-center mt-100 md-mt-60">
-            <Link href="/listing_06" className="btn-eight">
-              <span>Ver todas las propiedades</span>{" "}
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
-          </div>
+          {/* Bloc 'Ver todas las propiedades' supprimé à la demande */}
         </div>
       </div>
     </div>

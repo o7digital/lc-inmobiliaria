@@ -1,6 +1,6 @@
 import { StaticImageData } from "next/image";
 
-import agentThumb_1 from "@/assets/images/agent/img_01.jpg";
+import lourdesThumb from "@/assets/images/agent/lourdes.jpeg";
 import agentThumb_2 from "@/assets/images/agent/img_02.jpg";
 import agentThumb_3 from "@/assets/images/agent/img_03.jpg";
 import agentThumb_4 from "@/assets/images/agent/img_04.jpg";
@@ -18,7 +18,7 @@ const agent_data: DataType[] = [
    {
       id: 1,
       page: "home_1",
-      thumb: agentThumb_1,
+      thumb: lourdesThumb,
       title: "Mark Filo",
       desc: "CEO & Founder",
    },

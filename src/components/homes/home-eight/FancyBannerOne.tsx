@@ -5,9 +5,11 @@ const FancyBannerOne = () => {
             <div className="row align-items-center">
                <div className="col-lg-4">
                   <div className="d-flex align-items-center md-mb-30">
-                     <div
+                     <img
+                        src="/assets/images/agent/lourdes.jpeg"
+                        alt="Lourdes Cazares"
                         className="rounded-circle avatar flex-shrink-0"
-                        style={{ width: 100, height: 100, border: "2px solid #e0e0e0" }}
+                        style={{ width: 100, height: 100, border: "2px solid #e0e0e0", objectFit: "cover", objectPosition: "center" }}
                         aria-hidden="true"
                      />
                      <div className="ps-3 text">
