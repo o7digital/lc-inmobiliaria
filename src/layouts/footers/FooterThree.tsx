@@ -88,7 +88,7 @@ const FooterThree = () => {
                   >
                      LC Inmobiliaria es una{" "}
                      <strong>agencia inmobiliaria en CDMX</strong> especializada en{" "}
-                     <strong>compra, venta y renta de propiedades</strong> residenciales y de lujo
+                     <strong>venta y renta de propiedades</strong> residenciales y de lujo
                      en CDMX y Estado de México. Acompañamos a quienes buscan{" "}
                      <strong>inmobiliaria CDMX venta de casas</strong>,{" "}
                      <strong>venta de departamentos CDMX</strong> o{" "}
@@ -113,16 +113,13 @@ const FooterThree = () => {
                      style={{ fontSize: '12px', lineHeight: 1.6, color: '#666' }}
                   >
                      Te orientamos sobre las{" "}
-                     <strong>mejores zonas para vivir en CDMX</strong>, dónde comprar casa en CDMX
-                     y los requisitos para comprar casa en México, así como sobre el costo de
+                     <strong>mejores zonas para vivir en CDMX</strong>, así como sobre el costo de
                      departamentos en Polanco, departamentos nuevos en CDMX, casas nuevas en Estado
                      de México y desarrollos inmobiliarios CDMX en preventa. Nuestro equipo comparte
                      contenido sobre{" "}
                      <strong>bienes raíces México</strong>, casas en México, departamentos en México,
-                     vivir en CDMX, colonias seguras CDMX y costo de vida CDMX, para que cuentes con
-                     una{" "}
-                     <strong>guía para comprar casa en México</strong>{" "}
-                     clara y confiable. Conócenos mejor en la sección{" "}
+                     vivir en CDMX, colonias seguras CDMX y costo de vida CDMX.
+                     Conócenos mejor en la sección{" "}
                      <Link href="/quienes-somos" className="text-decoration-underline">
                         Quiénes Somos
                      </Link>

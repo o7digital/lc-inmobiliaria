@@ -2,6 +2,8 @@
 import "../styles/index.scss";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
+import { OrganizationSchema } from "@/components/common/JsonLdSchema";
+import SEO_CONFIG, { getSocialMediaUrls } from "@/config/seo.config";
 
 export default function RootLayout({
   children,
@@ -12,15 +14,26 @@ export default function RootLayout({
   const isDev = process.env.NODE_ENV === 'development'
 
   return (
-    <html lang="en" suppressHydrationWarning={isDev}>
+    <html lang="es" suppressHydrationWarning={isDev}>
       <head>
-        <meta name="keywords" content="Real estate, Property sale, Property buy" />
-        <meta name="description" content="Homy is a beautiful website template designed for Real Estate Agency." />
-        <meta property="og:site_name" content="Homy" />
-        <meta property="og:url" content="https://creativegigstf.com" />
+        {/* Schema.org JSON-LD pour l'organisation */}
+        <OrganizationSchema
+          name={SEO_CONFIG.organization.name}
+          url={SEO_CONFIG.siteUrl}
+          logo={`${SEO_CONFIG.siteUrl}${SEO_CONFIG.organization.logo}`}
+          description={SEO_CONFIG.organization.description}
+          address={SEO_CONFIG.organization.address}
+          contactPoint={SEO_CONFIG.organization.contact}
+          sameAs={getSocialMediaUrls()}
+        />
+        <meta name="keywords" content={SEO_CONFIG.defaultMetadata.keywords.join(', ')} />
+        <meta name="description" content={SEO_CONFIG.defaultMetadata.description} />
+        <meta property="og:site_name" content={SEO_CONFIG.siteName} />
+        <meta property="og:url" content={SEO_CONFIG.siteUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Homy - Real Estate React Next js Template" />
-        <meta name='og:image' content='images/assets/ogg.png' />
+        <meta property="og:title" content={SEO_CONFIG.defaultMetadata.title} />
+        <meta property="og:description" content={SEO_CONFIG.defaultMetadata.description} />
+        <meta name='og:image' content={`${SEO_CONFIG.siteUrl}${SEO_CONFIG.defaultMetadata.ogImage}`} />
         {/* For IE  */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         {/* For Resposive Device */}

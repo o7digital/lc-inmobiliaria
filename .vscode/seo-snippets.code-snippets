@@ -1,0 +1,127 @@
+{
+  "Schema.org Real Estate Listing": {
+    "prefix": "seo-listing",
+    "body": [
+      "<RealEstateListingSchema",
+      "  name=\"${1:property.title}\"",
+      "  description=\"${2:property.description}\"",
+      "  url={`\\${SEO_CONFIG.siteUrl}/property-directus/\\${${3:property.id}}`}",
+      "  image={${4:property.images}.map(img => `\\${SEO_CONFIG.siteUrl}\\${img}`)}",
+      "  price={${5:property.price}}",
+      "  priceCurrency=\"MXN\"",
+      "  address={{",
+      "    streetAddress: ${6:property.address},",
+      "    addressLocality: ${7:property.city},",
+      "    addressRegion: ${8:property.state},",
+      "    postalCode: ${9:property.zipCode},",
+      "    addressCountry: 'MX',",
+      "  }}",
+      "  numberOfRooms={${10:property.bedrooms}}",
+      "  floorSize={{ value: ${11:property.area}, unitCode: 'MTK' }}",
+      "/>"
+    ],
+    "description": "Ajoute un Schema.org pour une propriété immobilière"
+  },
+  
+  "Breadcrumb Schema": {
+    "prefix": "seo-breadcrumb",
+    "body": [
+      "<BreadcrumbSchema",
+      "  items={[",
+      "    { name: 'Inicio', url: SEO_CONFIG.siteUrl },",
+      "    { name: '${1:Propiedades}', url: `\\${SEO_CONFIG.siteUrl}/${2:listing_01}` },",
+      "    { name: ${3:property.title}, url: `\\${SEO_CONFIG.siteUrl}/${4:path}` },",
+      "  ]}",
+      "/>"
+    ],
+    "description": "Ajoute un Schema.org breadcrumb (fil d'Ariane)"
+  },
+  
+  "Property Image with SEO": {
+    "prefix": "seo-image",
+    "body": [
+      "<PropertyImage",
+      "  src={${1:property.image}}",
+      "  propertyData={{",
+      "    title: ${2:property.title},",
+      "    location: ${3:property.location},",
+      "    propertyType: ${4:property.type},",
+      "    price: ${5:property.price},",
+      "    bedrooms: ${6:property.bedrooms},",
+      "  }}",
+      "  imageType=\"${7|main,gallery,thumbnail|}\"",
+      "  className=\"${8:property-image}\"",
+      "  loading=\"${9|lazy,eager|}\"",
+      "/>"
+    ],
+    "description": "Image de propriété avec alt text SEO automatique"
+  },
+  
+  "Use Image Alt Hook": {
+    "prefix": "seo-usealt",
+    "body": [
+      "const { generateAlt, generateGalleryAlts, generateTitle } = useImageAlt();",
+      "",
+      "const altText = generateAlt({",
+      "  propertyData: {",
+      "    title: ${1:property.title},",
+      "    location: ${2:property.location},",
+      "    propertyType: ${3:property.type},",
+      "    price: ${4:property.price},",
+      "    bedrooms: ${5:property.bedrooms},",
+      "  },",
+      "  imageType: '${6|main,gallery,thumbnail|}',",
+      "});"
+    ],
+    "description": "Utilise le hook useImageAlt pour générer un alt text"
+  },
+  
+  "SEO Imports": {
+    "prefix": "seo-imports",
+    "body": [
+      "import { RealEstateListingSchema, BreadcrumbSchema } from '@/components/common/JsonLdSchema';",
+      "import PropertyImage from '@/components/common/PropertyImage';",
+      "import useImageAlt from '@/hooks/useImageAlt';",
+      "import SEO_CONFIG from '@/config/seo.config';"
+    ],
+    "description": "Imports pour les composants SEO"
+  },
+  
+  "Page Metadata Next.js": {
+    "prefix": "seo-metadata",
+    "body": [
+      "import { Metadata } from 'next';",
+      "import SEO_CONFIG, { generatePageTitle } from '@/config/seo.config';",
+      "",
+      "export const metadata: Metadata = {",
+      "  title: generatePageTitle('${1:Titre de la page}'),",
+      "  description: '${2:Description de la page}',",
+      "  keywords: ['${3:mot-clé1}', '${4:mot-clé2}'],",
+      "  openGraph: {",
+      "    title: '${5:Titre OG}',",
+      "    description: '${6:Description OG}',",
+      "    url: `\\${SEO_CONFIG.siteUrl}/${7:page-path}`,",
+      "    images: [`\\${SEO_CONFIG.siteUrl}/images/${8:og-image.jpg}`],",
+      "  },",
+      "};"
+    ],
+    "description": "Métadonnées SEO pour une page Next.js"
+  },
+  
+  "Generate Property Description": {
+    "prefix": "seo-prop-desc",
+    "body": [
+      "import { generatePropertyDescription } from '@/config/seo.config';",
+      "",
+      "const description = generatePropertyDescription({",
+      "  type: ${1:property.type},",
+      "  bedrooms: ${2:property.bedrooms},",
+      "  bathrooms: ${3:property.bathrooms},",
+      "  area: ${4:property.area},",
+      "  location: ${5:property.location},",
+      "  price: ${6:property.price},",
+      "});"
+    ],
+    "description": "Génère une description SEO pour une propriété"
+  }
+}
