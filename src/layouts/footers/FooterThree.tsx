@@ -62,7 +62,6 @@ const FooterThree = () => {
                      {/* Boletín */}
                      <div className="col-lg-6 mb-40 lg-mb-60">
                         <div className="footer-newsletter">
-                           <h5 className="footer-title text-primary mb-15" style={{fontSize: '16px', fontWeight: '500'}}>Boletín</h5>
                            <p className="mb-15" style={{fontSize: '14px'}}>Suscríbete y recibe noticias importantes regularmente</p>
                            <form onSubmit={handleNewsletterSubmit} className="newsletter-form position-relative">
                               <div className="d-flex align-items-stretch">
