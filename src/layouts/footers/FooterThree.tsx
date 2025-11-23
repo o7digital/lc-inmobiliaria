@@ -37,7 +37,7 @@ const FooterThree = () => {
                <div className="bg-wrapper position-relative z-1">
                   <div className="row">
                      {/* Logo seul */}
-                     <div className="col-lg-6 mb-40 lg-mb-60">
+                     <div className="col-lg-12 mb-40 lg-mb-60">
                         <div className="footer-intro pe-xxl-5 pe-xl-3">
                            <div className="logo mb-20">
                               <Link href="/">
@@ -56,47 +56,6 @@ const FooterThree = () => {
                                  </Link>
                               </li>
                            </ul>
-                        </div>
-                     </div>
-
-                     {/* Boletín */}
-                     <div className="col-lg-6 mb-40 lg-mb-60">
-                        <div className="footer-newsletter">
-                           <p className="mb-15" style={{fontSize: '14px'}}>Suscríbete y recibe noticias importantes regularmente</p>
-                           <form onSubmit={handleNewsletterSubmit} className="newsletter-form position-relative">
-                              <div className="d-flex align-items-stretch">
-                                 <input 
-                                    type="email" 
-                                    placeholder="Ingresa tu correo electrónico" 
-                                    className="form-control"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    style={{
-                                       height: '35px',
-                                       border: '1px solid #ddd',
-                                       borderRadius: '4px 0 0 4px',
-                                       paddingLeft: '12px',
-                                       fontSize: '13px'
-                                    }}
-                                 />
-                                 <button 
-                                    type="submit" 
-                                    className="btn text-white fw-500"
-                                    style={{
-                                       height: '35px',
-                                       backgroundColor: '#000',
-                                       border: 'none',
-                                       borderRadius: '0 4px 4px 0',
-                                       padding: '0 15px',
-                                       fontSize: '12px'
-                                    }}
-                                 >
-                                    ENVIAR
-                                 </button>
-                              </div>
-                           </form>
-                           <p className="mt-10 opacity-75" style={{fontSize: '11px'}}>Solo enviamos correos interesantes y relevantes.</p>
                         </div>
                      </div>
                   </div>
