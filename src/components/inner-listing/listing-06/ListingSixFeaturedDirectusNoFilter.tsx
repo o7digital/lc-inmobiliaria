@@ -148,9 +148,9 @@ const ListingSixFeaturedDirectusNoFilter = () => {
                   </div>
                 </div>
                 <div className="property-info p-25">
-                  <a href={`/property-directus/${property.id}`} className="title tran3s">
+                  <span className="title tran3s" style={{cursor: 'default'}}>
                     {property.Title}
-                  </a>
+                  </span>
                   <div className="address fs-15 mt-5 mb-25">
                     <i className="bi bi-geo-alt"></i>
                     {formatLocation(property)}
