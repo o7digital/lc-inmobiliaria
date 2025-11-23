@@ -26,10 +26,10 @@ export default function QuienesSomos() {
 
       <h2 className="text-2xl font-semibold mt-8 mb-4">Valores que nos definen</h2>
       <ul className="list-disc list-inside space-y-2">
-        <li>🤝 Confianza y cercanía en cada trato</li>
-        <li>📑 Trámites claros y transparentes</li>
-        <li>🏡 Experiencia comprobada de más de 20 años</li>
-        <li>✅ Resultados exitosos para nuestros clientes</li>
+        <li>Confianza y cercanía en cada trato</li>
+        <li>Trámites claros y transparentes</li>
+        <li>Experiencia comprobada de más de 20 años</li>
+        <li>Resultados exitosos para nuestros clientes</li>
       </ul>
     </main>
   );
