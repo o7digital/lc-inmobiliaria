@@ -9,7 +9,6 @@ import BLockFeatureTwo from "./BLockFeatureTwo"; // ← Servicios original del t
 import BLockFeatureFour from "../home-one/BLockFeatureFour";
 import FancyBannerTwo from "../home-two/FancyBannerTwo";
 import FooterThree from "@/layouts/footers/FooterThree";
-import AvisoPrivacidad from "@/components/common/AvisoPrivacidad";
 
 const HomeEight = () => {
   return (
@@ -28,7 +27,6 @@ const HomeEight = () => {
       <BLockFeatureTwo />   {/* 👈 Mantiene el bloque de Servicios original */}
       <BLockFeatureFour />
       <FancyBannerTwo />
-      <AvisoPrivacidad />
       <FooterThree />
     </div>
   );
