@@ -8,7 +8,14 @@ const Hero = () => {
         <div className="row">
           <div className="col-xl-9 col-lg-10 col-md-10 m-auto">
             {/* ✅ Título cambiado */}
-            <h1 className="hero-heading text-white text-center wow fadeInUp">
+            <h1 className="hero-heading text-white text-center wow fadeInUp" style={{ marginTop: '0' }}>
+              <style jsx>{`
+                @media (max-width: 767px) {
+                  .hero-heading {
+                    margin-top: 1.5cm !important;
+                  }
+                }
+              `}</style>
               LC INMOBILIARIA
             </h1>
 

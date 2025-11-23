@@ -1,12 +1,12 @@
 "use client"
 import Link from "next/link"
-import HeaderFour from "@/layouts/headers/HeaderFour"
-import FooterFour from "@/layouts/footers/FooterFour"
+import HeaderFive from "@/layouts/headers/HeaderFive"
+import FooterThree from "@/layouts/footers/FooterThree"
 
 export default function AvisoPrivacidad() {
   return (
     <>
-      <HeaderFour />
+      <HeaderFive />
       <div className="pt-200 xl-pt-150 pb-200 xl-pb-120">
         <div className="container">
           <div className="row justify-content-center">
@@ -221,7 +221,7 @@ export default function AvisoPrivacidad() {
           </div>
         </div>
       </div>
-      <FooterFour />
+      <FooterThree />
     </>
   )
 }

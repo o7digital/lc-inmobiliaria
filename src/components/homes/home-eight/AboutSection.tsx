@@ -16,10 +16,10 @@ const AboutSection = () => {
               </p>
             </div>
             <ul className="list-style-one">
-              <li>🤝 Confianza y cercanía en cada trato</li>
-              <li>📑 Trámites claros y transparentes</li>
-              <li>🏡 Experiencia comprobada de más de 20 años</li>
-              <li>✅ Resultados exitosos para nuestros clientes</li>
+              <li>Confianza y cercanía en cada trato</li>
+              <li>Trámites claros y transparentes</li>
+              <li>Experiencia comprobada de más de 20 años</li>
+              <li>Resultados exitosos para nuestros clientes</li>
             </ul>
           </div>
         </div>
