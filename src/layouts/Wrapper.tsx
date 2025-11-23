@@ -40,7 +40,7 @@ const Wrapper = ({ children }: any) => {
                backgroundColor: '#25D366',
                color: 'white',
                fontSize: '32px',
-               zIndex: 1000,
+               zIndex: 9999,
                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                textDecoration: 'none',
                transition: 'transform 0.3s ease'
@@ -61,7 +61,7 @@ const Wrapper = ({ children }: any) => {
                borderRadius: '20px',
                padding: '8px 16px',
                fontSize: '12px',
-               zIndex: 1000,
+               zIndex: 9999,
                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                textDecoration: 'none'
             }}
