@@ -3,7 +3,7 @@ import Link from "next/link"
 
 const Hero = () => {
   return (
-    <div className="hero-banner-eight z-1 pt-250 xl-pt-200 pb-250 xl-pb-150 lg-pb-100 position-relative">
+    <div className="hero-banner-eight z-1 pt-250 xl-pt-200 lg-pt-150 md-pt-120 pb-250 xl-pb-150 lg-pb-100 md-pb-80 position-relative">
       <div className="container position-relative">
         <div className="row">
           <div className="col-xl-9 col-lg-10 col-md-10 m-auto">
@@ -14,7 +14,7 @@ const Hero = () => {
 
             {/* ✅ Subtítulo cambiado */}
             <p
-              className="fs-24 text-white text-center pt-35 wow fadeInUp"
+              className="fs-24 text-white text-center pt-35 lg-pt-25 md-pt-20 wow fadeInUp"
               data-wow-delay="0.1s"
             >
               Encuentra la casa de tus sueños con nosotros.
