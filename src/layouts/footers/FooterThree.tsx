@@ -2,10 +2,33 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { toast } from 'react-toastify'
 import footerLogo from "@/assets/images/logo/logo_06.svg"
 
 const FooterThree = () => {
    const [showCookies, setShowCookies] = useState(true);
+   const [email, setEmail] = useState("");
+
+   const handleNewsletterSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      
+      if (!email || !email.includes('@')) {
+         toast.error('Por favor ingresa un correo electrónico válido', { position: 'top-center' });
+         return;
+      }
+
+      try {
+         // Aquí puedes agregar la lógica para guardar el email en tu base de datos
+         // Por ahora, solo mostramos el mensaje de confirmación
+         toast.success('¡Gracias! Te has inscrito correctamente a nuestro newsletter', { 
+            position: 'top-center',
+            autoClose: 5000
+         });
+         setEmail("");
+      } catch (error) {
+         toast.error('Hubo un error. Por favor intenta de nuevo', { position: 'top-center' });
+      }
+   };
 
    return (
       <>
@@ -41,12 +64,15 @@ const FooterThree = () => {
                         <div className="footer-newsletter">
                            <h5 className="footer-title text-primary mb-15" style={{fontSize: '16px', fontWeight: '500'}}>Boletín</h5>
                            <p className="mb-15" style={{fontSize: '14px'}}>Suscríbete y recibe noticias importantes regularmente</p>
-                           <form onSubmit={(e) => e.preventDefault()} className="newsletter-form position-relative">
+                           <form onSubmit={handleNewsletterSubmit} className="newsletter-form position-relative">
                               <div className="d-flex align-items-stretch">
                                  <input 
                                     type="email" 
                                     placeholder="Ingresa tu correo electrónico" 
                                     className="form-control"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
                                     style={{
                                        height: '35px',
                                        border: '1px solid #ddd',
