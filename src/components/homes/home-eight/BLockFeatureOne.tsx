@@ -15,7 +15,7 @@ const feature_data: DataType[] = [
    {
       id: 1,
       icon: icon_1,
-      title: "2M+ Propiedades",
+      title: "NUESTRAS",
       desc: (<>Asesoría legal para temas inmobiliarios en CDMX y Naucalpan.</>),
    },
    {
@@ -28,7 +28,7 @@ const feature_data: DataType[] = [
       id: 3,
       icon: icon_3,
       title: "Proceso rápido",
-      desc: (<>Sólo toma 5 minutos comprar o vender tus propiedades con LC Inmobiliaria.</>),
+      desc: (<>Compra, Vende o renta Propriedades con LC Inmobiliaria</>),
    },
 ];
 

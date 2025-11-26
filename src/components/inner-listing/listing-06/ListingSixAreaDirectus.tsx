@@ -276,59 +276,122 @@ const ListingSixAreaDirectus = () => {
             </div>
           </div>
 
-          <div className="property-grid-five">
+          <div className="row gx-4 gy-4">
             {filteredAndSortedProperties.map((property) => (
-              <div key={property.id} className="property-grid-item">
-                <div className="listing-card-one theme-border-radius h-100 w-100">
-                  <div className="img-gallery p-15">
-                    <div className="property-image-frame">
-                      <div className="media position-relative overflow-hidden">
-                        <div className="tag bg-white text-dark fw-500 fs-13">
-                          {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
-                        </div>
-                        {property.Featured && (
-                          <div className="feature-tag bg-primary text-white fw-500 fs-13">
-                            DESTACADA
-                          </div>
-                        )}
-                        <img 
-                          src={getDirectusImageUrl(property)} 
-                          alt={property.Title}
-                          className="w-100 rounded-4"
-                          style={{ height: '230px', objectFit: 'cover' }}
-                        />
-                      </div>
+              <div key={property.id} className="col-lg-4 col-md-6 col-sm-12">
+                <div className="property-card-modern h-100">
+                  <div className="position-relative overflow-hidden" style={{borderRadius: '12px 12px 0 0'}}>
+                    <div className="position-absolute top-0 start-0 w-100 d-flex justify-content-between align-items-start p-3" style={{zIndex: 2}}>
+                      <span 
+                        className="badge text-uppercase fw-bold px-3 py-2"
+                        style={{
+                          background: property.Operation_type?.[0] === 'venta' ? '#0d6efd' : '#198754',
+                          color: 'white',
+                          fontSize: '11px',
+                          letterSpacing: '0.5px'
+                        }}
+                      >
+                        {property.Operation_type?.[0] === 'venta' ? 'EN VENTA' : 'EN RENTA'}
+                      </span>
+                      {property.Featured && (
+                        <span 
+                          className="badge bg-warning text-dark fw-bold px-3 py-2"
+                          style={{fontSize: '11px', letterSpacing: '0.5px'}}
+                        >
+                          DESTACADA
+                        </span>
+                      )}
                     </div>
+                    <img 
+                      src={getDirectusImageUrl(property)} 
+                      alt={property.Title}
+                      className="w-100"
+                      style={{ 
+                        height: '280px', 
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    />
                   </div>
-                  <div className="property-info p-25">
-                    <span className="title tran3s" style={{cursor: 'default'}}>
+                  <div className="p-4 bg-white" style={{borderRadius: '0 0 12px 12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)'}}>
+                    <h5 
+                      className="mb-3" 
+                      style={{
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#1a1a1a',
+                        lineHeight: '1.4',
+                        minHeight: '50px',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden'
+                      }}
+                    >
                       {property.Title}
-                    </span>
-                    <div className="address fs-15 mt-5 mb-25">
-                      <i className="bi bi-geo-alt"></i>
-                      {formatLocation(property)}
+                    </h5>
+                    <div 
+                      className="d-flex align-items-center mb-3"
+                      style={{color: '#6c757d', fontSize: '14px'}}
+                    >
+                      <i className="bi bi-geo-alt-fill me-2" style={{color: '#dc3545'}}></i>
+                      <span className="text-truncate">{formatLocation(property)}</span>
                     </div>
-                    <div className="feature-list d-flex flex-wrap align-items-center justify-content-between">
+                    <div className="d-flex justify-content-between align-items-center pt-3" style={{borderTop: '1px solid #e9ecef'}}>
                       <div>
-                        <strong className="price fw-500 color-dark">
+                        <div style={{fontSize: '11px', color: '#6c757d', marginBottom: '4px'}}>
+                          Precio
+                        </div>
+                        <div 
+                          style={{
+                            fontSize: '22px',
+                            fontWeight: 700,
+                            color: '#0d6efd'
+                          }}
+                        >
                           {formatPrice(property.Price, property.Currency)}
-                        </strong>
+                        </div>
                       </div>
-                      <div className="d-flex align-items-center">
+                      <div className="d-flex gap-3">
                         {property.Bedrooms && (
-                          <div className="d-flex align-items-center me-3">
-                            <i className="bi bi-bed fs-18 me-1"></i>
-                            <span className="fs-15">{property.Bedrooms}</span>
+                          <div className="text-center">
+                            <i className="bi bi-door-closed-fill d-block mb-1" style={{fontSize: '20px', color: '#495057'}}></i>
+                            <span style={{fontSize: '13px', fontWeight: 600, color: '#212529'}}>{property.Bedrooms}</span>
                           </div>
                         )}
                         {property.Bathrooms && (
-                          <div className="d-flex align-items-center">
-                            <i className="bi bi-droplet fs-18 me-1"></i>
-                            <span className="fs-15">{property.Bathrooms}</span>
+                          <div className="text-center">
+                            <i className="bi bi-droplet-fill d-block mb-1" style={{fontSize: '20px', color: '#495057'}}></i>
+                            <span style={{fontSize: '13px', fontWeight: 600, color: '#212529'}}>{property.Bathrooms}</span>
                           </div>
                         )}
                       </div>
                     </div>
+                    <button 
+                      className="btn w-100 mt-3"
+                      style={{
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        color: 'white',
+                        fontWeight: 600,
+                        fontSize: '14px',
+                        padding: '10px',
+                        border: 'none',
+                        borderRadius: '8px',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      Ver fotos <i className="bi bi-images ms-2"></i>
+                    </button>
                   </div>
                 </div>
               </div>
