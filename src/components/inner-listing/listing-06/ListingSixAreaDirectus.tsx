@@ -244,23 +244,27 @@ const ListingSixAreaDirectus = () => {
   }
 
   return (
-    <div className="property-listing-six bg-pink-two pt-110 lg-pt-80 pb-180 xl-pb-120 lg-pb-80">
+    <div className="property-listing-six featured-section pt-110 lg-pt-80 pb-180 xl-pb-120 lg-pb-80">
       <div className="container container-large">
         <div>
-          <h3 className="mb-10" style={{fontWeight:700, fontSize:'2.2rem', letterSpacing:'0.01em', lineHeight:'1.1', textTransform:'uppercase'}}>PROPRIEDADES DESTACADAS</h3>
-          <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
-            <div className="d-flex align-items-center">
-              <span>Mostrando <strong>{filteredAndSortedProperties.length}</strong> de <strong>{properties.length}</strong> resultados</span>
+          <div className="featured-header mb-40 lg-mb-30">
+            <div>
+              <p className="eyebrow text-uppercase mb-1">Destacadas</p>
+              <h3 className="featured-title">PROPIEDADES DESTACADAS</h3>
+              <div className="featured-subtitle">
+                Mostrando <strong>{filteredAndSortedProperties.length}</strong> de{" "}
+                <strong>{properties.length}</strong> resultados
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-3">
               <button 
-                className="btn btn-outline-primary btn-sm ms-3" 
+                className="btn btn-outline-primary btn-sm featured-sync" 
                 onClick={() => window.location.reload()}
                 title="Sincronizar con Directus"
               >
                 <i className="bi bi-arrow-clockwise me-1"></i>
                 Sincronizar
               </button>
-            </div>
-            <div className="d-flex align-items-center xs-mt-20">
               <div className="short-filter d-flex align-items-center">
                 <div className="fs-16 me-2">Ordenar por:</div>
                 <select 
@@ -277,125 +281,60 @@ const ListingSixAreaDirectus = () => {
           </div>
 
           <div className="row gx-4 gy-4">
-            {filteredAndSortedProperties.map((property) => (
-              <div key={property.id} className="col-lg-4 col-md-6 col-sm-12">
-                <div className="property-card-modern h-100">
-                  <div className="position-relative overflow-hidden" style={{borderRadius: '12px 12px 0 0'}}>
-                    <div className="position-absolute top-0 start-0 w-100 d-flex justify-content-between align-items-start p-3" style={{zIndex: 2}}>
-                      <span 
-                        className="badge text-uppercase fw-bold px-3 py-2"
-                        style={{
-                          background: property.Operation_type?.[0] === 'venta' ? '#0d6efd' : '#198754',
-                          color: 'white',
-                          fontSize: '11px',
-                          letterSpacing: '0.5px'
-                        }}
-                      >
-                        {property.Operation_type?.[0] === 'venta' ? 'EN VENTA' : 'EN RENTA'}
-                      </span>
+            {filteredAndSortedProperties.map((property) => {
+              const operation = property.Operation_type?.[0]?.toLowerCase?.();
+
+              return (
+                <div key={property.id} className="col-lg-4 col-md-6 col-sm-12">
+                  <div className="featured-card h-100">
+                    <div className="featured-card__image">
                       {property.Featured && (
-                        <span 
-                          className="badge bg-warning text-dark fw-bold px-3 py-2"
-                          style={{fontSize: '11px', letterSpacing: '0.5px'}}
-                        >
-                          DESTACADA
+                        <span className="featured-card__ribbon">DESTACADA</span>
+                      )}
+                      {operation && (
+                        <span className="featured-card__operation">
+                          {operation === 'venta' ? 'VENTA' : 'RENTA'}
                         </span>
                       )}
+                      <img 
+                        src={getDirectusImageUrl(property)} 
+                        alt={property.Title}
+                      />
                     </div>
-                    <img 
-                      src={getDirectusImageUrl(property)} 
-                      alt={property.Title}
-                      className="w-100"
-                      style={{ 
-                        height: '280px', 
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease'
-                      }}
-                      onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    />
-                  </div>
-                  <div className="p-4 bg-white" style={{borderRadius: '0 0 12px 12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)'}}>
-                    <h5 
-                      className="mb-3" 
-                      style={{
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        color: '#1a1a1a',
-                        lineHeight: '1.4',
-                        minHeight: '50px',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      {property.Title}
-                    </h5>
-                    <div 
-                      className="d-flex align-items-center mb-3"
-                      style={{color: '#6c757d', fontSize: '14px'}}
-                    >
-                      <i className="bi bi-geo-alt-fill me-2" style={{color: '#dc3545'}}></i>
-                      <span className="text-truncate">{formatLocation(property)}</span>
-                    </div>
-                    <div className="d-flex justify-content-between align-items-center pt-3" style={{borderTop: '1px solid #e9ecef'}}>
-                      <div>
-                        <div style={{fontSize: '11px', color: '#6c757d', marginBottom: '4px'}}>
-                          Precio
-                        </div>
-                        <div 
-                          style={{
-                            fontSize: '22px',
-                            fontWeight: 700,
-                            color: '#0d6efd'
-                          }}
-                        >
-                          {formatPrice(property.Price, property.Currency)}
+                    <div className="featured-card__body d-flex flex-column">
+                      <h5 className="featured-card__title">{property.Title}</h5>
+                      <div className="featured-card__location">
+                        <i className="bi bi-geo-alt-fill me-2"></i>
+                        <span className="text-truncate">{formatLocation(property)}</span>
+                      </div>
+                      <div className="mt-auto">
+                        <div className="featured-card__price">{formatPrice(property.Price, property.Currency)}</div>
+                        <div className="featured-card__meta">
+                          {typeof property.Bedrooms === 'number' && (
+                            <div className="featured-card__meta-item">
+                              <i className="bi bi-door-closed-fill me-1"></i>
+                              <span>{property.Bedrooms}</span>
+                            </div>
+                          )}
+                          {typeof property.Bathrooms === 'number' && (
+                            <div className="featured-card__meta-item">
+                              <i className="bi bi-droplet-fill me-1"></i>
+                              <span>{property.Bathrooms}</span>
+                            </div>
+                          )}
+                          {typeof property.Parking_spaces === 'number' && (
+                            <div className="featured-card__meta-item">
+                              <i className="bi bi-car-front-fill me-1"></i>
+                              <span>{property.Parking_spaces}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
-                      <div className="d-flex gap-3">
-                        {property.Bedrooms && (
-                          <div className="text-center">
-                            <i className="bi bi-door-closed-fill d-block mb-1" style={{fontSize: '20px', color: '#495057'}}></i>
-                            <span style={{fontSize: '13px', fontWeight: 600, color: '#212529'}}>{property.Bedrooms}</span>
-                          </div>
-                        )}
-                        {property.Bathrooms && (
-                          <div className="text-center">
-                            <i className="bi bi-droplet-fill d-block mb-1" style={{fontSize: '20px', color: '#495057'}}></i>
-                            <span style={{fontSize: '13px', fontWeight: 600, color: '#212529'}}>{property.Bathrooms}</span>
-                          </div>
-                        )}
-                      </div>
                     </div>
-                    <button 
-                      className="btn w-100 mt-3"
-                      style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
-                        fontWeight: 600,
-                        fontSize: '14px',
-                        padding: '10px',
-                        border: 'none',
-                        borderRadius: '8px',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      Ver fotos <i className="bi bi-images ms-2"></i>
-                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {filteredAndSortedProperties.length === 0 && (
