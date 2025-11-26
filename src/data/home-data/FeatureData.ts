@@ -351,22 +351,22 @@ const feature_data: DataType[] = [
       id: 1,
       page: "home_6_feature_1",
       icon:feature7Icon_1,
-      title: "Operaciones Seguras.",
-      desc: "Protegemos cada Transacción para tu tranquilidad.",
+      title: "Experiencia",
+      desc: "Más de 10 años en el mercado inmobiliario, conocemos cada detalle del sector y te ofrecemos la mejor asesoría.",
    }, 
    {
       id: 2,
       page: "home_6_feature_1",
       icon:feature7Icon_2,
-      title: "Pagos Seguros.",
-      desc: "Tus pagos siempre bajo sistemas verificados y seguros.",
+      title: "Asesoría Personalizada",
+      desc: "Te acompañamos en cada paso desde la búsqueda hasta la firma, con atención personalizada.",
    }, 
    {
       id: 3,
       page: "home_6_feature_1",
       icon:feature7Icon_3,
-      title: "Processus Rapide.",
-      desc: "Compra o vende tu propiedad en minutos, sin complicaciones.",
+      title: "Amplia Cobertura",
+      desc: "Presencia en las principales zonas metropolitanas con el mejor portafolio de propiedades disponibles.",
    },
 ]
 

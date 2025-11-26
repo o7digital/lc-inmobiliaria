@@ -23,73 +23,29 @@ const FancyBannerOne = () => {
                </div>
             </div>
 
-            <div className="mt-60 md-mt-40">
-               <h3 className="text-center mb-50 lg-mb-30" style={{fontWeight: 600, fontSize: '2rem'}}>
-                  ¿Por qué elegir LC Inmobiliaria?
-               </h3>
-               <div className="row g-4">
-                  <div className="col-lg-4 col-md-6">
-                     <div className="card h-100 border-0 shadow-sm p-4 text-center" style={{borderRadius: '15px', transition: 'transform 0.3s ease, box-shadow 0.3s ease'}}>
-                        <div className="d-flex justify-content-center mb-3">
-                           <div style={{
-                              width: '70px',
-                              height: '70px',
-                              borderRadius: '50%',
-                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                           }}>
-                              <i className="bi bi-award" style={{fontSize: '32px', color: 'white'}}></i>
-                           </div>
-                        </div>
-                        <h5 className="mb-3" style={{fontWeight: 600, fontSize: '1.25rem'}}>Experiencia</h5>
-                        <p style={{color: '#6c757d', lineHeight: '1.6', fontSize: '15px'}}>
-                           Más de 10 años en el mercado inmobiliario, conocemos cada detalle del sector y te ofrecemos la mejor asesoría.
-                        </p>
-                     </div>
+            <div className="fact-wrapper d-flex flex-wrap mt-60 md-mt-40">
+               <div className="fact-box">
+                  <div className="text-meta text-sm-start d-inline-block">
+                     <div className="numb">300</div>
+                     <span>Terrenos Analizados</span>
                   </div>
-                  <div className="col-lg-4 col-md-6">
-                     <div className="card h-100 border-0 shadow-sm p-4 text-center" style={{borderRadius: '15px', transition: 'transform 0.3s ease, box-shadow 0.3s ease'}}>
-                        <div className="d-flex justify-content-center mb-3">
-                           <div style={{
-                              width: '70px',
-                              height: '70px',
-                              borderRadius: '50%',
-                              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                           }}>
-                              <i className="bi bi-person-check" style={{fontSize: '32px', color: 'white'}}></i>
-                           </div>
-                        </div>
-                        <h5 className="mb-3" style={{fontWeight: 600, fontSize: '1.25rem'}}>Asesoría Personalizada</h5>
-                        <p style={{color: '#6c757d', lineHeight: '1.6', fontSize: '15px'}}>
-                           Te acompañamos en cada paso desde la búsqueda hasta la firma, con atención personalizada.
-                        </p>
-                     </div>
+               </div>
+               <div className="fact-box">
+                  <div className="text-meta text-sm-start d-inline-block">
+                     <div className="numb">0.2%</div>
+                     <span>Pasaron la evaluacion inicial</span>
                   </div>
-                  <div className="col-lg-4 col-md-6">
-                     <div className="card h-100 border-0 shadow-sm p-4 text-center" style={{borderRadius: '15px', transition: 'transform 0.3s ease, box-shadow 0.3s ease'}}>
-                        <div className="d-flex justify-content-center mb-3">
-                           <div style={{
-                              width: '70px',
-                              height: '70px',
-                              borderRadius: '50%',
-                              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                           }}>
-                              <i className="bi bi-geo-alt" style={{fontSize: '32px', color: 'white'}}></i>
-                           </div>
-                        </div>
-                        <h5 className="mb-3" style={{fontWeight: 600, fontSize: '1.25rem'}}>Amplia Cobertura</h5>
-                        <p style={{color: '#6c757d', lineHeight: '1.6', fontSize: '15px'}}>
-                           Presencia en las principales zonas metropolitanas con el mejor portafolio de propiedades disponibles.
-                        </p>
-                     </div>
+               </div>
+               <div className="fact-box">
+                  <div className="text-meta text-sm-start d-inline-block">
+                     <div className="numb">15%</div>
+                     <span>Aprobados por el Comite</span>
+                  </div>
+               </div>
+               <div className="fact-box">
+                  <div className="text-meta text-sm-start d-inline-block">
+                     <div className="numb">5%</div>
+                     <span>Adquiridos</span>
                   </div>
                </div>
             </div>
