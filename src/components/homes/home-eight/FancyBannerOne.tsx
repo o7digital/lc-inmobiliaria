@@ -22,33 +22,6 @@ const FancyBannerOne = () => {
                   <blockquote>&quot;Seguimos un proceso para ofrecer a nuestros inversionistas las mejores oportunidades.&quot;</blockquote>
                </div>
             </div>
-
-            <div className="fact-wrapper d-flex flex-wrap mt-60 md-mt-40">
-               <div className="fact-box">
-                  <div className="text-meta text-sm-start d-inline-block">
-                     <div className="numb">300</div>
-                     <span>Terrenos Analizados</span>
-                  </div>
-               </div>
-               <div className="fact-box">
-                  <div className="text-meta text-sm-start d-inline-block">
-                     <div className="numb">0.2%</div>
-                     <span>Pasaron la evaluacion inicial</span>
-                  </div>
-               </div>
-               <div className="fact-box">
-                  <div className="text-meta text-sm-start d-inline-block">
-                     <div className="numb">15%</div>
-                     <span>Aprobados por el Comite</span>
-                  </div>
-               </div>
-               <div className="fact-box">
-                  <div className="text-meta text-sm-start d-inline-block">
-                     <div className="numb">5%</div>
-                     <span>Adquiridos</span>
-                  </div>
-               </div>
-            </div>
          </div>
       </div>
    )
