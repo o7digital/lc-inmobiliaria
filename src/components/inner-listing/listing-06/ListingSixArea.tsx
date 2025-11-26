@@ -23,6 +23,9 @@ type EBProperty = {
   public_id: string;
   title: string;
   property_type?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  parking_spaces?: number;
   location?: EBLocation;
   title_image_thumb?: string;
   operations?: EBOperation[];
@@ -109,6 +112,7 @@ const ListingSixArea = () => {
   const [error, setError] = useState<string | null>(null);
   const [inputs, setInputs] = useState(initialFilterState);
   const [filters, setFilters] = useState(initialFilterState);
+  const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
     fetch("/api/properties")
@@ -256,6 +260,38 @@ const ListingSixArea = () => {
     });
   }, [properties, filters]);
 
+  const sortedProperties = useMemo(() => {
+    const list = [...filteredProperties];
+
+    const getPrice = (prop: EBProperty) => {
+      const amounts = extractOperationAmounts(prop.operations);
+      if (!amounts.length) return null;
+      return amounts[0];
+    };
+
+    switch (sortBy) {
+      case "price-low":
+        return list.sort((a, b) => {
+          const priceA = getPrice(a);
+          const priceB = getPrice(b);
+          if (priceA === null) return 1;
+          if (priceB === null) return -1;
+          return priceA - priceB;
+        });
+      case "price-high":
+        return list.sort((a, b) => {
+          const priceA = getPrice(a);
+          const priceB = getPrice(b);
+          if (priceA === null) return 1;
+          if (priceB === null) return -1;
+          return priceB - priceA;
+        });
+      case "newest":
+      default:
+        return list;
+    }
+  }, [filteredProperties, sortBy]);
+
   const handleInputChange =
     (key: keyof typeof initialFilterState) =>
     (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -297,10 +333,43 @@ const ListingSixArea = () => {
 
   const isResetDisabled = inputsAreClear && !hasFiltersApplied;
 
+  const renderedProperties = sortedProperties;
+
   return (
-    <div className="property-listing-six pt-200 xl-pt-150 pb-200 xl-pb-120">
+    <div className="property-listing-six featured-section pt-200 xl-pt-150 pb-200 xl-pb-120">
       <div className="container">
-        <h2 className="mb-40 text-center">Propiedades disponibles</h2>
+        <div className="featured-header mb-40">
+          <div>
+            <p className="eyebrow text-uppercase mb-1">Destacadas</p>
+            <h3 className="featured-title">PROPIEDADES DESTACADAS</h3>
+            <div className="featured-subtitle">
+              Mostrando <strong>{renderedProperties.length}</strong> de{" "}
+              <strong>{properties.length}</strong> resultados
+            </div>
+          </div>
+          <div className="d-flex align-items-center gap-3">
+            <div className="short-filter d-flex align-items-center">
+              <div className="fs-16 me-2">Ordenar por:</div>
+              <select 
+                className="nice-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="newest">Más recientes</option>
+                <option value="price-low">Precio: menor a mayor</option>
+                <option value="price-high">Precio: mayor a menor</option>
+              </select>
+            </div>
+            <button 
+              type="button" 
+              className="btn btn-outline-primary btn-sm featured-sync" 
+              onClick={() => window.location.reload()}
+            >
+              <i className="bi bi-arrow-clockwise me-1"></i>
+              Sincronizar
+            </button>
+          </div>
+        </div>
 
         <div className="listing-filters mb-40">
           <div className="row g-3 align-items-end">
@@ -401,44 +470,77 @@ const ListingSixArea = () => {
           <p className="text-center">No se encontraron propiedades.</p>
         )}
 
-        <div className="row">
-          {!loading && !error && properties.length > 0 && filteredProperties.length === 0 && (
+        <div className="row gx-4 gy-4">
+          {!loading && !error && properties.length > 0 && renderedProperties.length === 0 && (
             <div className="col-12">
               <p className="text-center">
                 No se encontraron propiedades con los filtros seleccionados.
               </p>
             </div>
           )}
-          {filteredProperties.map((prop) => {
+          {renderedProperties.map((prop) => {
             const url =
               prop.public_url ||
               (prop.public_id
                 ? `https://www.easybroker.com/property/${prop.public_id}`
                 : "#");
 
+            const primaryOperation = prop.operations?.[0];
+            const operationLabel = mapOperationType(primaryOperation?.type);
+            const priceLabel = primaryOperation?.formatted_amount || "Precio no disponible";
+
             return (
-              <div key={prop.public_id} className="col-md-4 mb-4">
-                <div className="property-card p-3 bg-white shadow-sm rounded h-100 d-flex flex-column">
-                  <img
-                    src={prop.title_image_thumb || "/images/default-property.jpg"}
-                    alt={prop.title}
-                    className="img-fluid mb-3 rounded"
-                  />
-                  <h5 className="mb-1">{prop.title}</h5>
-                  <p className="mb-2">{formatLocation(prop.location)}</p>
-                  <p className="mb-3">
-                    <strong>
-                      {prop.operations?.[0]?.formatted_amount || "Precio no disponible"}
-                    </strong>
-                  </p>
+              <div key={prop.public_id} className="col-lg-4 col-md-6 col-sm-12">
+                <div className="featured-card h-100">
+                  <div className="featured-card__image">
+                    <span className="featured-card__ribbon">DESTACADA</span>
+                    {operationLabel && (
+                      <span className="featured-card__operation">
+                        {operationLabel === "venta" ? "VENTA" : "RENTA"}
+                      </span>
+                    )}
+                    <img
+                      src={prop.title_image_thumb || "/images/default-property.jpg"}
+                      alt={prop.title}
+                    />
+                  </div>
+                  <div className="featured-card__body d-flex flex-column">
+                    <h5 className="featured-card__title">{prop.title}</h5>
+                    <div className="featured-card__location">
+                      <i className="bi bi-geo-alt-fill me-2"></i>
+                      <span className="text-truncate">{formatLocation(prop.location)}</span>
+                    </div>
+                    <div className="mt-auto">
+                      <div className="featured-card__price">{priceLabel}</div>
+                      <div className="featured-card__meta">
+                        {typeof prop.bedrooms === "number" && (
+                          <div className="featured-card__meta-item">
+                            <i className="bi bi-door-closed-fill me-1"></i>
+                            <span>{prop.bedrooms}</span>
+                          </div>
+                        )}
+                        {typeof prop.bathrooms === "number" && (
+                          <div className="featured-card__meta-item">
+                            <i className="bi bi-droplet-fill me-1"></i>
+                            <span>{prop.bathrooms}</span>
+                          </div>
+                        )}
+                        {typeof prop.parking_spaces === "number" && (
+                          <div className="featured-card__meta-item">
+                            <i className="bi bi-car-front-fill me-1"></i>
+                            <span>{prop.parking_spaces}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                   <a
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-one mt-auto d-block text-center"
-                  >
-                    Ver detalles
-                  </a>
+                    className="stretched-link"
+                    aria-label={`Ver detalles de ${prop.title}`}
+                  />
                 </div>
               </div>
             );
