@@ -129,45 +129,55 @@ const ListingSixFeaturedDirectus = () => {
               <div className="row gx-xxl-25">
                 {properties.map((property) => (
                   <div key={property.id} className="col-lg-4 col-sm-6 d-flex mb-50 lg-mb-30">
-                    <div className="listing-card-one theme-border-radius h-100 w-100">
+                    <div className="listing-card-one shadow4 border-20 h-100 w-100 d-flex flex-column">
                       <div className="img-gallery p-15">
-                        <div className="property-image-frame">
-                          <div className="media position-relative overflow-hidden">
-                            <div className="tag bg-white text-dark fw-500 fs-13">
-                              {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
-                            </div>
-                            {property.Featured && (
-                              <div className="feature-tag bg-primary text-white fw-500 fs-13">
-                                DESTACADA
-                              </div>
-                            )}
-                            <img 
-                              src={getDirectusImageUrl(property)} 
-                              alt={property.Title}
-                              className="w-100 rounded-4"
-                              style={{ height: '230px', objectFit: 'cover' }}
-                            />
+                        <div className="position-relative overflow-hidden">
+                          <div className="tag border-20 fw-500">
+                            {property.Operation_type?.[0] === 'venta' ? 'VENTA' : 'RENTA'}
                           </div>
+                          {property.Featured && (
+                            <div className="feature-tag bg-primary text-white fw-500 fs-13">
+                              DESTACADA
+                            </div>
+                          )}
+                          <img 
+                            src={getDirectusImageUrl(property)} 
+                            alt={property.Title}
+                            className="w-100 rounded-4"
+                            style={{ height: '230px', objectFit: 'cover', display: 'block' }}
+                          />
                         </div>
                       </div>
-                      <div className="property-info p-25">
-                        <span className="title tran3s" style={{cursor: 'default'}}>
+                      <div className="property-info p-25 d-flex flex-column flex-grow-1">
+                        <span className="title tran3s d-block fw-500" style={{
+                          cursor: 'default',
+                          fontSize: '18px',
+                          height: '2.5em',
+                          lineHeight: '1.25em',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          marginBottom: '10px'
+                        }}>
                           {property.Title}
                         </span>
-                        <div className="address fs-15 mt-5 mb-25">
-                          <i className="bi bi-geo-alt"></i>
+                        <div className="address fs-15 mb-3" style={{
+                          height: '3em',
+                          lineHeight: '1.5em',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}>
+                          <i className="bi bi-geo-alt me-1"></i>
                           {formatLocation(property)}
                         </div>
-                        <div className="feature-list d-flex flex-wrap align-items-center justify-content-between">
-                          <div>
-                            <strong className="price fw-500 color-dark">
-                              {formatPrice(property.Price, property.Currency)}
-                            </strong>
-                          </div>
+                        <div className="d-flex align-items-center justify-content-between mb-3">
                           <div className="d-flex align-items-center">
                             {property.Bedrooms && (
                               <div className="d-flex align-items-center me-3">
-                                <i className="bi bi-bed fs-18 me-1"></i>
+                                <i className="bi bi-house-door fs-18 me-1"></i>
                                 <span className="fs-15">{property.Bedrooms}</span>
                               </div>
                             )}
@@ -178,7 +188,24 @@ const ListingSixFeaturedDirectus = () => {
                               </div>
                             )}
                           </div>
+                          <div>
+                            <strong className="price fw-600 color-dark" style={{ fontSize: '17px' }}>
+                              {formatPrice(property.Price, property.Currency)}
+                            </strong>
+                          </div>
                         </div>
+                        <button 
+                          className="btn btn-outline-dark btn-sm w-100 mt-auto"
+                          style={{
+                            borderRadius: '6px',
+                            padding: '8px 16px',
+                            fontSize: '14px',
+                            fontWeight: '500'
+                          }}
+                        >
+                          <i className="bi bi-images me-2"></i>
+                          Ver fotos
+                        </button>
                       </div>
                     </div>
                   </div>

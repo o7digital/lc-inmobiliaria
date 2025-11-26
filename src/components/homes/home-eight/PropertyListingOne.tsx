@@ -225,48 +225,62 @@ const PropertyListingOne = () => {
                 className="col-lg-4 col-md-6 mt-40 wow fadeInUp"
                 data-wow-delay="0.1s"
               >
-                <div className="listing-card-four overflow-hidden d-flex align-items-end position-relative z-1">
-                  <div className="property-image-container">
-                    <div
-                      className="bg-img"
-                      style={{
-                        backgroundImage: `url(${item.imageUrl || fallbackImage})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        height: "380px",
-                        width: "100%",
-                      }}
-                    />
-                  </div>
-
-                  <div className="property-info tran3s w-100 p-20 bg-white position-absolute bottom-0">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="pe-3">
-                        <h4 className="title fw-500 tran4s">{item.title}</h4>
-                        <div className="address tran4s">{item.address}</div>
+                <div className="listing-card-one shadow4 border-20 h-100 d-flex flex-column">
+                  <div className="img-gallery p-15">
+                    <div className="position-relative overflow-hidden">
+                      <div className="tag border-20 fw-500">
+                        {item.operation.toUpperCase()}
                       </div>
-                      <span className="btn-four inverse disabled">
-                        <span>Ver más</span>{" "}
-                        <i className="bi bi-arrow-up-right" />
-                      </span>
+                      <div className="feature-tag bg-primary text-white fw-500 fs-13">
+                        DESTACADA
+                      </div>
+                      <img 
+                        src={item.imageUrl || fallbackImage}
+                        alt={item.title}
+                        className="w-100 rounded-4"
+                        style={{ 
+                          height: '230px', 
+                          objectFit: 'cover',
+                          display: 'block'
+                        }}
+                      />
                     </div>
-
-                    <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between mt-3">
-                      <li>
-                        <strong className="color-dark fw-500">
-                          {item.bedrooms ?? "-"}
-                        </strong>
-                        <span className="fs-16">Recámaras</span>
+                  </div>
+                  <div className="property-info p-25 d-flex flex-column flex-grow-1">
+                    <span className="title tran3s d-block" style={{ 
+                      cursor: 'default',
+                      height: '3.6em',
+                      lineHeight: '1.4em',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      marginBottom: '8px'
+                    }}>
+                      {item.title}
+                    </span>
+                    <div className="address fs-15 mb-3" style={{ 
+                      height: '3em',
+                      lineHeight: '1.5em',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>
+                      <i className="bi bi-geo-alt me-1"></i>
+                      {item.address}
+                    </div>
+                    <ul className="style-none feature d-flex align-items-center justify-content-between mt-auto pt-2">
+                      <li className="d-flex align-items-center">
+                        <i className="bi bi-house-door me-2 fs-20"></i>
+                        <span className="fs-16">{item.bedrooms ?? "-"} rec</span>
+                      </li>
+                      <li className="d-flex align-items-center">
+                        <i className="bi bi-droplet me-2 fs-20"></i>
+                        <span className="fs-16">{item.bathrooms ?? "-"} baños</span>
                       </li>
                       <li>
-                        <strong className="color-dark fw-500">
-                          {item.bathrooms ?? "-"}
-                        </strong>
-                        <span className="fs-16">Baños</span>
-                      </li>
-                      <li>
-                        <strong className="color-dark fw-500">{item.priceLabel}</strong>
-                        <span className="fs-16">{item.operation}</span>
+                        <strong className="color-dark fw-500 fs-20">{item.priceLabel}</strong>
                       </li>
                     </ul>
                   </div>

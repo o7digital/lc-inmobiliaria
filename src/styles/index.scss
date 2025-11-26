@@ -114,6 +114,85 @@
       overflow: hidden;
     }
   }
+  
+  .img-gallery {
+    .position-relative {
+      .tag {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: white;
+        color: #1a1a1a;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        z-index: 2;
+        font-weight: 500;
+      }
+      
+      .feature-tag {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        z-index: 2;
+      }
+    }
+  }
+}
+
+// Ajustes para desktop: tarjetas más anchas
+@media (min-width: 992px) {
+  .property-listing-six {
+    .row.gx-xxl-25 {
+      .col-lg-4 {
+        flex: 0 0 auto;
+        width: 33.333333%;
+      }
+    }
+  }
+  
+  .listing-card-one {
+    .property-info {
+      padding: 20px !important;
+      
+      .title {
+        font-size: 17px !important;
+        height: 2.2em !important;
+        line-height: 1.1em !important;
+        margin-bottom: 12px !important;
+      }
+    }
+  }
+}
+
+// Ajustes para mobile: etiquetas adaptables
+@media (max-width: 991px) {
+  .listing-card-one {
+    .img-gallery {
+      .position-relative {
+        .tag, .feature-tag {
+          font-size: 11px;
+          padding: 4px 8px;
+        }
+      }
+    }
+    
+    .property-info {
+      padding: 15px !important;
+      
+      .title {
+        font-size: 16px !important;
+        height: 2.5em !important;
+      }
+      
+      .address {
+        font-size: 14px !important;
+      }
+    }
+  }
 }
 
 .property-grid-five {
