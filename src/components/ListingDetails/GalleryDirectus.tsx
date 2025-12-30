@@ -1,12 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import { buildDirectusAssetUrl } from "@/lib/directus";
 
 interface GalleryDirectusProps {
   images: Array<{ directus_files_id: { id: string; filename_download?: string } }>;
 }
 
 const getDirectusImageUrl = (id: string) =>
-  `https://directus-backend-production.up.railway.app/assets/${id}?fit=cover&width=900&height=600`;
+  buildDirectusAssetUrl(id, 900, 600);
 
 const GalleryDirectus: React.FC<GalleryDirectusProps> = ({ images }) => {
   const [selected, setSelected] = useState(0);
