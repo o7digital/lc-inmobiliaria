@@ -52,8 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Construire l'URL avec les filtres et inclure les images
     const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
     
-    // Ajouter les champs d'images dans la requête
-    url.searchParams.append('fields', '*,images.directus_files_id.*');
+    // Ajouter les champs d'images dans la requête (syntaxe correcte pour M2M)
+    url.searchParams.append('fields', '*,images.directus_files_id.id,images.directus_files_id.filename_download,images.directus_files_id.type');
     
     // Ajouter les paramètres de recherche si présents
     const { operation_type, property_type, city, min_price, max_price, featured, limit } = req.query;
@@ -109,6 +109,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const data = await response.json();
     console.log(`Fetched ${data.data?.length || 0} properties`);
+    
+    // Debug: Log la structure des images pour la première propriété
+    if (data.data && data.data.length > 0) {
+      console.log('First property images structure:', JSON.stringify(data.data[0].images, null, 2));
+    }
 
     res.status(200).json(data.data || []);
 

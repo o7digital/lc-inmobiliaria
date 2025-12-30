@@ -18,12 +18,19 @@ export const buildDirectusUrl = (path: string): string => {
 };
 
 export const buildDirectusAssetUrl = (fileId: string | null | undefined, width: number = 1200, height: number = 800): string => {
-  // Côté client, utiliser directement l'URL hardcodée
+  if (!fileId) return "";
+  
+  // Si l'URL contient déjà cloudinary ou est une URL complète, retourner telle quelle
+  if (typeof fileId === 'string' && (fileId.includes('cloudinary.com') || fileId.startsWith('http'))) {
+    return fileId;
+  }
+  
+  // Sinon, construire l'URL Directus normale
   const base = typeof window !== 'undefined' 
     ? 'https://lc-directus-backend-production.up.railway.app'
     : getDirectusBaseUrl();
     
-  if (!base || !fileId) return "";
+  if (!base) return "";
 
   return `${base}/assets/${fileId}?fit=cover&width=${width}&height=${height}`;
 };
