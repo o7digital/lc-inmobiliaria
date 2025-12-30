@@ -296,18 +296,22 @@ const ListingSixAreaDirectus = () => {
                           {operation === 'venta' ? 'VENTA' : 'RENTA'}
                         </span>
                       )}
-                      <img 
-                        src={getDirectusImageUrl(property)} 
-                        alt={property.Title}
-                      />
+                      <a href={`/property-directus/${property.id}`} aria-label={`Voir les détails de ${property.Title}`}>
+                        <img 
+                          src={getDirectusImageUrl(property)} 
+                          alt={property.Title}
+                        />
+                      </a>
                     </div>
                     <div className="featured-card__body d-flex flex-column">
-                      <h5 className="featured-card__title">{property.Title}</h5>
+                      <h5 className="featured-card__title">
+                        <a href={`/property-directus/${property.id}`}>{property.Title}</a>
+                      </h5>
                       <div className="featured-card__location">
                         <i className="bi bi-geo-alt-fill me-2"></i>
                         <span className="text-truncate">{formatLocation(property)}</span>
                       </div>
-                      <div className="mt-auto">
+                      <div className="mt-auto d-flex align-items-center justify-content-between gap-2">
                         <div className="featured-card__price">{formatPrice(property.Price, property.Currency)}</div>
                         <div className="featured-card__meta">
                           {typeof property.Bedrooms === 'number' && (
@@ -329,6 +333,9 @@ const ListingSixAreaDirectus = () => {
                             </div>
                           )}
                         </div>
+                        <a className="btn btn-sm btn-primary" href={`/property-directus/${property.id}`}>
+                          Détails
+                        </a>
                       </div>
                     </div>
                   </div>
