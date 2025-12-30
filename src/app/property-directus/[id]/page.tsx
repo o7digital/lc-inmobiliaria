@@ -3,6 +3,7 @@ import HeaderFive from "@/layouts/headers/HeaderFive";
 import FooterThree from "@/layouts/footers/FooterThree";
 import dynamic from "next/dynamic";
 const GalleryDirectus = dynamic(() => import("@/components/ListingDetails/GalleryDirectus"), { ssr: false });
+const CarouselDirectus = dynamic(() => import("@/components/ListingDetails/CarouselDirectus"), { ssr: false });
 
 async function getProperty(id: string) {
   try {
@@ -46,7 +47,10 @@ export default async function PropertyDirectusPage({ params }: { params: { id: s
           {JSON.stringify(property, null, 2)}
         </pre>
         {property.images && property.images.length > 0 && (
-          <GalleryDirectus images={property.images} />
+          <>
+            <CarouselDirectus images={property.images} />
+            <GalleryDirectus images={property.images} />
+          </>
         )}
       </div>
       <FooterThree />
