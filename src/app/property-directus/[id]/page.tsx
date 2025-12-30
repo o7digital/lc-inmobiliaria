@@ -7,7 +7,7 @@ const CarouselDirectus = dynamic(() => import("@/components/ListingDetails/Carou
 
 async function getProperty(id: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://directus-backend-production.up.railway.app"}/items/propriedades/${id}?fields=*,images.directus_files_id.*`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://lc-directus-backend-production.up.railway.app"}/items/propriedades/${id}?fields=*,images.directus_files_id.*`, { cache: 'no-store' });
     if (!res.ok) return null;
     const data = await res.json();
     return data.data || null;
