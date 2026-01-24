@@ -108,71 +108,54 @@ export const testDirectusConnection = async (): Promise<{ success: boolean; mess
   }
 };
 
+const buildApiBase = () => {
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
+    'http://localhost:3000'
+  );
+};
+
 export const fetchProperties = async (): Promise<DirectusProperty[]> => {
   try {
-    const url = buildDirectusUrl('/items/propriedades');
-    
-    if (!url) {
-      console.error('Directus URL not configured');
-      return [];
-    }
-
-    console.log('Fetching properties from:', url);
-    console.log('Has token:', !!getDirectusToken());
-
-    const headers = await getAuthHeaders();
+    const url = `${buildApiBase()}/api/directus/properties`;
     const response = await fetch(url, {
       method: 'GET',
-      headers,
+      headers: {
+        Accept: 'application/json',
+      },
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Authentication failed - Invalid or missing token');
-      } else if (response.status === 403) {
-        throw new Error('Access forbidden - Check permissions');
-      }
       throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log('Properties fetched successfully:', data);
-
-    return data.data || [];
+    return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching properties:', error);
+    console.error('Error fetching properties (API):', error);
     return [];
   }
 };
 
 export const fetchPropertyById = async (id: number): Promise<DirectusProperty | null> => {
   try {
-    const url = buildDirectusUrl(`/items/propriedades/${id}`);
-    
-    if (!url) {
-      console.error('Directus URL not configured');
-      return null;
-    }
-
-    const headers = await getAuthHeaders();
+    const url = `${buildApiBase()}/api/directus/properties?id=${id}`;
     const response = await fetch(url, {
       method: 'GET',
-      headers,
+      headers: {
+        Accept: 'application/json',
+      },
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Authentication failed - Invalid or missing token');
-      } else if (response.status === 403) {
-        throw new Error('Access forbidden - Check permissions');
-      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    return data.data || null;
+    return data || null;
   } catch (error) {
-    console.error('Error fetching property:', error);
+    console.error('Error fetching property (API):', error);
     return null;
   }
 };

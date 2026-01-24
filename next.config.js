@@ -8,6 +8,18 @@ const nextConfig = {
         port: '',
         pathname: '/assets/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.datocms-assets.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cda.datocms-assets.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 }

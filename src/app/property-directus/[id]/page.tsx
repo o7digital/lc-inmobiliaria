@@ -5,12 +5,21 @@ import dynamic from "next/dynamic";
 const GalleryDirectus = dynamic(() => import("@/components/ListingDetails/GalleryDirectus"), { ssr: false });
 const CarouselDirectus = dynamic(() => import("@/components/ListingDetails/CarouselDirectus"), { ssr: false });
 
+const buildApiUrl = (path: string) => {
+  const base =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` ||
+    'http://localhost:3000';
+  return `${base}${path}`;
+};
+
 async function getProperty(id: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://lc-directus-backend-production.up.railway.app"}/items/propriedades/${id}?fields=*,images.directus_files_id.*`, { cache: 'no-store' });
+    const apiUrl = buildApiUrl(`/api/directus/properties?id=${id}`);
+    const res = await fetch(apiUrl, { cache: 'no-store' });
     if (!res.ok) return null;
     const data = await res.json();
-    return data.data || null;
+    return data || null;
   } catch {
     return null;
   }
