@@ -33,6 +33,7 @@ const DATO_PROPERTIES_QUERY = gql`
       state
       country
       price
+      operationType
       bedrooms
       bathrooms
       parkingspaces
@@ -66,6 +67,7 @@ const DATO_PROPERTY_QUERY = gql`
       state
       country
       price
+      operationType
       bedrooms
       bathrooms
       parkingspaces
@@ -94,6 +96,11 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
   }));
 
   const operationValues = (() => {
+    const opType = item.operationType;
+    if (opType && Array.isArray(opType)) {
+      return opType.filter(Boolean);
+    }
+
     if (!item.operation) return [];
     if (Array.isArray(item.operation)) {
       return item.operation
