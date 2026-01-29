@@ -8,15 +8,6 @@ import {
   resolveLocale,
 } from '@/lib/datocms';
 
-const FALLBACK_URL = 'https://lc-directus-backend-production.up.railway.app';
-const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || FALLBACK_URL;
-const DIRECTUS_EMAIL = process.env.NEXT_PUBLIC_DIRECTUS_EMAIL;
-const DIRECTUS_PASSWORD = process.env.NEXT_PUBLIC_DIRECTUS_PASSWORD;
-
-// Cache pour le token Directus
-let cachedToken: string | null = null;
-let tokenExpiry = 0;
-
 const DATO_PROPERTIES_QUERY = gql`
   query Properties($locale: SiteLocale!, $fallbackLocales: [SiteLocale!], $limit: Int) {
     allProperties(
@@ -261,149 +252,6 @@ const fetchFromDato = async (req: NextApiRequest) => {
   }
 };
 
-const getDirectusToken = async (): Promise<string> => {
-  const now = Date.now();
-  if (cachedToken && now < tokenExpiry - 60000) {
-    return cachedToken;
-  }
-  if (!DIRECTUS_EMAIL || !DIRECTUS_PASSWORD) {
-    return '';
-  }
-
-  const response = await fetch(`${DIRECTUS_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: DIRECTUS_EMAIL,
-      password: DIRECTUS_PASSWORD,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Login failed: ${response.status}`);
-  }
-
-  const data = await response.json();
-  const { access_token, expires } = data.data;
-
-  cachedToken = access_token;
-  tokenExpiry = now + (expires || 900000);
-
-  console.log('Directus token obtained');
-  return access_token;
-};
-
-const fetchFromDirectus = async (req: NextApiRequest) => {
-  const token = await getDirectusToken();
-
-  const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
-  url.searchParams.append(
-    'fields',
-    '*,images.directus_files_id.id,images.directus_files_id.filename_download,images.directus_files_id.type'
-  );
-
-  const { operation_type, property_type, city, min_price, max_price, featured, limit } = req.query;
-
-  if (operation_type) {
-    url.searchParams.append('filter[Operation_type][_contains]', operation_type as string);
-  }
-
-  if (property_type) {
-    url.searchParams.append('filter[Property_type][_contains]', property_type as string);
-  }
-
-  if (city) {
-    url.searchParams.append('filter[City][_icontains]', city as string);
-  }
-
-  if (min_price) {
-    url.searchParams.append('filter[Price][_gte]', min_price as string);
-  }
-
-  if (max_price) {
-    url.searchParams.append('filter[Price][_lte]', max_price as string);
-  }
-
-  if (featured === 'true') {
-    url.searchParams.append('filter[Featured][_eq]', 'true');
-  }
-
-  if (limit) {
-    url.searchParams.append('limit', limit as string);
-  }
-
-  url.searchParams.append('filter[status][_neq]', 'archived');
-
-  console.log('Fetching from Directus:', url.toString());
-
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      cachedToken = null;
-      tokenExpiry = 0;
-    }
-    throw new Error(`API error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  console.log(`Fetched ${data.data?.length || 0} properties from Directus`);
-  return data.data || [];
-};
-
-const fetchDirectusProperty = async (id?: string, slug?: string) => {
-  const token = await getDirectusToken();
-
-  if (id) {
-    const url = `${DIRECTUS_URL}/items/propriedades/${id}?fields=*,images.directus_files_id.*`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        cachedToken = null;
-        tokenExpiry = 0;
-      }
-      throw new Error(`Directus property error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data || null;
-  }
-
-  if (slug) {
-    const url = new URL(`${DIRECTUS_URL}/items/propriedades`);
-    url.searchParams.append('filter[Slug][_eq]', slug);
-    url.searchParams.append('limit', '1');
-    const response = await fetch(url.toString(), {
-      method: 'GET',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Directus property by slug error: ${response.status}`);
-    }
-    const data = await response.json();
-    return data.data?.[0] || null;
-  }
-
-  return null;
-};
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -418,14 +266,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(200).json(datoProperty);
       }
 
-      const directusProperty = await fetchDirectusProperty(
-        id ? String(id) : undefined,
-        slug ? String(slug) : undefined
-      );
-      if (directusProperty) {
-        return res.status(200).json(directusProperty);
-      }
-
       return res.status(404).json({ message: 'Property not found' });
     }
 
@@ -437,14 +277,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('DatoCMS branch failed:', error);
   }
 
-  try {
-    const directusData = await fetchFromDirectus(req);
-    return res.status(200).json(directusData);
-  } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({
-      message: 'Error fetching properties',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
+  return res.status(500).json({
+    message: 'Error fetching properties',
+    error: 'DatoCMS is not configured or unreachable',
+  });
 }
