@@ -71,6 +71,48 @@ const ListingSixAreaDirectus = () => {
   // Fetch properties from Directus
   useEffect(() => {
     const fetchProperties = async () => {
+      const fallbackProps: DatoProperty[] = [
+        {
+          id: "fallback-1",
+          Title: "Departamento muestra",
+          Address: "CDMX, Zona Centro",
+          City: "Ciudad de México",
+          State: "CDMX",
+          Price: 2950000,
+          Bedrooms: 2,
+          Bathrooms: 2,
+          Parking_spaces: 1,
+          Featured: true,
+          Image: "/assets/images/listing/img_large_07.jpg",
+        },
+        {
+          id: "fallback-2",
+          Title: "Casa de ejemplo",
+          Address: "Naucalpan",
+          City: "Naucalpan",
+          State: "Edo. Méx.",
+          Price: 4150000,
+          Bedrooms: 3,
+          Bathrooms: 2,
+          Parking_spaces: 2,
+          Featured: true,
+          Image: "/assets/images/listing/img_large_08.jpg",
+        },
+        {
+          id: "fallback-3",
+          Title: "Loft ilustrativo",
+          Address: "Polanco",
+          City: "Ciudad de México",
+          State: "CDMX",
+          Price: 5350000,
+          Bedrooms: 2,
+          Bathrooms: 2,
+          Parking_spaces: 1,
+          Featured: true,
+          Image: "/assets/images/listing/img_large_09.jpg",
+        },
+      ];
+
       try {
         setLoading(true);
         const searchParams = new URLSearchParams();
@@ -100,8 +142,9 @@ const ListingSixAreaDirectus = () => {
 
         const data = await response.json();
         const featured = Array.isArray(data) ? data.filter((p: any) => p.Featured === true) : [];
-        setProperties(featured);
+        setProperties(featured.length ? featured : fallbackProps);
       } catch (err) {
+        setProperties(fallbackProps);
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setLoading(false);
