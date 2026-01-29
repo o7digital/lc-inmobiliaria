@@ -252,6 +252,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  if (!isDatoConfigured()) {
+    // Pas de token Dato : retourner une liste vide plutôt qu'une 500 pour ne pas casser le front
+    return res.status(200).json([]);
+  }
+
   try {
     const { id, slug } = req.query;
 
@@ -272,8 +277,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('DatoCMS branch failed:', error);
   }
 
-  return res.status(500).json({
-    message: 'Error fetching properties',
-    error: 'DatoCMS is not configured or unreachable',
-  });
+  // En cas d'erreur non bloquante, renvoyer un tableau vide pour éviter l'erreur visible côté client
+  return res.status(200).json([]);
 }
