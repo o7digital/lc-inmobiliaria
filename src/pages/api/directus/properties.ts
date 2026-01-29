@@ -24,7 +24,6 @@ const DATO_PROPERTIES_QUERY = gql`
       state
       country
       price
-      operationType
       bedrooms
       bathrooms
       parkingspaces
@@ -58,7 +57,6 @@ const DATO_PROPERTY_QUERY = gql`
       state
       country
       price
-      operationType
       bedrooms
       bathrooms
       parkingspaces
@@ -86,28 +84,6 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
     },
   }));
 
-  const operationValues = (() => {
-    const opType = item.operationType;
-    if (opType && Array.isArray(opType)) {
-      return opType.filter(Boolean);
-    }
-
-    if (!item.operation) return [];
-    if (Array.isArray(item.operation)) {
-      return item.operation
-        .map((op: any) => {
-          if (typeof op === 'string') return op;
-          if (op && typeof op === 'object') {
-            return op.value || op.title || op.label || '';
-          }
-          return '';
-        })
-        .filter(Boolean);
-    }
-    if (typeof item.operation === 'string') return [item.operation];
-    return [];
-  })();
-
   const amenities = Array.isArray(item.amenities)
     ? item.amenities
     : item.amenities
@@ -130,7 +106,7 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
     Bedrooms: item.bedrooms ?? 0,
     Bathrooms: item.bathrooms ?? 0,
     Parking_spaces: item.parkingspaces ?? item.parkingSpaces ?? 0,
-    Operation_type: operationValues,
+    Operation_type: [],
     Property_type: item.propertyType || [],
     Featured: Boolean(item.featured),
     Descripcion: item.description || '',
@@ -209,46 +185,65 @@ const fetchDatoProperty = async (req: NextApiRequest) => {
   const { id, slug } = req.query;
   if (!id && !slug) return null;
 
-  try {
-    const locale = resolveLocale((req.query.locale as string) || (req.query.lang as string));
-    const fallbackLocales = getFallbackLocales(locale);
-    const client = getDatoClient();
+  const locale = resolveLocale((req.query.locale as string) || (req.query.lang as string));
+  const fallbackLocales = getFallbackLocales(locale);
+  const client = getDatoClient();
 
-    const data = await client.request<{ property: DatoProperty | null }>(DATO_PROPERTY_QUERY, {
-      locale,
-      fallbackLocales,
+  const tryRequest = async (loc: string, fallbacks: string[]) => {
+    return client.request<{ property: DatoProperty | null }>(DATO_PROPERTY_QUERY, {
+      locale: loc,
+      fallbackLocales: fallbacks,
       id,
       slug,
     });
+  };
 
-    if (!data.property) return null;
-    return mapDatoToDirectusShape(data.property);
-  } catch (error) {
-    console.error('DatoCMS property fetch failed:', error);
-    return null;
+  try {
+    const data = await tryRequest(locale, fallbackLocales);
+    if (data.property) return mapDatoToDirectusShape(data.property);
+  } catch (err) {
+    console.error('DatoCMS property fetch failed, retrying with es/default:', err);
+    try {
+      const data = await tryRequest('es', []);
+      if (data.property) return mapDatoToDirectusShape(data.property);
+    } catch (err2) {
+      console.error('DatoCMS property fallback fetch failed:', err2);
+    }
   }
+
+  return null;
 };
 
 const fetchFromDato = async (req: NextApiRequest) => {
   if (!isDatoConfigured()) return null;
 
-  try {
-    const locale = resolveLocale((req.query.locale as string) || (req.query.lang as string));
-    const fallbackLocales = getFallbackLocales(locale);
-    const limit = req.query.limit ? Number(req.query.limit) : 50;
-    const client = getDatoClient();
+  const locale = resolveLocale((req.query.locale as string) || (req.query.lang as string));
+  const fallbackLocales = getFallbackLocales(locale);
+  const limit = req.query.limit ? Number(req.query.limit) : 50;
+  const client = getDatoClient();
 
-    const data = await client.request<{ allProperties: DatoProperty[] }>(DATO_PROPERTIES_QUERY, {
-      locale,
-      fallbackLocales,
+  const tryRequest = async (loc: string, fallbacks: string[]) => {
+    return client.request<{ allProperties: DatoProperty[] }>(DATO_PROPERTIES_QUERY, {
+      locale: loc,
+      fallbackLocales: fallbacks,
       limit,
     });
+  };
 
+  try {
+    const data = await tryRequest(locale, fallbackLocales);
     const mapped = (data.allProperties || []).map(mapDatoToDirectusShape);
     return applyQueryFilters(mapped, req.query);
-  } catch (error) {
-    console.error('DatoCMS fetch failed, falling back to Directus:', error);
-    return null;
+  } catch (err) {
+    console.error('DatoCMS fetch failed, retrying with es/default:', err);
+    try {
+      const data = await tryRequest('es', []);
+      const mapped = (data.allProperties || []).map(mapDatoToDirectusShape);
+      return applyQueryFilters(mapped, req.query);
+    } catch (err2) {
+      console.error('DatoCMS fallback fetch failed:', err2);
+      return null;
+    }
   }
 };
 
