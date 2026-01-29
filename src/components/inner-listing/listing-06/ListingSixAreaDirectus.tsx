@@ -1,5 +1,7 @@
 "use client";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { DirectusProperty } from "@/types/directus";
+import { buildDirectusAssetUrl } from "@/lib/directus";
 
 const initialFilterState = {
   type: "",
@@ -18,32 +20,12 @@ const normalizeText = (value?: string) => {
     .trim();
 };
 
-type DatoProperty = {
-  id: string | number;
-  Title: string;
-  Slug?: string;
-  Address?: string;
-  City?: string;
-  State?: string;
-  Country?: string;
-  Price?: number | string;
-  Currency?: string[];
-  Bedrooms?: number;
-  Bathrooms?: number;
-  Parking_spaces?: number;
-  Featured?: boolean;
-  Property_type?: string[];
-  Operation_type?: string[];
-  Image?: string;
-  images?: { directus_files_id?: { id?: string } }[];
-};
-
-const formatLocation = (property: DatoProperty) => {
+const formatLocation = (property: DirectusProperty) => {
   const parts = [property.Address, property.City, property.State].filter(Boolean);
   return parts.join(", ");
 };
 
-const formatPrice = (price: number | string = 0, currency: string[] = ["MXN"]) => {
+const formatPrice = (price: number | string, currency: string[] = ["MXN"]) => {
   const priceNum = typeof price === 'string' ? parseFloat(price) : price;
   const curr = Array.isArray(currency) ? currency[0] : currency;
   return new Intl.NumberFormat("es-MX", {
@@ -54,15 +36,71 @@ const formatPrice = (price: number | string = 0, currency: string[] = ["MXN"]) =
   }).format(priceNum);
 };
 
-const getImageUrl = (property: DatoProperty) => {
-  if (property.Image && typeof property.Image === "string") return property.Image;
-  const first = property.images?.[0]?.directus_files_id?.id;
-  if (first) return first;
+const extractFileId = (imageField: any): string | null => {
+  if (!imageField) return null;
+  
+  if (typeof imageField === 'string') {
+    return imageField;
+  }
+  
+  if (Array.isArray(imageField)) {
+    const firstItem = imageField[0];
+    if (firstItem?.directus_files_id?.id) {
+      return firstItem.directus_files_id.id;
+    }
+  }
+  
+  if (typeof imageField === 'object' && imageField !== null) {
+    if ('id' in imageField && imageField.id) {
+      return imageField.id;
+    }
+    
+    if ('directus_files_id' in imageField) {
+      const filesId = imageField.directus_files_id;
+      if (typeof filesId === 'string') {
+        return filesId;
+      }
+      if (filesId && typeof filesId === 'object' && 'id' in filesId && filesId.id) {
+        return filesId.id;
+      }
+    }
+  }
+  
+  return null;
+};
+
+const getDirectusImageUrl = (property: DirectusProperty, width: number = 1200) => {
+  // Debug: Log pour vérifier les images
+  console.log(`Property ${property.Title}:`, {
+    images: property.images,
+    Image: property.Image
+  });
+  
+  // Priorité : nouvelles images > ancien champ Image > image par défaut
+  if (property.images && property.images.length > 0) {
+    const firstImage = property.images[0];
+    if (firstImage?.directus_files_id?.id) {
+      const imageUrl = buildDirectusAssetUrl(firstImage.directus_files_id.id);
+      console.log(`Using new images system: ${imageUrl}`);
+      return imageUrl || "/assets/images/listing/img_large_07.jpg";
+    }
+  }
+  
+  // Fallback sur l'ancien système Image
+  const fileId = extractFileId(property.Image);
+  if (fileId) {
+    const imageUrl = buildDirectusAssetUrl(fileId);
+    console.log(`Using legacy Image system: ${imageUrl}`);
+    return imageUrl || "/assets/images/listing/img_large_07.jpg";
+  }
+  
+  // Image par défaut
+  console.log('Using fallback image');
   return "/assets/images/listing/img_large_07.jpg";
 };
 
 const ListingSixAreaDirectus = () => {
-  const [properties, setProperties] = useState<DatoProperty[]>([]);
+  const [properties, setProperties] = useState<DirectusProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState(initialFilterState);
@@ -98,9 +136,10 @@ const ListingSixAreaDirectus = () => {
           throw new Error('Error al cargar las propiedades');
         }
 
-        const data = await response.json();
-        const featured = Array.isArray(data) ? data.filter((p: any) => p.Featured === true) : [];
-        setProperties(featured);
+  const data = await response.json();
+  // Filtrer uniquement les propriétés Featured
+  const featured = Array.isArray(data) ? data.filter((p: any) => p.Featured === true) : [];
+  setProperties(featured);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
@@ -149,14 +188,14 @@ const ListingSixAreaDirectus = () => {
         filtered.sort((a, b) => {
           const priceA = typeof a.Price === 'string' ? parseFloat(a.Price) : a.Price;
           const priceB = typeof b.Price === 'string' ? parseFloat(b.Price) : b.Price;
-          return (priceA ?? 0) - (priceB ?? 0);
+          return priceA - priceB;
         });
         break;
       case "price-high":
         filtered.sort((a, b) => {
           const priceA = typeof a.Price === 'string' ? parseFloat(a.Price) : a.Price;
           const priceB = typeof b.Price === 'string' ? parseFloat(b.Price) : b.Price;
-          return (priceB ?? 0) - (priceA ?? 0);
+          return priceB - priceA;
         });
         break;
       case "newest":
@@ -259,7 +298,7 @@ const ListingSixAreaDirectus = () => {
                       )}
                       <a href={`/property-directus/${property.id}`} aria-label={`Voir les détails de ${property.Title}`}>
                         <img 
-                          src={getImageUrl(property)} 
+                          src={getDirectusImageUrl(property)} 
                           alt={property.Title}
                         />
                       </a>
