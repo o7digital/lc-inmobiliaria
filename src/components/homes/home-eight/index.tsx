@@ -1,4 +1,4 @@
-import HeaderFive from "@/layouts/headers/HeaderFive";
+import HeaderTwo from "@/layouts/headers/HeaderTwo";
 import Hero from "./Hero";
 import AboutSection from "./AboutSection";
 import ConsultoriaSection from "./ConsultoriaSection";
@@ -13,7 +13,7 @@ import FooterThree from "@/layouts/footers/FooterThree";
 const HomeEight = () => {
   return (
     <div className="main-page-wrapper">
-      <HeaderFive />
+      <HeaderTwo style_1={false} style_2={true} />
       <Hero />
 
       {/* 🔥 Bloques añadidos */}
