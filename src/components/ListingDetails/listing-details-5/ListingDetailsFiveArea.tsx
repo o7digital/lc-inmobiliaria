@@ -195,82 +195,126 @@ const ListingDetailsFiveArea = () => {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.88)",
+            background: "rgba(0,0,0,0.9)",
             zIndex: 9999,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            gap: 12,
           }}
         >
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              closeLightbox()
-            }}
+          <div
             style={{
-              position: "absolute",
-              top: 20,
-              right: 20,
-              background: "rgba(0,0,0,0.6)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              padding: "10px 14px",
-              fontSize: 16,
-              cursor: "pointer",
+              position: "relative",
+              width: "100%",
+              maxWidth: "1400px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 60px",
+              boxSizing: "border-box",
             }}
-          >
-            ✕
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              prevImage()
-            }}
-            style={{
-              position: "absolute",
-              left: 15,
-              background: "rgba(0,0,0,0.6)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "50%",
-              width: 46,
-              height: 46,
-              fontSize: 24,
-              cursor: "pointer",
-            }}
-          >
-            ‹
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              nextImage()
-            }}
-            style={{
-              position: "absolute",
-              right: 15,
-              background: "rgba(0,0,0,0.6)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "50%",
-              width: 46,
-              height: 46,
-              fontSize: 24,
-              cursor: "pointer",
-            }}
-          >
-            ›
-          </button>
-          <Image
-            src={gallery[activeIndex]?.url || mainImage}
-            alt={property?.Title || "Galería"}
-            width={1400}
-            height={900}
-            unoptimized
-            style={{ maxHeight: "90vh", width: "auto", height: "auto", objectFit: "contain" }}
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <button
+              onClick={prevImage}
+              style={{
+                position: "absolute",
+                left: 10,
+                background: "rgba(0,0,0,0.6)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "50%",
+                width: 48,
+                height: 48,
+                fontSize: 24,
+                cursor: "pointer",
+              }}
+            >
+              ‹
+            </button>
+            <Image
+              src={gallery[activeIndex]?.url || mainImage}
+              alt={property?.Title || "Galería"}
+              width={1400}
+              height={900}
+              unoptimized
+              style={{ maxHeight: "80vh", width: "auto", height: "auto", objectFit: "contain" }}
+            />
+            <button
+              onClick={nextImage}
+              style={{
+                position: "absolute",
+                right: 10,
+                background: "rgba(0,0,0,0.6)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "50%",
+                width: 48,
+                height: 48,
+                fontSize: 24,
+                cursor: "pointer",
+              }}
+            >
+              ›
+            </button>
+            <button
+              onClick={closeLightbox}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 60,
+                background: "rgba(0,0,0,0.6)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              padding: "6px 12px",
+              background: "rgba(0,0,0,0.65)",
+              borderRadius: 12,
+              maxWidth: "92vw",
+              overflowX: "auto",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {gallery.map((img, idx) => (
+              <div
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                style={{
+                  width: 90,
+                  height: 64,
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  border: idx === activeIndex ? "2px solid #fff" : "1px solid rgba(255,255,255,0.2)",
+                  cursor: "pointer",
+                  flex: "0 0 auto",
+                }}
+              >
+                <Image
+                  src={img.url}
+                  alt={img.alt || property?.Title || "thumb"}
+                  width={90}
+                  height={64}
+                  unoptimized
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
