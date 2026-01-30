@@ -38,8 +38,8 @@ const getGallery = (property: DirectusProperty): GalleryItem[] => {
 
 const ListingDetailsFiveArea = () => {
   const search = useSearchParams()
-  const slug = search.get("slug") || undefined
-  const idParam = search.get("id") || undefined
+  const slug = search?.get("slug") || undefined
+  const idParam = search?.get("id") || undefined
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [property, setProperty] = useState<DirectusProperty | null>(null)
