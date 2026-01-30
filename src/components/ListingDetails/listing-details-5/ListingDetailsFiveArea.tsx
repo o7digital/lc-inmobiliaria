@@ -87,38 +87,18 @@ const ListingDetailsFiveArea = () => {
           {error && !loading && <p className="pt-80 text-center text-danger">No se pudo cargar: {error}</p>}
           {!loading && !error && property && (
             <>
-              <div className="row g-3 mb-40">
-                <div className="col-lg-8">
-                  <div className="position-relative">
-                    <Image
-                      src={mainImage}
-                      alt={property.Title || "Propiedad"}
-                      width={1200}
-                      height={800}
-                      className="w-100 rounded-4"
-                      style={{ objectFit: "cover", maxHeight: 520, cursor: "zoom-in" }}
-                      unoptimized
-                      onClick={() => openLightbox(0)}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="row g-3">
-                    {gallery.slice(1, 4).map((img, idx) => (
-                      <div key={idx} className="col-12">
-                        <Image
-                          src={img.url}
-                          alt={img.alt || property.Title || "Propiedad"}
-                          width={700}
-                          height={350}
-                          className="w-100 rounded-4"
-                          style={{ objectFit: "cover", height: 170, cursor: "zoom-in" }}
-                          unoptimized
-                          onClick={() => openLightbox(idx + 1)}
-                        />
-                      </div>
-                    ))}
-                  </div>
+              <div className="mb-30">
+                <div className="position-relative">
+                  <Image
+                    src={mainImage}
+                    alt={property.Title || "Propiedad"}
+                    width={1400}
+                    height={800}
+                    className="w-100 rounded-4"
+                    style={{ objectFit: "cover", maxHeight: 540, cursor: "zoom-in" }}
+                    unoptimized
+                    onClick={() => openLightbox(0)}
+                  />
                 </div>
               </div>
 
