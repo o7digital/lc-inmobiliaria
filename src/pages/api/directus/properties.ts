@@ -47,7 +47,7 @@ const DATO_PROPERTY_QUERY = gql`
     property(
       locale: $locale
       fallbackLocales: $fallbackLocales
-      filter: { OR: [{ id: { eq: $id } }, { titleSlug: { eq: $slug } }, { slug: { eq: $slug } }] }
+      filter: { OR: [{ id: { eq: $id } }, { titleSlug: { eq: $slug } }] }
     ) {
       id
       title
