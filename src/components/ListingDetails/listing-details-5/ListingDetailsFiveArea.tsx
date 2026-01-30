@@ -35,18 +35,23 @@ const getGallery = (property: DirectusProperty): GalleryItem[] => {
 
 const ListingDetailsFiveArea = () => {
   const search = useSearchParams()
-  const slug = search.get("slug") || search.get("id")
+  const slug = search.get("slug") || undefined
+  const idParam = search.get("id") || undefined
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [property, setProperty] = useState<DirectusProperty | null>(null)
 
   useEffect(() => {
-    if (!slug) return
+    if (!slug && !idParam) return
     const load = async () => {
       try {
         setLoading(true)
         setError(null)
-        const res = await fetch(`/api/directus/properties?slug=${encodeURIComponent(slug)}`)
+        setProperty(null)
+        const query = new URLSearchParams()
+        if (slug) query.set("slug", slug)
+        if (idParam) query.set("id", idParam)
+        const res = await fetch(`/api/directus/properties?${query.toString()}`)
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data = await res.json()
         setProperty(data)
@@ -58,13 +63,13 @@ const ListingDetailsFiveArea = () => {
       }
     }
     load()
-  }, [slug])
+  }, [slug, idParam])
 
   const gallery = useMemo(() => (property ? getGallery(property) : []), [property])
   const mainImage = gallery[0]?.url || "/assets/images/listing/img_large_07.jpg"
 
   return (
-    <div className="main-page-wrapper">
+    <div className="main-page-wrapper" key={slug || idParam || "detalle"}>
       <HeaderTwo style_1={false} style_2={true} />
 
       <div className="listing-details-one theme-details-one mt-80 pb-120">

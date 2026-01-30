@@ -187,7 +187,7 @@ const ListingFiveArea = () => {
                             <i className="fa-light fa-heart"></i>
                           </Link>
                           {useDato ? (
-                            <Link href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}`}>
+                            <Link href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}>
                               <Image
                                 src={getDatoImage(item)}
                                 alt={item.Title || "Propiedad"}
@@ -228,7 +228,7 @@ const ListingFiveArea = () => {
 
                       <div className="property-info pt-20">
                         <Link
-                          href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}` : `/listing_details_05?id=${item.id}`}
+                          href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}` : `/listing_details_05?id=${item.id}`}
                           className="title tran3s d-inline-block"
                         >
                           {useDato ? item.Title : item.title}
@@ -267,7 +267,7 @@ const ListingFiveArea = () => {
                                 })}${item.price_text ? "/m" : ""}`}
                           </strong>
                           <Link
-                            href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}` : `/listing_details_05?id=${item.id}`}
+                            href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}` : `/listing_details_05?id=${item.id}`}
                             className="btn-four"
                           >
                             <i className="bi bi-arrow-up-right"></i>
