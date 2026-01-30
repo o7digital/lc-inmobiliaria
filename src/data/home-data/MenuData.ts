@@ -27,12 +27,18 @@ const menu_data: MenuItem[] = [
   },
   {
     id: 2,
+    title: "Propriedades",
+    link: "/listing_05",
+    has_dropdown: false,
+  },
+  {
+    id: 3,
     title: "Quiénes Somos",
     link: "/#quienes-somos",
     has_dropdown: false,
   },
   {
-    id: 3,
+    id: 4,
     title: "Contacto",
     link: "/contact",
     has_dropdown: false,
