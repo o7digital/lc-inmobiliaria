@@ -40,6 +40,8 @@ const ListingDetailsFiveArea = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [property, setProperty] = useState<DirectusProperty | null>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
     if (!slug && !idParam) return
@@ -67,6 +69,13 @@ const ListingDetailsFiveArea = () => {
 
   const gallery = useMemo(() => (property ? getGallery(property) : []), [property])
   const mainImage = gallery[0]?.url || "/assets/images/listing/img_large_07.jpg"
+  const openLightbox = (idx: number) => {
+    setActiveIndex(idx)
+    setLightboxOpen(true)
+  }
+  const closeLightbox = () => setLightboxOpen(false)
+  const nextImage = () => setActiveIndex((prev) => (gallery.length ? (prev + 1) % gallery.length : prev))
+  const prevImage = () => setActiveIndex((prev) => (gallery.length ? (prev - 1 + gallery.length) % gallery.length : prev))
 
   return (
     <div className="main-page-wrapper" key={slug || idParam || "detalle"}>
@@ -81,14 +90,32 @@ const ListingDetailsFiveArea = () => {
               <div className="row g-3 mb-40">
                 <div className="col-lg-8">
                   <div className="position-relative">
-                    <Image src={mainImage} alt={property.Title || "Propiedad"} width={1200} height={800} className="w-100 rounded-4" style={{ objectFit: "cover", maxHeight: 520 }} unoptimized />
+                    <Image
+                      src={mainImage}
+                      alt={property.Title || "Propiedad"}
+                      width={1200}
+                      height={800}
+                      className="w-100 rounded-4"
+                      style={{ objectFit: "cover", maxHeight: 520, cursor: "zoom-in" }}
+                      unoptimized
+                      onClick={() => openLightbox(0)}
+                    />
                   </div>
                 </div>
                 <div className="col-lg-4">
                   <div className="row g-3">
                     {gallery.slice(1, 4).map((img, idx) => (
                       <div key={idx} className="col-12">
-                        <Image src={img.url} alt={img.alt || property.Title || "Propiedad"} width={700} height={350} className="w-100 rounded-4" style={{ objectFit: "cover", height: 170 }} unoptimized />
+                        <Image
+                          src={img.url}
+                          alt={img.alt || property.Title || "Propiedad"}
+                          width={700}
+                          height={350}
+                          className="w-100 rounded-4"
+                          style={{ objectFit: "cover", height: 170, cursor: "zoom-in" }}
+                          unoptimized
+                          onClick={() => openLightbox(idx + 1)}
+                        />
                       </div>
                     ))}
                   </div>
@@ -160,6 +187,92 @@ const ListingDetailsFiveArea = () => {
           )}
         </div>
       </div>
+
+      {lightboxOpen && gallery.length > 0 && (
+        <div
+          className="lightbox-overlay"
+          onClick={closeLightbox}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.88)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              closeLightbox()
+            }}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              background: "rgba(0,0,0,0.6)",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              padding: "10px 14px",
+              fontSize: 16,
+              cursor: "pointer",
+            }}
+          >
+            ✕
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              prevImage()
+            }}
+            style={{
+              position: "absolute",
+              left: 15,
+              background: "rgba(0,0,0,0.6)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "50%",
+              width: 46,
+              height: 46,
+              fontSize: 24,
+              cursor: "pointer",
+            }}
+          >
+            ‹
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              nextImage()
+            }}
+            style={{
+              position: "absolute",
+              right: 15,
+              background: "rgba(0,0,0,0.6)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "50%",
+              width: 46,
+              height: 46,
+              fontSize: 24,
+              cursor: "pointer",
+            }}
+          >
+            ›
+          </button>
+          <Image
+            src={gallery[activeIndex]?.url || mainImage}
+            alt={property?.Title || "Galería"}
+            width={1400}
+            height={900}
+            unoptimized
+            style={{ maxHeight: "90vh", width: "auto", height: "auto", objectFit: "contain" }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       <FooterThree />
     </div>
