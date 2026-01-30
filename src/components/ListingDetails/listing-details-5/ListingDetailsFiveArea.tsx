@@ -26,7 +26,7 @@ const getGallery = (property: DirectusProperty): GalleryItem[] => {
     if (typeof img === "string") urls.push({ url: img })
     else if (img.directus_files_id?.id) urls.push({ url: buildDirectusAssetUrl(img.directus_files_id.id) || img.directus_files_id.id })
   }
-  const galleryArr = anyProp.images || property.images
+  const galleryArr = anyProp.images || anyProp.gallery || anyProp.Gallery
   if (Array.isArray(galleryArr)) {
     galleryArr.forEach((img: any) => {
       const id = img?.directus_files_id?.id
