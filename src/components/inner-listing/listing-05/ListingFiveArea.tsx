@@ -187,15 +187,17 @@ const ListingFiveArea = () => {
                             <i className="fa-light fa-heart"></i>
                           </Link>
                           {useDato ? (
-                            <Image
-                              src={getDatoImage(item)}
-                              alt={item.Title || "Propiedad"}
-                              width={900}
-                              height={600}
-                              className="w-100"
-                              style={{ objectFit: "cover", height: 260 }}
-                              unoptimized
-                            />
+                            <Link href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}`}>
+                              <Image
+                                src={getDatoImage(item)}
+                                alt={item.Title || "Propiedad"}
+                                width={900}
+                                height={600}
+                                className="w-100"
+                                style={{ objectFit: "cover", height: 260 }}
+                                unoptimized
+                              />
+                            </Link>
                           ) : (
                             <div id={`carousel${item.carousel}`} className="carousel slide">
                               <div className="carousel-indicators">
@@ -213,7 +215,7 @@ const ListingFiveArea = () => {
                               <div className="carousel-inner">
                                 {item.carousel_thumb.map((thumb: any, i: any) => (
                                   <div key={i} className={`carousel-item ${thumb.active}`} data-bs-interval="1000000">
-                                    <Link href="/listing_details_01" className="d-block">
+                                    <Link href={`/listing_details_05?id=${item.id}`} className="d-block">
                                       <Image src={thumb.img} className="w-100" alt="..." />
                                     </Link>
                                   </div>
@@ -225,7 +227,12 @@ const ListingFiveArea = () => {
                       </div>
 
                       <div className="property-info pt-20">
-                        <span className="title tran3s">{useDato ? item.Title : item.title}</span>
+                        <Link
+                          href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}` : `/listing_details_05?id=${item.id}`}
+                          className="title tran3s d-inline-block"
+                        >
+                          {useDato ? item.Title : item.title}
+                        </Link>
                         <div className="address">
                           {useDato ? [item.Address, item.City, item.State].filter(Boolean).join(", ") : item.address}
                         </div>
@@ -259,7 +266,10 @@ const ListingFiveArea = () => {
                                   maximumFractionDigits: 2,
                                 })}${item.price_text ? "/m" : ""}`}
                           </strong>
-                          <Link href="/listing_details_05" className="btn-four">
+                          <Link
+                            href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}` : `/listing_details_05?id=${item.id}`}
+                            className="btn-four"
+                          >
                             <i className="bi bi-arrow-up-right"></i>
                           </Link>
                         </div>
