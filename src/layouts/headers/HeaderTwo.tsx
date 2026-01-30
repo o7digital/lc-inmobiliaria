@@ -26,10 +26,10 @@ const HeaderTwo = ({ style_1, style_2 }: any) => {
                            <Image
                               src={clientLogo}
                               alt="LC Inmobiliaria"
-                              width={170}
-                              height={60}
+                              width={340}
+                              height={120}
                               priority
-                              style={{ height: "auto", width: "auto", maxHeight: 60 }}
+                              style={{ height: "auto", width: "auto", maxHeight: 120 }}
                            />
                         </Link>
                      </div>
