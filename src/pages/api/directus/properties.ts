@@ -9,7 +9,7 @@ import {
 } from '@/lib/datocms';
 
 const DATO_PROPERTIES_QUERY = gql`
-  query Properties($locale: SiteLocale!, $fallbackLocales: [SiteLocale!], $limit: Int) {
+  query Properties($locale: SiteLocale!, $fallbackLocales: [SiteLocale!], $limit: IntType) {
     allProperties(
       locale: $locale
       fallbackLocales: $fallbackLocales
@@ -18,7 +18,7 @@ const DATO_PROPERTIES_QUERY = gql`
     ) {
       id
       title
-      title_slug
+      titleSlug
       adress
       city
       state
@@ -30,7 +30,7 @@ const DATO_PROPERTIES_QUERY = gql`
       featured
       description
       amenities
-      main_image {
+      mainImage {
         url
         alt
       }
@@ -47,11 +47,11 @@ const DATO_PROPERTY_QUERY = gql`
     property(
       locale: $locale
       fallbackLocales: $fallbackLocales
-      filter: { OR: [{ id: { eq: $id } }, { title_slug: { eq: $slug } }, { slug: { eq: $slug } }] }
+      filter: { OR: [{ id: { eq: $id } }, { titleSlug: { eq: $slug } }, { slug: { eq: $slug } }] }
     ) {
       id
       title
-      title_slug
+      titleSlug
       adress
       city
       state
@@ -63,7 +63,7 @@ const DATO_PROPERTY_QUERY = gql`
       featured
       description
       amenities
-      main_image {
+      mainImage {
         url
         alt
       }
@@ -96,7 +96,7 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
   return {
     id: Number(item.id) || item.id,
     Title: item.title,
-    Slug: item.title_slug || item.slug || undefined,
+    Slug: item.titleSlug || item.slug || undefined,
     Address: item.adress || item.address || '',
     City: item.city || '',
     State: item.state || '',
@@ -111,7 +111,7 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
     Featured: Boolean(item.featured),
     Descripcion: item.description || '',
     Amenidades: amenities,
-    Image: item.main_image?.url || item.mainImage?.url,
+    Image: item.mainImage?.url,
     images,
   };
 };
@@ -186,7 +186,7 @@ const fetchDatoProperty = async (req: NextApiRequest) => {
   if (!id && !slug) return null;
 
   const locale = resolveLocale((req.query.locale as string) || (req.query.lang as string));
-  const fallbackLocales = getFallbackLocales(locale);
+  const fallbackLocales: string[] = []; // éviter les locales non supportées par Dato
   const client = getDatoClient();
 
   const tryRequest = async (loc: string, fallbacks: string[]) => {
@@ -218,7 +218,7 @@ const fetchFromDato = async (req: NextApiRequest) => {
   if (!isDatoConfigured()) return null;
 
   const locale = resolveLocale((req.query.locale as string) || (req.query.lang as string));
-  const fallbackLocales = getFallbackLocales(locale);
+  const fallbackLocales: string[] = []; // éviter les locales non supportées par Dato
   const limit = req.query.limit ? Number(req.query.limit) : 50;
   const client = getDatoClient();
 
@@ -235,7 +235,7 @@ const fetchFromDato = async (req: NextApiRequest) => {
     const mapped = (data.allProperties || []).map(mapDatoToDirectusShape);
     return applyQueryFilters(mapped, req.query);
   } catch (err) {
-    console.error('DatoCMS fetch failed, retrying with es/default:', err);
+    console.error('DatoCMS fetch failed locale', locale, 'fallback', fallbackLocales, err);
     try {
       const data = await tryRequest('es', []);
       const mapped = (data.allProperties || []).map(mapDatoToDirectusShape);
