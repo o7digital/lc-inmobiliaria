@@ -96,7 +96,7 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
   return {
     id: Number(item.id) || item.id,
     Title: item.title,
-    Slug: item.titleSlug || item.slug || undefined,
+    Slug: item.titleSlug || item.title_slug || item.slug || undefined,
     Address: item.adress || item.address || '',
     City: item.city || '',
     State: item.state || '',
