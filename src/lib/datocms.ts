@@ -3,7 +3,9 @@ import { GraphQLClient } from 'graphql-request';
 const DATOCMS_API_TOKEN =
   process.env.DATOCMS_API_TOKEN ||
   process.env.DATOCMS_READ_ONLY_TOKEN ||
-  process.env.NEXT_PUBLIC_DATOCMS_API_TOKEN;
+  process.env.NEXT_PUBLIC_DATOCMS_API_TOKEN ||
+  // fallback typo seen in env vars
+  (process.env as any).DATOSCMS_API_TOKEN;
 
 const DATOCMS_ENDPOINT = process.env.DATOCMS_ENDPOINT || 'https://graphql.datocms.com/';
 const DATOCMS_ENVIRONMENT = process.env.DATOCMS_ENVIRONMENT;
