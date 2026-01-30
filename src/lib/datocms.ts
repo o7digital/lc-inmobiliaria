@@ -53,6 +53,7 @@ export interface DatoProperty {
   id: string;
   title: string;
   title_slug?: string | null; // Dato slug field (user naming)
+  titleSlug?: string | null; // camelCase variant
   slug?: string | null; // fallback if renamed later
   adress?: string | null; // note: field name in Dato UI
   address?: string | null;
