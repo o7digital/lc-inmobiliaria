@@ -19,13 +19,16 @@ const formatPrice = (price?: number | string, currency?: string[]) => {
 
 const getGallery = (property: DirectusProperty): GalleryItem[] => {
   const urls: GalleryItem[] = []
-  if (property.Image) {
-    const img = property.Image as any
+  const anyProp = property as any
+  const imageField = anyProp.Image || anyProp.mainImage
+  if (imageField) {
+    const img = imageField as any
     if (typeof img === "string") urls.push({ url: img })
     else if (img.directus_files_id?.id) urls.push({ url: buildDirectusAssetUrl(img.directus_files_id.id) || img.directus_files_id.id })
   }
-  if (Array.isArray(property.images)) {
-    property.images.forEach((img: any) => {
+  const galleryArr = anyProp.images || property.images
+  if (Array.isArray(galleryArr)) {
+    galleryArr.forEach((img: any) => {
       const id = img?.directus_files_id?.id
       if (id) urls.push({ url: buildDirectusAssetUrl(id) || id })
     })
