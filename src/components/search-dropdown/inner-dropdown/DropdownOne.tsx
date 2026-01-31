@@ -2,7 +2,7 @@ import NiceSelect from "@/ui/NiceSelect"
 import PriceRange from "../../common/PriceRange";
 import Link from "next/link";
 
-const ammenities_data: string[] = ["A/C & Heating", "Garages", "Garden", "Disabled Access", "Swimming Pool", "Parking", "Wifi", "Pet Friendly", "Ceiling Height", "Fireplace", "Play Ground", "Elevator"]
+const ammenities_data: string[] = ["A/C y Calefacción", "Garajes", "Jardín", "Acceso para discapacitados", "Alberca", "Estacionamiento", "Wifi", "Pet Friendly", "Altura de techo", "Chimenea", "Área de juegos", "Elevador"]
 
 const DropdownOne = ({
    handleBathroomChange,
@@ -22,14 +22,14 @@ const DropdownOne = ({
          <div className="row gx-lg-5">
             <div className="col-12">
                <div className="input-box-one mb-35">
-                  <div className="label">I’m looking to...</div>
+                  <div className="label">Estoy buscando...</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
-                        { value: "apartments", text: "Buy Apartments" },
-                        { value: "condos", text: "Rent Condos" },
-                        { value: "houses", text: "Sell Houses" },
-                        { value: "industrial", text: "Rent Industrial" },
-                        { value: "villas", text: "Sell Villas" },
+                        { value: "apartments", text: "Comprar departamentos" },
+                        { value: "condos", text: "Rentar condos" },
+                        { value: "houses", text: "Vender casas" },
+                        { value: "industrial", text: "Rentar industrial" },
+                        { value: "villas", text: "Vender villas" },
                      ]}
                      defaultCurrent={0}
                      onChange={handleStatusChange}
@@ -40,15 +40,15 @@ const DropdownOne = ({
             
             <div className="col-12">
                <div className="input-box-one mb-35">
-                  <div className="label">Keyword</div>
-                  <input onChange={handleSearchChange} type="text" placeholder="buy, home, loft, apartment"
+                  <div className="label">Palabra clave</div>
+                  <input onChange={handleSearchChange} type="text" placeholder="comprar, casa, loft, departamento"
                      className="type-input" />
                </div>
             </div>
 
             <div className="col-12">
                <div className="input-box-one mb-50">
-                  <div className="label">Location</div>
+                  <div className="label">Ubicación</div>
                   <NiceSelect className="nice-select location fw-normal"
                      options={[
                         { value: "washington", text: "Washington DC" },
@@ -68,7 +68,7 @@ const DropdownOne = ({
 
             <div className="col-sm-6">
                <div className="input-box-one mb-40">
-                  <div className="label">Bedroom</div>
+                  <div className="label">Recámaras</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
                         { value: "1", text: "1" },
@@ -85,7 +85,7 @@ const DropdownOne = ({
 
             <div className="col-sm-6">
                <div className="input-box-one mb-40">
-                  <div className="label">Bath</div>
+                  <div className="label">Baños</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
                         { value: "1", text: "1" },
@@ -101,7 +101,7 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mb-30">Amenities</h6>
+               <h6 className="block-title fw-bold mb-30">Amenidades</h6>
                <ul
                   className="style-none d-flex flex-wrap justify-content-between filter-input">
                   {ammenities_data.map((list, i) => (
@@ -120,7 +120,7 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mt-25 mb-15">Price range</h6>
+               <h6 className="block-title fw-bold mt-25 mb-15">Rango de precio</h6>
                <div className="price-ranger">
                   <div
                      className="price-input d-flex align-items-center justify-content-between pt-5">
@@ -144,17 +144,17 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mt-45 mb-20">SQFT</h6>
+               <h6 className="block-title fw-bold mt-45 mb-20">m²</h6>
                <div className="d-flex align-items-center sqf-ranger">
-                  <input type="text" placeholder="Min" />
+                  <input type="text" placeholder="Mín" />
                   <div className="divider"></div>
-                  <input type="text" placeholder="Max" />
+                  <input type="text" placeholder="Máx" />
                </div>
             </div>
             <div className="col-12">
                <button className="fw-500 text-uppercase tran3s apply-search w-100 mt-40 mb-25">
                   <i className="fa-light fa-magnifying-glass"></i>
-                  <span>Search</span>
+                  <span>Buscar</span>
                </button>
             </div>
 
@@ -162,11 +162,11 @@ const DropdownOne = ({
                <div className="d-flex justify-content-between form-widget">
                   <a onClick={handleResetFilter} style={{ cursor: "pointer" }} className="tran3s">
                      <i className="fa-regular fa-arrows-rotate"></i>
-                     <span>Reset Filter</span>
+                     <span>Reiniciar filtros</span>
                   </a>
                   <Link href="#" className="tran3s">
                      <i className="fa-regular fa-star"></i>
-                     <span>Save Search</span>
+                     <span>Guardar búsqueda</span>
                   </Link>
                </div>
             </div>
