@@ -44,6 +44,8 @@ const ListingFiveArea = () => {
   const [datoLoading, setDatoLoading] = useState(false)
   const [datoError, setDatoError] = useState<string | null>(null)
   const [datoOffset, setDatoOffset] = useState(0)
+  const [keyword, setKeyword] = useState("")
+  const [locationFilter, setLocationFilter] = useState("")
 
   useEffect(() => {
     const fetchDato = async () => {
@@ -65,14 +67,31 @@ const ListingFiveArea = () => {
   }, [])
 
   const datoPageCount = useMemo(
-    () => Math.ceil(datoProps.length / itemsPerPage),
-    [datoProps.length, itemsPerPage]
+    () => Math.ceil(
+      (datoProps.filter((p) => {
+        const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
+        const k = keyword.toLowerCase().trim()
+        const loc = locationFilter.toLowerCase().trim()
+        if (k && !hay.includes(k)) return false
+        if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
+        return true
+      })).length / itemsPerPage
+    ),
+    [datoProps, itemsPerPage, keyword, locationFilter]
   )
 
   const datoCurrentItems = useMemo(() => {
+    const filtered = datoProps.filter((p) => {
+      const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
+      const k = keyword.toLowerCase().trim()
+      const loc = locationFilter.toLowerCase().trim()
+      if (k && !hay.includes(k)) return false
+      if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
+      return true
+    })
     const end = datoOffset + itemsPerPage
-    return datoProps.slice(datoOffset, end)
-  }, [datoOffset, datoProps, itemsPerPage])
+    return filtered.slice(datoOffset, end)
+  }, [datoOffset, datoProps, itemsPerPage, keyword, locationFilter])
 
   const useDato = datoProps.length > 0
 
@@ -104,6 +123,8 @@ const ListingFiveArea = () => {
 
   const handleResetFilter = () => {
     resetFilters()
+    setKeyword("")
+    setLocationFilter("")
   }
 
   return (
@@ -116,33 +137,33 @@ const ListingFiveArea = () => {
                 <div>
                   {useDato ? (
                     <>
-                      Showing{" "}
+                      Mostrando{" "}
                       <span className="color-dark fw-500">
                         {datoOffset + 1}–{datoOffset + datoCurrentItems.length}
                       </span>{" "}
-                      of <span className="color-dark fw-500">{datoProps.length}</span> results
+                      de <span className="color-dark fw-500">{datoProps.length}</span> resultados
                     </>
                   ) : (
                     <>
-                      Showing{" "}
+                      Mostrando{" "}
                       <span className="color-dark fw-500">
                         {itemOffset + 1}–{itemOffset + currentItems.length}
                       </span>{" "}
-                      of <span className="color-dark fw-500">{sortedProperties.length}</span> results
+                      de <span className="color-dark fw-500">{sortedProperties.length}</span> resultados
                     </>
                   )}
                 </div>
                 <div className="d-flex align-items-center xs-mt-20">
                   <div className="short-filter d-flex align-items-center">
-                    <div className="fs-16 me-2">Short by:</div>
+                    <div className="fs-16 me-2">Ordenar por:</div>
                     <NiceSelect
                       className="nice-select rounded-0"
                       options={[
-                        { value: "newest", text: "Newest" },
-                        { value: "best_seller", text: "Best Seller" },
-                        { value: "best_match", text: "Best Match" },
-                        { value: "price_low", text: "Price Low" },
-                        { value: "price_high", text: "Price High" },
+                        { value: "newest", text: "Más recientes" },
+                        { value: "best_seller", text: "Más vendidos" },
+                        { value: "best_match", text: "Mejor coincidencia" },
+                        { value: "price_low", text: "Precio menor" },
+                        { value: "price_high", text: "Precio mayor" },
                       ]}
                       defaultCurrent={0}
                       onChange={handleTypeChange}

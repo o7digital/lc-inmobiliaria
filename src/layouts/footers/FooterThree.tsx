@@ -6,7 +6,10 @@ import { toast } from 'react-toastify'
 import footerLogo from "@/assets/images/logo/logo_06.svg"
 
 const FooterThree = () => {
-   const [showCookies, setShowCookies] = useState(true);
+   const [showCookies, setShowCookies] = useState(() => {
+      if (typeof window === "undefined") return true;
+      return localStorage.getItem("lc-cookie-consent") !== "accepted";
+   });
    const [email, setEmail] = useState("");
 
    const handleNewsletterSubmit = async (e: React.FormEvent) => {
@@ -140,30 +143,29 @@ const FooterThree = () => {
                      <div className="col-md-4 text-end">
                         <div className="d-flex gap-2 justify-content-end">
                            <button 
-                              onClick={() => setShowCookies(false)}
+                              onClick={() => {
+                                 localStorage.setItem("lc-cookie-consent", "rejected");
+                                 setShowCookies(false);
+                              }}
                               className="btn btn-outline-light btn-sm"
                               style={{fontSize: '12px'}}
                            >
                               ✕ Rechazar
                            </button>
                            <button 
-                              onClick={() => setShowCookies(false)}
-                              className="btn btn-outline-warning btn-sm"
-                              style={{fontSize: '12px'}}
-                           >
-                              ⚙️ Personalizar
-                           </button>
-                           <button 
-                              onClick={() => setShowCookies(false)}
+                              onClick={() => {
+                                 localStorage.setItem("lc-cookie-consent", "accepted");
+                                 setShowCookies(false);
+                              }}
                               className="btn btn-warning btn-sm text-dark"
                               style={{fontSize: '12px'}}
                            >
                               ✓ Aceptar Todo
                            </button>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
             </div>
          )}
       </>

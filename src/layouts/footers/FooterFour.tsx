@@ -19,11 +19,7 @@ const FooterFour = () => {
                               <Image src={footerLogo} alt="LC Inmobiliaria" />
                            </Link>
                         </div>
-                        <div className="contact-info mb-30">
-                           <p className="mb-10">Cerrada de Bezares 133, Col. Lomas</p>
-                           <p className="mb-10">de Bezares,</p>
-                           <p className="mb-20">CP 11910, Miguel Hidalgo, CDMX.</p>
-                        </div>
+                        <div className="contact-info mb-30"></div>
                         <ul className="style-none d-flex align-items-center social-icon">
                            <li><Link href="#"><i className="fa-brands fa-facebook-f"></i></Link></li>
                            <li><Link href="#"><i className="fa-brands fa-instagram"></i></Link></li>
