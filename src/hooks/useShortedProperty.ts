@@ -150,10 +150,15 @@ const UseShortedProperty = ({ itemsPerPage, page }: DataType) => {
    };
 
    // handle Price
-   const maxPrice = all_property.filter(item => item.page === page).reduce((max, item) => {
-      return item.price > max ? item.price : max;
-   }, 0);
-   const [priceValue, setPriceValue] = useState([0, maxPrice]);
+   const DEFAULT_MAX_PRICE = 10000000; // 10M MXN fallback to avoid empty sliders
+   const DEFAULT_MIN_PRICE = 50000; // 50k MXN default lower bound
+   const maxPrice = Math.max(
+      all_property.filter(item => item.page === page).reduce((max, item) => {
+         return item.price > max ? item.price : max;
+      }, 0),
+      DEFAULT_MAX_PRICE
+   );
+   const [priceValue, setPriceValue] = useState([DEFAULT_MIN_PRICE, maxPrice]);
 
    useEffect(() => {
       let filterPrice = all_property.filter((j) => j.price >= priceValue[0] && j.price <= priceValue[1]);

@@ -93,15 +93,15 @@ const DropdownOne = ({ style }: any) => {
                   <NiceSelect
                      className={`nice-select ${style ? "fw-normal" : ""}`}
                      options={[
-                        { value: "1", text: "$10,000 - $200,000" },
-                        { value: "2", text: "$20,000 - $300,000" },
-                        { value: "3", text: "$30,000 - $400,000" },
+                                        { value: "1", text: "$50,000 - $10,000,000" },
+                        { value: "2", text: "$50,000 - $5,000,000" },
+                        { value: "3", text: "$50,000 - $2,000,000" },
                      ]}
                      defaultCurrent={0}
                      onChange={selectLocationHandler}
                      name=""
                      placeholder="" />
-               </div>
+              </div>
             </div>
             <div className={`${style ? "col-xl-3" : "col-xl-2"}`}>
                <div className="input-box-one lg-mt-10">
