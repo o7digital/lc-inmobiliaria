@@ -99,9 +99,31 @@ const ListingFiveArea = () => {
       try {
         setDatoLoading(true)
         setDatoError(null)
-        const res = await fetch("/api/directus/properties")
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const data = await res.json()
+        const primaryUrl = "/api/directus/properties"
+        const fallbackUrl = "https://lc-inmobiliaria.vercel.app/api/directus/properties"
+
+        const doFetch = async (url: string) => {
+          const res = await fetch(url)
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          return res.json()
+        }
+
+        let data: any[] = []
+        try {
+          data = await doFetch(primaryUrl)
+        } catch (e) {
+          console.warn("Primary fetch failed, trying fallback", e)
+        }
+
+        if (!Array.isArray(data) || data.length === 0) {
+          try {
+            const fallbackData = await doFetch(fallbackUrl)
+            if (Array.isArray(fallbackData)) data = fallbackData
+          } catch (e2) {
+            console.warn("Fallback fetch failed", e2)
+          }
+        }
+
         setDatoProps(Array.isArray(data) ? data : [])
       } catch (err) {
         setDatoError(err instanceof Error ? err.message : "Error desconocido")
