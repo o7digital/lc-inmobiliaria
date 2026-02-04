@@ -27,8 +27,6 @@ const DATO_PROPERTIES_QUERY = gql`
       bedrooms
       bathrooms
       parkingspaces
-      propertyType
-      operationType
       featured
       description
       amenities
@@ -62,8 +60,6 @@ const DATO_PROPERTY_QUERY = gql`
       bedrooms
       bathrooms
       parkingspaces
-      propertyType
-      operationType
       featured
       description
       amenities
