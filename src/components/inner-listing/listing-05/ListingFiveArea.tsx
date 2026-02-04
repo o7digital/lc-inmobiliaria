@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, ChangeEvent } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import ReactPaginate from "react-paginate"
@@ -20,11 +20,6 @@ const ListingFiveArea = () => {
 
   // Dataset demo (fallback)
   const {
-    itemOffset,
-    sortedProperties,
-    currentItems,
-    pageCount,
-    handlePageClick,
     handleBathroomChange,
     handleBedroomChange,
     handleSearchChange,
@@ -47,6 +42,16 @@ const ListingFiveArea = () => {
   const [keyword, setKeyword] = useState("")
   const [locationFilter, setLocationFilter] = useState("")
 
+  const handleKeywordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value)
+    handleSearchChange(e)
+  }
+
+  const handleLocationFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setLocationFilter(e.target.value)
+    handleLocationChange(e)
+  }
+
   useEffect(() => {
     const fetchDato = async () => {
       try {
@@ -66,34 +71,30 @@ const ListingFiveArea = () => {
     fetchDato()
   }, [])
 
-  const datoPageCount = useMemo(
-    () => Math.ceil(
-      (datoProps.filter((p) => {
-        const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
-        const k = keyword.toLowerCase().trim()
-        const loc = locationFilter.toLowerCase().trim()
-        if (k && !hay.includes(k)) return false
-        if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
-        return true
-      })).length / itemsPerPage
-    ),
-    [datoProps, itemsPerPage, keyword, locationFilter]
-  )
-
-  const datoCurrentItems = useMemo(() => {
-    const filtered = datoProps.filter((p) => {
+  const filteredDato = useMemo(() => {
+    const k = keyword.toLowerCase().trim()
+    const loc = locationFilter.toLowerCase().trim()
+    return datoProps.filter((p) => {
       const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
-      const k = keyword.toLowerCase().trim()
-      const loc = locationFilter.toLowerCase().trim()
       if (k && !hay.includes(k)) return false
       if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
       return true
     })
-    const end = datoOffset + itemsPerPage
-    return filtered.slice(datoOffset, end)
-  }, [datoOffset, datoProps, itemsPerPage, keyword, locationFilter])
+  }, [datoProps, keyword, locationFilter])
 
-  const useDato = datoProps.length > 0
+  const datoPageCount = useMemo(
+    () => Math.max(1, Math.ceil(filteredDato.length / itemsPerPage)),
+    [filteredDato, itemsPerPage]
+  )
+
+  const datoCurrentItems = useMemo(() => {
+    const end = datoOffset + itemsPerPage
+    return filteredDato.slice(datoOffset, end)
+  }, [datoOffset, filteredDato, itemsPerPage])
+
+  useEffect(() => {
+    setDatoOffset(0)
+  }, [keyword, locationFilter])
 
   const getDatoImage = (item: any) => {
     const imgField = item.Image || item.main_image
@@ -135,23 +136,13 @@ const ListingFiveArea = () => {
             <div className="ps-xxl-5">
               <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
                 <div>
-                  {useDato ? (
-                    <>
-                      Mostrando{" "}
-                      <span className="color-dark fw-500">
-                        {datoOffset + 1}–{datoOffset + datoCurrentItems.length}
-                      </span>{" "}
-                      de <span className="color-dark fw-500">{datoProps.length}</span> resultados
-                    </>
-                  ) : (
-                    <>
-                      Mostrando{" "}
-                      <span className="color-dark fw-500">
-                        {itemOffset + 1}–{itemOffset + currentItems.length}
-                      </span>{" "}
-                      de <span className="color-dark fw-500">{sortedProperties.length}</span> resultados
-                    </>
-                  )}
+                  <>
+                    Mostrando{" "}
+                    <span className="color-dark fw-500">
+                      {filteredDato.length === 0 ? 0 : datoOffset + 1}–{Math.min(datoOffset + datoCurrentItems.length, filteredDato.length)}
+                    </span>{" "}
+                    de <span className="color-dark fw-500">{filteredDato.length}</span> resultados
+                  </>
                 </div>
                 <div className="d-flex align-items-center xs-mt-20">
                   <div className="short-filter d-flex align-items-center">
@@ -193,21 +184,21 @@ const ListingFiveArea = () => {
 
               {datoError && !datoLoading && (
                 <div className="alert alert-warning">
-                  No pudimos cargar DatoCMS ({datoError}). Se muestran las propiedades demo.
+                  No pudimos cargar DatoCMS ({datoError}). Intenta recargar la página.
                 </div>
               )}
 
               <div className="row gx-xxl-5">
-                {(useDato ? datoCurrentItems : currentItems).map((item: any) => (
+                {datoCurrentItems.map((item: any) => (
                   <div key={item.id} className="col-md-6 d-flex mb-50 wow fadeInUp" data-wow-delay={item.data_delay_time}>
                     <div className="listing-card-one style-two shadow-none h-100 w-100">
                       <div className="img-gallery">
                         <div className="position-relative overflow-hidden">
-                          <div className="tag fw-500">{useDato ? item.Operation_type?.[0] || "EN VENTA" : item.tag}</div>
+                          <div className="tag fw-500">{item.Operation_type?.[0] || "EN VENTA"}</div>
                           <Link href="#" className="fav-btn tran3s">
                             <i className="fa-light fa-heart"></i>
                           </Link>
-                          {useDato ? (
+                          {true ? (
                             <Link href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}>
                               <Image
                                 src={getDatoImage(item)}
@@ -249,46 +240,41 @@ const ListingFiveArea = () => {
 
                       <div className="property-info pt-20">
                         <Link
-                          href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}` : `/listing_details_05?id=${item.id}`}
+                          href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}
                           className="title tran3s d-inline-block"
                         >
-                          {useDato ? item.Title : item.title}
+                          {item.Title}
                         </Link>
                         <div className="address">
-                          {useDato ? [item.Address, item.City, item.State].filter(Boolean).join(", ") : item.address}
+                          {[item.Address, item.City, item.State].filter(Boolean).join(", ")}
                         </div>
                         <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between pb-15 pt-5">
                           <li className="d-flex align-items-center">
                             <Image src={featureIcon_1} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
-                              <span className="color-dark">{useDato ? item.Construccion_area || "—" : item.property_info.sqft}</span>{" "}
-                              {useDato ? "m²" : "sqft"}
+                              <span className="color-dark">{item.Construccion_area || "—"}</span>{" "}
+                              {"m²"}
                             </span>
                           </li>
                           <li className="d-flex align-items-center">
                             <Image src={featureIcon_2} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
-                              <span className="color-dark">{useDato ? item.Bedrooms || "—" : item.property_info.bed}</span> bed
+                              <span className="color-dark">{item.Bedrooms || "—"}</span> bed
                             </span>
                           </li>
                           <li className="d-flex align-items-center">
                             <Image src={featureIcon_3} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
-                              <span className="color-dark">{useDato ? item.Bathrooms || "—" : item.property_info.bath}</span> bath
+                              <span className="color-dark">{item.Bathrooms || "—"}</span> bath
                             </span>
                           </li>
                         </ul>
                         <div className="pl-footer top-border bottom-border d-flex align-items-center justify-content-between">
                           <strong className="price fw-500 color-dark">
-                            {useDato
-                              ? formatPrice(item.Price, item.Currency)
-                              : `$${item.price.toLocaleString(undefined, {
-                                  minimumFractionDigits: item.price_text ? 0 : 2,
-                                  maximumFractionDigits: 2,
-                                })}${item.price_text ? "/m" : ""}`}
+                            {formatPrice(item.Price, item.Currency)}
                           </strong>
                           <Link
-                            href={useDato ? `/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}` : `/listing_details_05?id=${item.id}`}
+                            href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}
                             className="btn-four"
                           >
                             <i className="bi bi-arrow-up-right"></i>
@@ -304,15 +290,11 @@ const ListingFiveArea = () => {
                 breakLabel="..."
                 nextLabel={<Image src={icon} alt="" className="ms-2" />}
                 onPageChange={(e) => {
-                  if (useDato) {
-                    const newOffset = e.selected * itemsPerPage
-                    setDatoOffset(newOffset)
-                  } else {
-                    handlePageClick(e)
-                  }
+                  const newOffset = e.selected * itemsPerPage
+                  setDatoOffset(newOffset)
                 }}
-                pageRangeDisplayed={useDato ? datoPageCount : pageCount}
-                pageCount={useDato ? datoPageCount : pageCount}
+                pageRangeDisplayed={datoPageCount}
+                pageCount={datoPageCount}
                 previousLabel={<Image src={icon} alt="" className="ms-2" />}
                 renderOnZeroPageCount={null}
                 className="pagination-one square d-flex align-items-center justify-content-center justify-content-sm-start style-none pt-60 lg-pt-30"
@@ -324,7 +306,7 @@ const ListingFiveArea = () => {
             <div className="advance-search-panel dot-bg md-mt-80">
               <div className="main-bg rounded-0">
                 <DropdownOne
-                  handleSearchChange={handleSearchChange}
+                  handleSearchChange={handleKeywordChange}
                   handleBedroomChange={handleBedroomChange}
                   handleBathroomChange={handleBathroomChange}
                   handlePriceChange={handlePriceChange}
@@ -333,7 +315,7 @@ const ListingFiveArea = () => {
                   handleResetFilter={handleResetFilter}
                   selectedAmenities={selectedAmenities}
                   handleAmenityChange={handleAmenityChange}
-                  handleLocationChange={handleLocationChange}
+                  handleLocationChange={handleLocationFilterChange}
                   handleStatusChange={handleStatusChange}
                 />
               </div>
