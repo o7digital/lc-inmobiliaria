@@ -41,15 +41,45 @@ const ListingFiveArea = () => {
   const [datoOffset, setDatoOffset] = useState(0)
   const [keyword, setKeyword] = useState("")
   const [locationFilter, setLocationFilter] = useState("")
+  const [typeFilter, setTypeFilter] = useState("")
+
+  // Préremplir depuis la recherche de la home (sessionStorage)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const storedType = sessionStorage.getItem("search:type") || ""
+    const storedLocation = sessionStorage.getItem("search:location") || ""
+    const storedKeyword = sessionStorage.getItem("search:keyword") || ""
+
+    if (storedType) setTypeFilter(storedType)
+    if (storedLocation) setLocationFilter(storedLocation)
+    if (storedKeyword) setKeyword(storedKeyword)
+  }, [])
 
   const handleKeywordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value)
     handleSearchChange(e)
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("search:keyword", e.target.value)
+    }
   }
 
   const handleLocationFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setLocationFilter(e.target.value)
     handleLocationChange(e)
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("search:location", e.target.value)
+    }
+  }
+
+  const handleTypeFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setTypeFilter(e.target.value)
+    handleStatusChange(e)
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("search:type", e.target.value)
+    }
   }
 
   useEffect(() => {
@@ -71,16 +101,86 @@ const ListingFiveArea = () => {
     fetchDato()
   }, [])
 
+  const normalizeText = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .toLowerCase()
+      .trim()
+
+  const TYPE_SYNONYMS: Record<string, string[]> = {
+    "comprar-departamentos": ["departamento", "departamentos", "depto", "aparta"],
+    "rentar-departamentos": ["departamento", "departamentos", "depto", "aparta"],
+    "comprar-casas": ["casa", "casas", "house"],
+    "rentar-casas": ["casa", "casas", "house"],
+    "comprar-oficinas": ["oficina", "oficinas", "office"],
+    "rentar-oficinas": ["oficina", "oficinas", "office"],
+    "comprar-terrenos": ["terreno", "lote", "lot"],
+    "vender-terrenos": ["terreno", "lote", "lot"],
+  }
+
+  const OP_SYNONYMS: Record<string, string[]> = {
+    "comprar-departamentos": ["venta", "comprar", "sell", "sale"],
+    "comprar-casas": ["venta", "comprar", "sell", "sale"],
+    "comprar-oficinas": ["venta", "comprar", "sell", "sale"],
+    "comprar-terrenos": ["venta", "comprar", "sell", "sale"],
+    "vender-terrenos": ["venta", "vender", "sell", "sale"],
+    "rentar-departamentos": ["renta", "alquiler", "rent"],
+    "rentar-casas": ["renta", "alquiler", "rent"],
+    "rentar-oficinas": ["renta", "alquiler", "rent"],
+  }
+
   const filteredDato = useMemo(() => {
-    const k = keyword.toLowerCase().trim()
-    const loc = locationFilter.toLowerCase().trim()
+    const k = normalizeText(keyword)
+    const loc = normalizeText(locationFilter)
+    const typeSynonyms = TYPE_SYNONYMS[typeFilter] || []
+    const opSynonyms = OP_SYNONYMS[typeFilter] || []
+
     return datoProps.filter((p) => {
-      const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
-      if (k && !hay.includes(k)) return false
-      if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
+      const haystackParts = [
+        p.Title,
+        p.Address,
+        p.City,
+        p.State,
+        p.Descripcion,
+        ...(p.Property_type || []),
+        ...(p.Operation_type || []),
+      ]
+        .filter(Boolean)
+        .map((v: string) => normalizeText(String(v)))
+
+      if (k) {
+        const hasKeyword = haystackParts.some((part: string) => part.includes(k))
+        if (!hasKeyword) return false
+      }
+
+      if (loc) {
+        const inCity = normalizeText(String(p.City || "")).includes(loc)
+        const inState = normalizeText(String(p.State || "")).includes(loc)
+        if (!inCity && !inState) return false
+      }
+
+      if (typeFilter) {
+        const candidates: string[] = typeSynonyms.length ? typeSynonyms : [normalizeText(typeFilter)]
+        const propertyTypes: string[] = (p.Property_type || []).map((t: string) => normalizeText(t))
+        const operationTypes: string[] = (p.Operation_type || []).map((t: string) => normalizeText(t))
+        const textFallback = `${normalizeText(p.Title || "")} ${normalizeText(p.Descripcion || "")}`
+
+        const matchProperty =
+          propertyTypes.some((t: string) => candidates.some((c: string) => t.includes(c))) ||
+          candidates.some((c: string) => textFallback.includes(c))
+
+        const matchOperation =
+          opSynonyms.length === 0 ||
+          operationTypes.some((t: string) => opSynonyms.some((c: string) => t.includes(c))) ||
+          opSynonyms.some((c: string) => textFallback.includes(c))
+
+        if (!matchProperty || !matchOperation) return false
+      }
+
       return true
     })
-  }, [datoProps, keyword, locationFilter])
+  }, [datoProps, keyword, locationFilter, typeFilter])
 
   const datoPageCount = useMemo(
     () => Math.max(1, Math.ceil(filteredDato.length / itemsPerPage)),
@@ -94,7 +194,7 @@ const ListingFiveArea = () => {
 
   useEffect(() => {
     setDatoOffset(0)
-  }, [keyword, locationFilter])
+  }, [keyword, locationFilter, typeFilter])
 
   const getDatoImage = (item: any) => {
     const imgField = item.Image || item.main_image
@@ -126,6 +226,13 @@ const ListingFiveArea = () => {
     resetFilters()
     setKeyword("")
     setLocationFilter("")
+    setTypeFilter("")
+
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("search:type")
+      sessionStorage.removeItem("search:location")
+      sessionStorage.removeItem("search:keyword")
+    }
   }
 
   return (
