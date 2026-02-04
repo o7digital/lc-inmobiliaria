@@ -27,6 +27,8 @@ const DATO_PROPERTIES_QUERY = gql`
       bedrooms
       bathrooms
       parkingspaces
+      propertyType
+      operationType
       featured
       description
       amenities
@@ -60,6 +62,8 @@ const DATO_PROPERTY_QUERY = gql`
       bedrooms
       bathrooms
       parkingspaces
+      propertyType
+      operationType
       featured
       description
       amenities
@@ -74,6 +78,37 @@ const DATO_PROPERTY_QUERY = gql`
     }
   }
 `;
+
+const normalizeToArray = (value: any): string[] => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean).map((v) => String(v));
+  return [String(value)];
+};
+
+const normalizeText = (text: string | null | undefined): string => {
+  return (text || "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+};
+
+const inferPropertyType = (title?: string | null, description?: string | null): string | null => {
+  const text = normalizeText(`${title || ""} ${description || ""}`);
+  if (/departamento|depto|aparta/.test(text)) return "departamento";
+  if (/casa|house|hogar/.test(text)) return "casa";
+  if (/oficina|office/.test(text)) return "oficina";
+  if (/terreno|lote|lot/.test(text)) return "terreno";
+  if (/bodega|industrial/.test(text)) return "industrial";
+  if (/villa/.test(text)) return "villa";
+  return null;
+};
+
+const inferOperationType = (title?: string | null, description?: string | null): string | null => {
+  const text = normalizeText(`${title || ""} ${description || ""}`);
+  if (/renta|rent/.test(text)) return "renta";
+  if (/venta|sale|sell/.test(text)) return "venta";
+  return null;
+};
 
 const mapDatoToDirectusShape = (item: DatoProperty) => {
   const images = (item.gallery || []).map((asset) => ({
@@ -93,6 +128,18 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
         .filter(Boolean)
     : [];
 
+  let propertyTypes = normalizeToArray((item as any).propertyType || (item as any).property_type);
+  const inferredPropertyType = inferPropertyType(item.title, item.description);
+  if (!propertyTypes.length && inferredPropertyType) {
+    propertyTypes = [inferredPropertyType];
+  }
+
+  let operationTypes = normalizeToArray((item as any).operationType || (item as any).operation_type);
+  const inferredOperation = inferOperationType(item.title, item.description);
+  if (!operationTypes.length && inferredOperation) {
+    operationTypes = [inferredOperation];
+  }
+
   return {
     id: Number(item.id) || item.id,
     Title: item.title,
@@ -106,8 +153,8 @@ const mapDatoToDirectusShape = (item: DatoProperty) => {
     Bedrooms: item.bedrooms ?? 0,
     Bathrooms: item.bathrooms ?? 0,
     Parking_spaces: item.parkingspaces ?? item.parkingSpaces ?? 0,
-    Operation_type: [],
-    Property_type: item.propertyType || [],
+    Operation_type: operationTypes,
+    Property_type: propertyTypes,
     Featured: Boolean(item.featured),
     Descripcion: item.description || '',
     Amenidades: amenities,
