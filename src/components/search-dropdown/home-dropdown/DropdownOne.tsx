@@ -93,7 +93,7 @@ const DropdownOne = ({ style }: any) => {
                         { value: "3", text: "$30,000 - $400,000" },
                      ]}
                      defaultCurrent={0}
-                     onChange={selectHandler}
+                     onChange={selectLocationHandler}
                      name=""
                      placeholder="" />
                </div>
