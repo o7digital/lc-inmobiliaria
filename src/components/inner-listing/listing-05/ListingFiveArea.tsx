@@ -166,12 +166,17 @@ const ListingFiveArea = () => {
         const operationTypes: string[] = (p.Operation_type || []).map((t: string) => normalizeText(t))
         const textFallback = `${normalizeText(p.Title || "")} ${normalizeText(p.Descripcion || "")}`
 
+        const hasPropertyTypes = propertyTypes.length > 0
+        const hasOperationTypes = operationTypes.length > 0
+
         const matchProperty =
+          !hasPropertyTypes || // si pas de données, ne pas bloquer l'affichage
           propertyTypes.some((t: string) => candidates.some((c: string) => t.includes(c))) ||
           candidates.some((c: string) => textFallback.includes(c))
 
         const matchOperation =
           opSynonyms.length === 0 ||
+          !hasOperationTypes || // si pas de données, ne pas bloquer l'affichage
           operationTypes.some((t: string) => opSynonyms.some((c: string) => t.includes(c))) ||
           opSynonyms.some((c: string) => textFallback.includes(c))
 
