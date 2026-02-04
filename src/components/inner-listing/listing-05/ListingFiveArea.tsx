@@ -112,15 +112,15 @@ const ListingFiveArea = () => {
       }
 
       if (typeFilter) {
-        const candidates: string[] = typeSynonyms.length ? typeSynonyms : [normalizeText(typeFilter)]
-        const propertyTypes: string[] = (p.Property_type || []).map((t: string) => normalizeText(t))
-        const operationTypes: string[] = (p.Operation_type || []).map((t: string) => normalizeText(t))
+        const candidates = typeSynonyms.length ? typeSynonyms : [normalizeText(typeFilter)]
+        const propertyTypes = (p.Property_type || []).map((t: string) => normalizeText(t))
+        const operationTypes = (p.Operation_type || []).map((t: string) => normalizeText(t))
         const textFallback = `${normalizeText(p.Title || "")} ${normalizeText(p.Descripcion || "")}`
 
         const match =
-          propertyTypes.some((t: string) => candidates.some((c: string) => t.includes(c))) ||
-          operationTypes.some((t: string) => candidates.some((c: string) => t.includes(c))) ||
-          candidates.some((c: string) => textFallback.includes(c))
+          propertyTypes.some((t) => candidates.some((c) => t.includes(c))) ||
+          operationTypes.some((t) => candidates.some((c) => t.includes(c))) ||
+          candidates.some((c) => textFallback.includes(c))
 
         if (!match) return false
       }
