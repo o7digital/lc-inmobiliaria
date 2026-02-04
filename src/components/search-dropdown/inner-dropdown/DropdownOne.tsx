@@ -25,6 +25,7 @@ const DropdownOne = ({
                   <div className="label">Estoy buscando...</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
+                        { value: "", text: "Todas las categorías" },
                         { value: "comprar-departamentos", text: "Comprar Departamentos" },
                         { value: "rentar-departamentos", text: "Rentar Departamentos" },
                         { value: "comprar-casas", text: "Comprar Casas" },
@@ -54,6 +55,7 @@ const DropdownOne = ({
                   <div className="label">Ubicación</div>
                   <NiceSelect className="nice-select location fw-normal"
                      options={[
+                        { value: "", text: "Todas las ubicaciones" },
                         { value: "Ciudad de México", text: "Ciudad de México" },
                         { value: "Estado de México", text: "Estado de México" },
                         { value: "Guadalajara, Jalisco", text: "Guadalajara, Jalisco" },

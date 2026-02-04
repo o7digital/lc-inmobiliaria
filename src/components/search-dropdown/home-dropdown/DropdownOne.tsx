@@ -16,6 +16,9 @@ const DropdownOne = ({ style }: any) => {
    };
 
    const searchHandler = () => {
+      if (typeof window !== "undefined") {
+         sessionStorage.setItem("search:activated", "1");
+      }
       window.location.href = '/listing_05';
    };
 
@@ -27,6 +30,7 @@ const DropdownOne = ({ style }: any) => {
                   <div className="label">Estoy buscando...</div>
                   <NiceSelect className={`nice-select ${style ? "fw-normal" : ""}`}
                      options={[
+                        { value: "", text: "Todas las categorías" },
                         { value: "comprar-departamentos", text: "Comprar Departamentos" },
                         { value: "rentar-departamentos", text: "Rentar Departamentos" },
                         { value: "comprar-casas", text: "Comprar Casas" },
@@ -47,6 +51,7 @@ const DropdownOne = ({ style }: any) => {
                   <div className="label">Ubicación</div>
                   <NiceSelect className={`nice-select location ${style ? "fw-normal" : ""}`}
                      options={[
+                        { value: "", text: "Todas las ubicaciones" },
                         { value: "Ciudad de México", text: "Ciudad de México" },
                         { value: "Estado de México", text: "Estado de México" },
                         { value: "Guadalajara, Jalisco", text: "Guadalajara, Jalisco" },

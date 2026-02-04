@@ -46,13 +46,25 @@ const ListingFiveArea = () => {
   // Préremplir depuis la recherche de la home (sessionStorage)
   useEffect(() => {
     if (typeof window === "undefined") return
+    const activated = sessionStorage.getItem("search:activated") === "1"
+    if (!activated) {
+      // pas de recherche poussée depuis la home, on laisse tout vide
+      sessionStorage.removeItem("search:type")
+      sessionStorage.removeItem("search:location")
+      sessionStorage.removeItem("search:keyword")
+      return
+    }
+
     const storedType = sessionStorage.getItem("search:type") || ""
     const storedLocation = sessionStorage.getItem("search:location") || ""
     const storedKeyword = sessionStorage.getItem("search:keyword") || ""
 
-    if (storedType) setTypeFilter(storedType)
-    if (storedLocation) setLocationFilter(storedLocation)
-    if (storedKeyword) setKeyword(storedKeyword)
+    setTypeFilter(storedType)
+    setLocationFilter(storedLocation)
+    setKeyword(storedKeyword)
+
+    // consommer le flag pour les visites suivantes
+    sessionStorage.removeItem("search:activated")
   }, [])
 
   const handleKeywordChange = (e: ChangeEvent<HTMLInputElement>) => {
