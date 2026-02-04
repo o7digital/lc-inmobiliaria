@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState, ChangeEvent } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import ReactPaginate from "react-paginate"
@@ -46,22 +46,6 @@ const ListingFiveArea = () => {
   const [datoOffset, setDatoOffset] = useState(0)
   const [keyword, setKeyword] = useState("")
   const [locationFilter, setLocationFilter] = useState("")
-  const [typeFilter, setTypeFilter] = useState("")
-
-  const normalizeText = (value: string) =>
-    value
-      .normalize("NFD")
-      .replace(/\p{Diacritic}/gu, "")
-      .toLowerCase()
-      .trim()
-
-  const TYPE_SYNONYMS: Record<string, string[]> = {
-    apartments: ["departamento", "departamentos", "aparta", "apartment"],
-    condos: ["condo", "condominio", "condominios"],
-    houses: ["casa", "casas", "house"],
-    industrial: ["industrial", "bodega", "nave"],
-    villas: ["villa", "villas"],
-  }
 
   useEffect(() => {
     const fetchDato = async () => {
@@ -82,66 +66,32 @@ const ListingFiveArea = () => {
     fetchDato()
   }, [])
 
-  const filteredDato = useMemo(() => {
-    const k = normalizeText(keyword)
-    const loc = normalizeText(locationFilter)
-    const typeSynonyms = TYPE_SYNONYMS[typeFilter] || []
-
-    return datoProps.filter((p) => {
-      const haystackParts = [
-        p.Title,
-        p.Address,
-        p.City,
-        p.State,
-        p.Descripcion,
-        ...(p.Property_type || []),
-        ...(p.Operation_type || []),
-      ]
-        .filter(Boolean)
-        .map((v: string) => normalizeText(String(v)))
-
-      if (k) {
-        const hasKeyword = haystackParts.some((part: string) => part.includes(k))
-        if (!hasKeyword) return false
-      }
-
-      if (loc) {
-        const inCity = normalizeText(String(p.City || "")).includes(loc)
-        const inState = normalizeText(String(p.State || "")).includes(loc)
-        if (!inCity && !inState) return false
-      }
-
-      if (typeFilter) {
-        const candidates = typeSynonyms.length ? typeSynonyms : [normalizeText(typeFilter)]
-        const propertyTypes = (p.Property_type || []).map((t: string) => normalizeText(t))
-        const operationTypes = (p.Operation_type || []).map((t: string) => normalizeText(t))
-        const textFallback = `${normalizeText(p.Title || "")} ${normalizeText(p.Descripcion || "")}`
-
-        const match =
-          propertyTypes.some((t) => candidates.some((c) => t.includes(c))) ||
-          operationTypes.some((t) => candidates.some((c) => t.includes(c))) ||
-          candidates.some((c) => textFallback.includes(c))
-
-        if (!match) return false
-      }
-
-      return true
-    })
-  }, [datoProps, keyword, locationFilter, typeFilter])
-
   const datoPageCount = useMemo(
-    () => Math.ceil(filteredDato.length / itemsPerPage),
-    [filteredDato, itemsPerPage]
+    () => Math.ceil(
+      (datoProps.filter((p) => {
+        const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
+        const k = keyword.toLowerCase().trim()
+        const loc = locationFilter.toLowerCase().trim()
+        if (k && !hay.includes(k)) return false
+        if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
+        return true
+      })).length / itemsPerPage
+    ),
+    [datoProps, itemsPerPage, keyword, locationFilter]
   )
 
   const datoCurrentItems = useMemo(() => {
+    const filtered = datoProps.filter((p) => {
+      const hay = `${p.Title || ""} ${p.Address || ""} ${p.City || ""} ${p.State || ""}`.toLowerCase()
+      const k = keyword.toLowerCase().trim()
+      const loc = locationFilter.toLowerCase().trim()
+      if (k && !hay.includes(k)) return false
+      if (loc && !(String(p.City || "").toLowerCase().includes(loc) || String(p.State || "").toLowerCase().includes(loc))) return false
+      return true
+    })
     const end = datoOffset + itemsPerPage
-    return filteredDato.slice(datoOffset, end)
-  }, [datoOffset, filteredDato, itemsPerPage])
-
-  useEffect(() => {
-    setDatoOffset(0)
-  }, [keyword, locationFilter, typeFilter])
+    return filtered.slice(datoOffset, end)
+  }, [datoOffset, datoProps, itemsPerPage, keyword, locationFilter])
 
   const useDato = datoProps.length > 0
 
@@ -171,26 +121,10 @@ const ListingFiveArea = () => {
     }).format(num || 0)
   }
 
-  const handleKeywordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value)
-    handleSearchChange(e)
-  }
-
-  const handleLocationFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setLocationFilter(e.target.value)
-    handleLocationChange(e)
-  }
-
-  const handleTypeFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setTypeFilter(e.target.value)
-    handleStatusChange(e)
-  }
-
   const handleResetFilter = () => {
     resetFilters()
     setKeyword("")
     setLocationFilter("")
-    setTypeFilter("")
   }
 
   return (
@@ -390,7 +324,7 @@ const ListingFiveArea = () => {
             <div className="advance-search-panel dot-bg md-mt-80">
               <div className="main-bg rounded-0">
                 <DropdownOne
-                  handleSearchChange={handleKeywordChange}
+                  handleSearchChange={handleSearchChange}
                   handleBedroomChange={handleBedroomChange}
                   handleBathroomChange={handleBathroomChange}
                   handlePriceChange={handlePriceChange}
@@ -399,8 +333,8 @@ const ListingFiveArea = () => {
                   handleResetFilter={handleResetFilter}
                   selectedAmenities={selectedAmenities}
                   handleAmenityChange={handleAmenityChange}
-                  handleLocationChange={handleLocationFilterChange}
-                  handleStatusChange={handleTypeFilterChange}
+                  handleLocationChange={handleLocationChange}
+                  handleStatusChange={handleStatusChange}
                 />
               </div>
             </div>
