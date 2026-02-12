@@ -425,6 +425,33 @@
     }
     .search-wrapper-one {
         margin-bottom: -40px;
+        .bg-wrapper {
+            background: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        .input-box-one {
+            &.border-left {
+                border-right-color: rgba(255, 255, 255, 0.35);
+            }
+            .label {
+                color: rgba(255, 255, 255, 0.75);
+            }
+            .nice-select,
+            .type-input {
+                background: transparent;
+                color: #fff;
+            }
+            .nice-select:after {
+                border-bottom-color: #fff;
+                border-right-color: #fff;
+            }
+        }
+        .nice-select.location:after {
+            color: #fff;
+        }
     }
 }
 // Fancy Banner One
