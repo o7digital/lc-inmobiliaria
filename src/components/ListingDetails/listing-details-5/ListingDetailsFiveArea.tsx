@@ -7,22 +7,38 @@ import HeaderTwo from "@/layouts/headers/HeaderTwo"
 import FooterThree from "@/layouts/footers/FooterThree"
 import { DirectusProperty } from "@/services/directusService"
 import { buildDirectusAssetUrl } from "@/lib/directus"
+import { SiteLocale, localeNumberFormatMap } from "@/types/siteLocale";
 
-type Locale = "es" | "en";
 type GalleryItem = { url: string; alt?: string | null }
 
-const formatPrice = (price?: number | string, currency?: string[], locale: Locale = "es") => {
+const priceOnRequestMap: Record<SiteLocale, string> = {
+  es: "Precio a consultar",
+  en: "Price upon request",
+  fr: "Prix sur demande",
+  it: "Prezzo su richiesta",
+  de: "Preis auf Anfrage",
+};
+
+const operationLabelMap: Record<SiteLocale, { sale: string; rent: string }> = {
+  es: { sale: "EN VENTA", rent: "EN RENTA" },
+  en: { sale: "FOR SALE", rent: "FOR RENT" },
+  fr: { sale: "A VENDRE", rent: "A LOUER" },
+  it: { sale: "IN VENDITA", rent: "IN AFFITTO" },
+  de: { sale: "ZU VERKAUFEN", rent: "ZU MIETEN" },
+};
+
+const formatPrice = (price?: number | string, currency?: string[], locale: SiteLocale = "es") => {
   if (price === undefined || price === null) {
-    return locale === "en" ? "Price upon request" : "Precio a consultar"
+    return priceOnRequestMap[locale]
   }
   const num = typeof price === "string" ? Number(price) : price
   const curr = currency && currency.length ? currency[0] : "MXN"
-  const numberLocale = locale === "en" ? "en-US" : "es-MX"
+  const numberLocale = localeNumberFormatMap[locale]
   return new Intl.NumberFormat(numberLocale, { style: "currency", currency: curr, maximumFractionDigits: 0 }).format(num)
 }
 
-const formatOperationLabel = (operation: string | undefined, locale: Locale = "es") => {
-  if (!operation) return locale === "en" ? "FOR SALE" : "EN VENTA"
+const formatOperationLabel = (operation: string | undefined, locale: SiteLocale = "es") => {
+  if (!operation) return operationLabelMap[locale].sale
   const normalized = operation
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
@@ -30,10 +46,10 @@ const formatOperationLabel = (operation: string | undefined, locale: Locale = "e
     .trim()
 
   if (["venta", "sale", "sell", "comprar", "buy"].includes(normalized)) {
-    return locale === "en" ? "FOR SALE" : "EN VENTA"
+    return operationLabelMap[locale].sale
   }
   if (["renta", "rent", "alquiler", "lease", "leasing"].includes(normalized)) {
-    return locale === "en" ? "FOR RENT" : "EN RENTA"
+    return operationLabelMap[locale].rent
   }
   return operation
 }
@@ -57,8 +73,87 @@ const getGallery = (property: DirectusProperty): GalleryItem[] => {
   return urls.filter((g) => g.url)
 }
 
-const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
-  const isEnglish = locale === "en"
+const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: SiteLocale }) => {
+  const labelsMap: Record<SiteLocale, {
+    loadingProperty: string;
+    couldNotLoad: string;
+    property: string;
+    area: string;
+    beds: string;
+    baths: string;
+    parking: string;
+    description: string;
+    amenities: string;
+    contact: string;
+    gallery: string;
+  }> = {
+    es: {
+      loadingProperty: "Cargando propiedad...",
+      couldNotLoad: "No se pudo cargar",
+      property: "Propiedad",
+      area: "Area",
+      beds: "Recamaras",
+      baths: "Banos",
+      parking: "Estacionamiento",
+      description: "Descripción",
+      amenities: "Amenidades",
+      contact: "Contacto",
+      gallery: "Galería",
+    },
+    en: {
+      loadingProperty: "Loading property...",
+      couldNotLoad: "Could not load property",
+      property: "Property",
+      area: "Area",
+      beds: "Beds",
+      baths: "Baths",
+      parking: "Parking",
+      description: "Description",
+      amenities: "Amenities",
+      contact: "Contact",
+      gallery: "Gallery",
+    },
+    fr: {
+      loadingProperty: "Chargement de la propriete...",
+      couldNotLoad: "Impossible de charger la propriete",
+      property: "Propriete",
+      area: "Surface",
+      beds: "Chambres",
+      baths: "Salles de bain",
+      parking: "Parking",
+      description: "Description",
+      amenities: "Equipements",
+      contact: "Contact",
+      gallery: "Galerie",
+    },
+    it: {
+      loadingProperty: "Caricamento immobile...",
+      couldNotLoad: "Impossibile caricare l'immobile",
+      property: "Immobile",
+      area: "Area",
+      beds: "Camere",
+      baths: "Bagni",
+      parking: "Parcheggio",
+      description: "Descrizione",
+      amenities: "Servizi",
+      contact: "Contatto",
+      gallery: "Galleria",
+    },
+    de: {
+      loadingProperty: "Immobilie wird geladen...",
+      couldNotLoad: "Immobilie konnte nicht geladen werden",
+      property: "Immobilie",
+      area: "Flaeche",
+      beds: "Schlafzimmer",
+      baths: "Badezimmer",
+      parking: "Parken",
+      description: "Beschreibung",
+      amenities: "Ausstattung",
+      contact: "Kontakt",
+      gallery: "Galerie",
+    },
+  };
+  const labels = labelsMap[locale];
   const search = useSearchParams()
   const slug = search?.get("slug") || undefined
   const idParam = search?.get("id") || undefined
@@ -110,12 +205,12 @@ const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
         <div className="container">
           {loading && (
             <p className="pt-80 text-center">
-              {isEnglish ? "Loading property..." : "Cargando propiedad..."}
+              {labels.loadingProperty}
             </p>
           )}
           {error && !loading && (
             <p className="pt-80 text-center text-danger">
-              {isEnglish ? `Could not load property: ${error}` : `No se pudo cargar: ${error}`}
+              {`${labels.couldNotLoad}: ${error}`}
             </p>
           )}
           {!loading && !error && property && (
@@ -124,7 +219,7 @@ const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
                 <div className="position-relative">
                   <Image
                     src={mainImage}
-                    alt={property.Title || (isEnglish ? "Property" : "Propiedad")}
+                    alt={property.Title || labels.property}
                     width={1400}
                     height={800}
                     className="w-100 rounded-4"
@@ -150,19 +245,19 @@ const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
                     <div className="dark-bg ps-4 pe-4 pt-25 pb-25 rounded-4">
                       <div className="row text-white text-center gy-3">
                         <div className="col-6 col-md-3">
-                          <div className="fs-14 text-white-50">Area</div>
+                          <div className="fs-14 text-white-50">{labels.area}</div>
                           <div className="fs-18 fw-500">{property.Construccion_area || "—"} m²</div>
                         </div>
                         <div className="col-6 col-md-3">
-                          <div className="fs-14 text-white-50">Beds</div>
+                          <div className="fs-14 text-white-50">{labels.beds}</div>
                           <div className="fs-18 fw-500">{property.Bedrooms ?? "—"}</div>
                         </div>
                         <div className="col-6 col-md-3">
-                          <div className="fs-14 text-white-50">Baths</div>
+                          <div className="fs-14 text-white-50">{labels.baths}</div>
                           <div className="fs-18 fw-500">{property.Bathrooms ?? "—"}</div>
                         </div>
                         <div className="col-6 col-md-3">
-                          <div className="fs-14 text-white-50">Parking</div>
+                          <div className="fs-14 text-white-50">{labels.parking}</div>
                           <div className="fs-18 fw-500">{property.Parking_spaces ?? "—"}</div>
                         </div>
                       </div>
@@ -171,14 +266,14 @@ const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
 
                   {property.Descripcion && (
                     <>
-                      <h4 className="mb-15">{isEnglish ? "Description" : "Descripción"}</h4>
+                      <h4 className="mb-15">{labels.description}</h4>
                       <p className="lh-lg mb-30">{property.Descripcion}</p>
                     </>
                   )}
 
                   {property.Amenidades && property.Amenidades.length > 0 && (
                     <>
-                      <h4 className="mb-15">{isEnglish ? "Amenities" : "Amenidades"}</h4>
+                      <h4 className="mb-15">{labels.amenities}</h4>
                       <ul className="style-none d-flex flex-wrap gap-2">
                         {property.Amenidades.map((a, i) => (
                           <li key={i} className="badge bg-light text-dark border">{a}</li>
@@ -191,7 +286,7 @@ const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
                 <div className="col-xl-4">
                   <div className="card border-0 shadow-sm rounded-4">
                     <div className="card-body">
-                      <h5 className="mb-10">{isEnglish ? "Contact" : "Contacto"}</h5>
+                      <h5 className="mb-10">{labels.contact}</h5>
                       <p className="mb-2">Tel: +52 123 456 7890</p>
                       <p className="mb-0">Email: info@lc-inmobiliaria.com</p>
                     </div>
@@ -251,7 +346,7 @@ const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
             </button>
             <Image
               src={gallery[activeIndex]?.url || mainImage}
-              alt={property?.Title || (isEnglish ? "Gallery" : "Galería")}
+              alt={property?.Title || labels.gallery}
               width={1400}
               height={900}
               unoptimized

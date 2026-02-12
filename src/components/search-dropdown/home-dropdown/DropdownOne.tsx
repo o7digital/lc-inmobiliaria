@@ -1,6 +1,5 @@
 import NiceSelect from "@/ui/NiceSelect";
-
-type Locale = "es" | "en";
+import { SiteLocale, getLocalePrefix } from "@/types/siteLocale";
 
 const locations = [
    "Ciudad de México",
@@ -33,9 +32,9 @@ const locations = [
    "La Paz, B.C.S.",
 ];
 
-const DropdownOne = ({ style, locale = "es" }: { style?: boolean; locale?: Locale }) => {
-   const isEnglish = locale === "en";
-   const searchPath = isEnglish ? "/en/properties" : "/listing_05";
+const DropdownOne = ({ style, locale = "es" }: { style?: boolean; locale?: SiteLocale }) => {
+   const localePrefix = getLocalePrefix(locale);
+   const searchPath = locale === "es" ? "/listing_05" : `${localePrefix}/properties`;
 
    const setSession = (key: string, value: string) => {
       if (typeof window === "undefined") return;
@@ -57,36 +56,80 @@ const DropdownOne = ({ style, locale = "es" }: { style?: boolean; locale?: Local
       window.location.href = searchPath;
    };
 
-   const typeOptions = isEnglish
-      ? [
-           { value: "", text: "All categories" },
-           { value: "buy-apartments", text: "Buy Apartments" },
-           { value: "rent-apartments", text: "Rent Apartments" },
-           { value: "buy-houses", text: "Buy Houses" },
-           { value: "rent-houses", text: "Rent Houses" },
-           { value: "buy-offices", text: "Buy Offices" },
-           { value: "rent-offices", text: "Rent Offices" },
-           { value: "buy-land", text: "Buy Land" },
-           { value: "sell-land", text: "Sell Land" },
-        ]
-      : [
-           { value: "", text: "Todas las categorías" },
-           { value: "comprar-departamentos", text: "Comprar Departamentos" },
-           { value: "rentar-departamentos", text: "Rentar Departamentos" },
-           { value: "comprar-casas", text: "Comprar Casas" },
-           { value: "rentar-casas", text: "Rentar Casas" },
-           { value: "comprar-oficinas", text: "Comprar Oficinas" },
-           { value: "rentar-oficinas", text: "Rentar Oficinas" },
-           { value: "comprar-terrenos", text: "Comprar Terrenos" },
-           { value: "vender-terrenos", text: "Vender Terrenos" },
-        ];
+   const typeOptionsMap: Record<SiteLocale, { value: string; text: string }[]> = {
+      es: [
+         { value: "", text: "Todas las categorías" },
+         { value: "comprar-departamentos", text: "Comprar Departamentos" },
+         { value: "rentar-departamentos", text: "Rentar Departamentos" },
+         { value: "comprar-casas", text: "Comprar Casas" },
+         { value: "rentar-casas", text: "Rentar Casas" },
+         { value: "comprar-oficinas", text: "Comprar Oficinas" },
+         { value: "rentar-oficinas", text: "Rentar Oficinas" },
+         { value: "comprar-terrenos", text: "Comprar Terrenos" },
+         { value: "vender-terrenos", text: "Vender Terrenos" },
+      ],
+      en: [
+         { value: "", text: "All categories" },
+         { value: "buy-apartments", text: "Buy Apartments" },
+         { value: "rent-apartments", text: "Rent Apartments" },
+         { value: "buy-houses", text: "Buy Houses" },
+         { value: "rent-houses", text: "Rent Houses" },
+         { value: "buy-offices", text: "Buy Offices" },
+         { value: "rent-offices", text: "Rent Offices" },
+         { value: "buy-land", text: "Buy Land" },
+         { value: "sell-land", text: "Sell Land" },
+      ],
+      fr: [
+         { value: "", text: "Toutes les categories" },
+         { value: "buy-apartments", text: "Acheter des Appartements" },
+         { value: "rent-apartments", text: "Louer des Appartements" },
+         { value: "buy-houses", text: "Acheter des Maisons" },
+         { value: "rent-houses", text: "Louer des Maisons" },
+         { value: "buy-offices", text: "Acheter des Bureaux" },
+         { value: "rent-offices", text: "Louer des Bureaux" },
+         { value: "buy-land", text: "Acheter des Terrains" },
+         { value: "sell-land", text: "Vendre des Terrains" },
+      ],
+      it: [
+         { value: "", text: "Tutte le categorie" },
+         { value: "buy-apartments", text: "Comprare Appartamenti" },
+         { value: "rent-apartments", text: "Affittare Appartamenti" },
+         { value: "buy-houses", text: "Comprare Case" },
+         { value: "rent-houses", text: "Affittare Case" },
+         { value: "buy-offices", text: "Comprare Uffici" },
+         { value: "rent-offices", text: "Affittare Uffici" },
+         { value: "buy-land", text: "Comprare Terreni" },
+         { value: "sell-land", text: "Vendere Terreni" },
+      ],
+      de: [
+         { value: "", text: "Alle Kategorien" },
+         { value: "buy-apartments", text: "Wohnungen kaufen" },
+         { value: "rent-apartments", text: "Wohnungen mieten" },
+         { value: "buy-houses", text: "Hauser kaufen" },
+         { value: "rent-houses", text: "Hauser mieten" },
+         { value: "buy-offices", text: "Buros kaufen" },
+         { value: "rent-offices", text: "Buros mieten" },
+         { value: "buy-land", text: "Grundstucke kaufen" },
+         { value: "sell-land", text: "Grundstucke verkaufen" },
+      ],
+   };
+
+   const labelsMap: Record<SiteLocale, { looking: string; location: string; allLocations: string; priceRange: string; searchNow: string; search: string }> = {
+      es: { looking: "Estoy buscando...", location: "Ubicación", allLocations: "Todas las ubicaciones", priceRange: "Rango de precio", searchNow: "Buscar ahora", search: "Buscar" },
+      en: { looking: "I'm looking for...", location: "Location", allLocations: "All locations", priceRange: "Price range", searchNow: "Search now", search: "Search" },
+      fr: { looking: "Je recherche...", location: "Localisation", allLocations: "Toutes les zones", priceRange: "Plage de prix", searchNow: "Rechercher", search: "Rechercher" },
+      it: { looking: "Sto cercando...", location: "Localita", allLocations: "Tutte le localita", priceRange: "Fascia di prezzo", searchNow: "Cerca ora", search: "Cerca" },
+      de: { looking: "Ich suche...", location: "Standort", allLocations: "Alle Standorte", priceRange: "Preisspanne", searchNow: "Jetzt suchen", search: "Suchen" },
+   };
+   const labels = labelsMap[locale];
+   const typeOptions = typeOptionsMap[locale];
 
    return (
       <form onSubmit={(e) => { e.preventDefault(); searchHandler(); }}>
          <div className="row gx-0 align-items-center">
             <div className="col-xl-3 col-lg-4">
                <div className="input-box-one border-left">
-                  <div className="label">{isEnglish ? "I'm looking for..." : "Estoy buscando..."}</div>
+                  <div className="label">{labels.looking}</div>
                   <NiceSelect className={`nice-select ${style ? "fw-normal" : ""}`}
                      options={typeOptions}
                      defaultCurrent={0}
@@ -97,10 +140,10 @@ const DropdownOne = ({ style, locale = "es" }: { style?: boolean; locale?: Local
             </div>
             <div className={`${style ? "col-xl-3" : "col-xl-4"} col-lg-4`}>
                <div className="input-box-one border-left">
-                  <div className="label">{isEnglish ? "Location" : "Ubicación"}</div>
+                  <div className="label">{labels.location}</div>
                   <NiceSelect className={`nice-select location ${style ? "fw-normal" : ""}`}
                      options={[
-                        { value: "", text: isEnglish ? "All locations" : "Todas las ubicaciones" },
+                        { value: "", text: labels.allLocations },
                         ...locations.map((location) => ({ value: location, text: location })),
                      ]}
                      defaultCurrent={0}
@@ -111,7 +154,7 @@ const DropdownOne = ({ style, locale = "es" }: { style?: boolean; locale?: Local
             </div>
             <div className="col-xl-3 col-lg-4">
                <div className="input-box-one border-left border-lg-0">
-                  <div className="label">{isEnglish ? "Price range" : "Rango de precio"}</div>
+                  <div className="label">{labels.priceRange}</div>
                   <NiceSelect
                      className={`nice-select ${style ? "fw-normal" : ""}`}
                      options={[
@@ -128,7 +171,7 @@ const DropdownOne = ({ style, locale = "es" }: { style?: boolean; locale?: Local
             <div className={`${style ? "col-xl-3" : "col-xl-2"}`}>
                <div className="input-box-one lg-mt-10">
                   <button className={`fw-500 tran3s ${style ? "w-100 tran3s search-btn-three" : "text-uppercase search-btn"}`}>
-                     {style ? (isEnglish ? "Search now" : "Buscar ahora") : (isEnglish ? "Search" : "Buscar")}
+                     {style ? labels.searchNow : labels.search}
                   </button>
               </div>
             </div>

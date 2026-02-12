@@ -8,18 +8,151 @@ import NiceSelect from "@/ui/NiceSelect"
 import UseShortedProperty from "@/hooks/useShortedProperty"
 import DropdownOne from "@/components/search-dropdown/inner-dropdown/DropdownOne"
 import { buildDirectusAssetUrl } from "@/lib/directus"
+import { SiteLocale, getLocalePrefix, localeNumberFormatMap } from "@/types/siteLocale";
 
 import icon from "@/assets/images/icon/icon_46.svg"
 import featureIcon_1 from "@/assets/images/icon/icon_32.svg"
 import featureIcon_2 from "@/assets/images/icon/icon_33.svg"
 import featureIcon_3 from "@/assets/images/icon/icon_34.svg"
 
-type Locale = "es" | "en";
-
-const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
-  const isEnglish = locale === "en"
-  const listViewHref = isEnglish ? "/en/properties" : "/listing_06"
-  const detailsBasePath = isEnglish ? "/en/property-details" : "/listing_details_05"
+const ListingFiveArea = ({ locale = "es" }: { locale?: SiteLocale }) => {
+  const localePrefix = getLocalePrefix(locale)
+  const listViewHref = locale === "es" ? "/listing_06" : `${localePrefix}/properties`
+  const detailsBasePath = locale === "es" ? "/listing_details_05" : `${localePrefix}/property-details`
+  const labelsMap: Record<SiteLocale, {
+    showing: string;
+    of: string;
+    results: string;
+    sortBy: string;
+    newest: string;
+    bestSellers: string;
+    bestMatch: string;
+    lowestPrice: string;
+    highestPrice: string;
+    switchToListView: string;
+    loading: string;
+    loadingProperties: string;
+    loadErrorPrefix: string;
+    loadErrorSuffix: string;
+    property: string;
+    bed: string;
+    bath: string;
+    priceOnRequest: string;
+    forSale: string;
+    forRent: string;
+  }> = {
+    es: {
+      showing: "Mostrando",
+      of: "de",
+      results: "resultados",
+      sortBy: "Ordenar por:",
+      newest: "Más recientes",
+      bestSellers: "Más vendidos",
+      bestMatch: "Mejor coincidencia",
+      lowestPrice: "Precio menor",
+      highestPrice: "Precio mayor",
+      switchToListView: "Cambiar a vista de lista",
+      loading: "Cargando...",
+      loadingProperties: "Cargando propiedades desde DatoCMS...",
+      loadErrorPrefix: "No pudimos cargar DatoCMS",
+      loadErrorSuffix: "Intenta recargar la página.",
+      property: "Propiedad",
+      bed: "rec",
+      bath: "baño",
+      priceOnRequest: "Precio a consultar",
+      forSale: "EN VENTA",
+      forRent: "EN RENTA",
+    },
+    en: {
+      showing: "Showing",
+      of: "of",
+      results: "results",
+      sortBy: "Sort by:",
+      newest: "Newest",
+      bestSellers: "Best sellers",
+      bestMatch: "Best match",
+      lowestPrice: "Lowest price",
+      highestPrice: "Highest price",
+      switchToListView: "Switch to list view",
+      loading: "Loading...",
+      loadingProperties: "Loading properties from DatoCMS...",
+      loadErrorPrefix: "We could not load DatoCMS",
+      loadErrorSuffix: "Please refresh the page.",
+      property: "Property",
+      bed: "bed",
+      bath: "bath",
+      priceOnRequest: "Price upon request",
+      forSale: "FOR SALE",
+      forRent: "FOR RENT",
+    },
+    fr: {
+      showing: "Affichage",
+      of: "sur",
+      results: "resultats",
+      sortBy: "Trier par :",
+      newest: "Plus recents",
+      bestSellers: "Meilleures ventes",
+      bestMatch: "Meilleure correspondance",
+      lowestPrice: "Prix le plus bas",
+      highestPrice: "Prix le plus eleve",
+      switchToListView: "Passer en vue liste",
+      loading: "Chargement...",
+      loadingProperties: "Chargement des proprietes depuis DatoCMS...",
+      loadErrorPrefix: "Impossible de charger DatoCMS",
+      loadErrorSuffix: "Veuillez recharger la page.",
+      property: "Propriete",
+      bed: "ch",
+      bath: "sdb",
+      priceOnRequest: "Prix sur demande",
+      forSale: "A VENDRE",
+      forRent: "A LOUER",
+    },
+    it: {
+      showing: "Visualizzazione",
+      of: "di",
+      results: "risultati",
+      sortBy: "Ordina per:",
+      newest: "Piu recenti",
+      bestSellers: "Piu richiesti",
+      bestMatch: "Migliore corrispondenza",
+      lowestPrice: "Prezzo minimo",
+      highestPrice: "Prezzo massimo",
+      switchToListView: "Passa alla vista elenco",
+      loading: "Caricamento...",
+      loadingProperties: "Caricamento immobili da DatoCMS...",
+      loadErrorPrefix: "Impossibile caricare DatoCMS",
+      loadErrorSuffix: "Ricarica la pagina.",
+      property: "Immobile",
+      bed: "cam",
+      bath: "bagni",
+      priceOnRequest: "Prezzo su richiesta",
+      forSale: "IN VENDITA",
+      forRent: "IN AFFITTO",
+    },
+    de: {
+      showing: "Anzeige",
+      of: "von",
+      results: "Ergebnissen",
+      sortBy: "Sortieren nach:",
+      newest: "Neueste",
+      bestSellers: "Top-Angebote",
+      bestMatch: "Beste Uebereinstimmung",
+      lowestPrice: "Niedrigster Preis",
+      highestPrice: "Hoechster Preis",
+      switchToListView: "Zur Listenansicht wechseln",
+      loading: "Laden...",
+      loadingProperties: "Immobilien werden aus DatoCMS geladen...",
+      loadErrorPrefix: "DatoCMS konnte nicht geladen werden",
+      loadErrorSuffix: "Bitte Seite neu laden.",
+      property: "Immobilie",
+      bed: "Zi",
+      bath: "Bad",
+      priceOnRequest: "Preis auf Anfrage",
+      forSale: "ZU VERKAUFEN",
+      forRent: "ZU MIETEN",
+    },
+  }
+  const labels = labelsMap[locale]
   const itemsPerPage = 6
   const page = "listing_2"
 
@@ -272,10 +405,10 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
   }
 
   const formatPrice = (price: number | string | undefined, currency?: string[] | null) => {
-    if (!price && price !== 0) return isEnglish ? "Price upon request" : "Precio a consultar"
+    if (!price && price !== 0) return labels.priceOnRequest
     const num = typeof price === "string" ? Number(price) : price
     const curr = Array.isArray(currency) && currency.length ? currency[0] : "MXN"
-    return new Intl.NumberFormat(isEnglish ? "en-US" : "es-MX", {
+    return new Intl.NumberFormat(localeNumberFormatMap[locale], {
       style: "currency",
       currency: curr,
       maximumFractionDigits: 0,
@@ -283,14 +416,14 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
   }
 
   const formatOperationLabel = (operation?: string) => {
-    if (!operation) return isEnglish ? "FOR SALE" : "EN VENTA"
+    if (!operation) return labels.forSale
 
     const normalized = normalizeText(operation)
     if (["venta", "sale", "sell", "comprar", "buy"].includes(normalized)) {
-      return isEnglish ? "FOR SALE" : "EN VENTA"
+      return labels.forSale
     }
     if (["renta", "rent", "alquiler", "lease", "leasing"].includes(normalized)) {
-      return isEnglish ? "FOR RENT" : "EN RENTA"
+      return labels.forRent
     }
     return operation
   }
@@ -317,25 +450,25 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
               <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
                 <div>
                   <>
-                    {isEnglish ? "Showing" : "Mostrando"}{" "}
+                    {labels.showing}{" "}
                     <span className="color-dark fw-500">
                       {filteredDato.length === 0 ? 0 : datoOffset + 1}–{Math.min(datoOffset + datoCurrentItems.length, filteredDato.length)}
                     </span>{" "}
-                    {isEnglish ? "of" : "de"} <span className="color-dark fw-500">{filteredDato.length}</span>{" "}
-                    {isEnglish ? "results" : "resultados"}
+                    {labels.of} <span className="color-dark fw-500">{filteredDato.length}</span>{" "}
+                    {labels.results}
                   </>
                 </div>
                 <div className="d-flex align-items-center xs-mt-20">
                   <div className="short-filter d-flex align-items-center">
-                    <div className="fs-16 me-2">{isEnglish ? "Sort by:" : "Ordenar por:"}</div>
+                    <div className="fs-16 me-2">{labels.sortBy}</div>
                     <NiceSelect
                       className="nice-select rounded-0"
                       options={[
-                        { value: "newest", text: isEnglish ? "Newest" : "Más recientes" },
-                        { value: "best_seller", text: isEnglish ? "Best sellers" : "Más vendidos" },
-                        { value: "best_match", text: isEnglish ? "Best match" : "Mejor coincidencia" },
-                        { value: "price_low", text: isEnglish ? "Lowest price" : "Precio menor" },
-                        { value: "price_high", text: isEnglish ? "Highest price" : "Precio mayor" },
+                        { value: "newest", text: labels.newest },
+                        { value: "best_seller", text: labels.bestSellers },
+                        { value: "best_match", text: labels.bestMatch },
+                        { value: "price_low", text: labels.lowestPrice },
+                        { value: "price_high", text: labels.highestPrice },
                       ]}
                       defaultCurrent={0}
                       onChange={handleTypeChange}
@@ -347,7 +480,7 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
                     href={listViewHref}
                     className="tran3s layout-change rounded-circle ms-auto ms-sm-3"
                     data-bs-toggle="tooltip"
-                    title={isEnglish ? "Switch to list view" : "Cambiar a vista de lista"}
+                    title={labels.switchToListView}
                   >
                     <i className="fa-regular fa-bars"></i>
                   </Link>
@@ -357,19 +490,15 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
               {datoLoading && (
                 <div className="py-5 text-center">
                   <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">{isEnglish ? "Loading..." : "Cargando..."}</span>
+                    <span className="visually-hidden">{labels.loading}</span>
                   </div>
-                  <p className="mt-3 mb-0">
-                    {isEnglish ? "Loading properties from DatoCMS..." : "Cargando propiedades desde DatoCMS..."}
-                  </p>
+                  <p className="mt-3 mb-0">{labels.loadingProperties}</p>
                 </div>
               )}
 
               {datoError && !datoLoading && (
                 <div className="alert alert-warning">
-                  {isEnglish
-                    ? `We could not load DatoCMS (${datoError}). Please refresh the page.`
-                    : `No pudimos cargar DatoCMS (${datoError}). Intenta recargar la página.`}
+                  {`${labels.loadErrorPrefix} (${datoError}). ${labels.loadErrorSuffix}`}
                 </div>
               )}
 
@@ -387,7 +516,7 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
                             <Link href={`${detailsBasePath}?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}>
                               <Image
                                 src={getDatoImage(item)}
-                                alt={item.Title || (isEnglish ? "Property" : "Propiedad")}
+                                alt={item.Title || labels.property}
                                 width={900}
                                 height={600}
                                 className="w-100"
@@ -445,14 +574,14 @@ const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
                             <Image src={featureIcon_2} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
                               <span className="color-dark">{item.Bedrooms || "—"}</span>{" "}
-                              {isEnglish ? "bed" : "rec"}
+                              {labels.bed}
                             </span>
                           </li>
                           <li className="d-flex align-items-center">
                             <Image src={featureIcon_3} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
                               <span className="color-dark">{item.Bathrooms || "—"}</span>{" "}
-                              {isEnglish ? "bath" : "baño"}
+                              {labels.bath}
                             </span>
                           </li>
                         </ul>

@@ -2,6 +2,7 @@
 
 import Slider from "react-slick"
 import DropdownOne from "@/components/search-dropdown/home-dropdown/DropdownOne"
+import { SiteLocale } from "@/types/siteLocale";
 
 const sliderSettings = {
   dots: false,
@@ -14,21 +15,26 @@ const sliderSettings = {
   autoplaySpeed: 7000,
 }
 
-type Locale = "es" | "en";
+const Hero = ({ locale = "es" }: { locale?: SiteLocale }) => {
+  const heroSubtitleMap: Record<SiteLocale, string> = {
+    es: "Encuentra la casa de tus sueños con nosotros.",
+    en: "Find the home of your dreams with us.",
+    fr: "Trouvez la maison de vos reves avec nous.",
+    it: "Trova la casa dei tuoi sogni con noi.",
+    de: "Finden Sie mit uns Ihr Traumhaus.",
+  };
 
-const Hero = ({ locale = "es" }: { locale?: Locale }) => {
-  const isEnglish = locale === "en";
   return (
     <div className="hero-banner-eight z-1 pt-250 xl-pt-200 lg-pt-150 md-pt-120 pb-250 xl-pb-150 lg-pb-100 md-pb-80 position-relative overflow-hidden">
       <Slider {...sliderSettings} className="hero-slider-one m0">
         <div className="item m0">
-          <div className="hero-img" style={{ backgroundImage: `url(/assets/images/media/img_26.jpg)` }} />
+          <div className="hero-img" style={{ backgroundImage: `url(/slider/gemini-1.webp)` }} />
         </div>
         <div className="item m0">
-          <div className="hero-img" style={{ backgroundImage: `url(/assets/images/media/img_27.jpg)` }} />
+          <div className="hero-img" style={{ backgroundImage: `url(/slider/gemini-2.webp)` }} />
         </div>
         <div className="item m0">
-          <div className="hero-img" style={{ backgroundImage: `url(/assets/images/media/img_28.jpg)` }} />
+          <div className="hero-img" style={{ backgroundImage: `url(/slider/gemini-3.webp)` }} />
         </div>
       </Slider>
 
@@ -50,9 +56,7 @@ const Hero = ({ locale = "es" }: { locale?: Locale }) => {
               className="fs-24 text-white text-center pt-35 lg-pt-25 md-pt-20 wow fadeInUp"
               data-wow-delay="0.1s"
             >
-              {isEnglish
-                ? "Find the home of your dreams with us."
-                : "Encuentra la casa de tus sueños con nosotros."}
+              {heroSubtitleMap[locale]}
             </p>
           </div>
         </div>

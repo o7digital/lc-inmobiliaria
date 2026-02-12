@@ -6,6 +6,7 @@ import { animationCreate } from "@/utils/utils";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SiteLocale, getLocalePrefix } from "@/types/siteLocale";
 
 if (typeof window !== "undefined") {
     require("bootstrap/dist/js/bootstrap");
@@ -13,9 +14,25 @@ if (typeof window !== "undefined") {
 
 const Wrapper = ({ children }: any) => {
     const pathname = usePathname();
-    const isEnglish = pathname?.startsWith("/en");
-    const privacyHref = isEnglish ? "/en/privacy-policy" : "/aviso-privacidad";
-    const privacyLabel = isEnglish ? "🔒 Privacy Policy" : "🔒 Aviso de Privacidad";
+    const locale: SiteLocale = pathname?.startsWith("/en")
+        ? "en"
+        : pathname?.startsWith("/fr")
+            ? "fr"
+            : pathname?.startsWith("/it")
+                ? "it"
+                : pathname?.startsWith("/de")
+                    ? "de"
+                    : "es";
+    const localePrefix = getLocalePrefix(locale);
+    const privacyHref = locale === "es" ? "/aviso-privacidad" : `${localePrefix}/privacy-policy`;
+    const privacyLabelMap: Record<SiteLocale, string> = {
+        es: "🔒 Aviso de Privacidad",
+        en: "🔒 Privacy Policy",
+        fr: "🔒 Politique de Confidentialite",
+        it: "🔒 Informativa Privacy",
+        de: "🔒 Datenschutz",
+    };
+    const privacyLabel = privacyLabelMap[locale];
 
     useEffect(() => {
         // animation

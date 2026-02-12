@@ -8,10 +8,9 @@ import BLockFeatureTwo from "./BLockFeatureTwo"; // ← Servicios original del t
 import BLockFeatureFour from "../home-one/BLockFeatureFour";
 import FancyBannerTwo from "../home-two/FancyBannerTwo";
 import FooterThree from "@/layouts/footers/FooterThree";
+import { SiteLocale } from "@/types/siteLocale";
 
-type Locale = "es" | "en";
-
-const HomeEight = ({ locale = "es" }: { locale?: Locale }) => {
+const HomeEight = ({ locale = "es" }: { locale?: SiteLocale }) => {
   return (
     <div className="main-page-wrapper">
       <HeaderTwo style_1={false} style_2={true} locale={locale} />

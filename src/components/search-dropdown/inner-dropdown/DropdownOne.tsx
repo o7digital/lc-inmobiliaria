@@ -1,8 +1,7 @@
 import NiceSelect from "@/ui/NiceSelect"
 import PriceRange from "../../common/PriceRange";
 import Link from "next/link";
-
-type Locale = "es" | "en";
+import { SiteLocale } from "@/types/siteLocale";
 
 const locations = [
    "Ciudad de México",
@@ -65,6 +64,10 @@ const ammenities_en: string[] = [
    "Elevator",
 ];
 
+const ammenities_fr: string[] = ["Climatisation", "Garages", "Jardin", "Acces PMR", "Piscine", "Parking", "Wifi", "Animaux acceptes", "Hauteur sous plafond", "Cheminee", "Aire de jeux", "Ascenseur"];
+const ammenities_it: string[] = ["A/C e Riscaldamento", "Garage", "Giardino", "Accesso disabili", "Piscina", "Parcheggio", "Wifi", "Animali ammessi", "Altezza soffitto", "Camino", "Area giochi", "Ascensore"];
+const ammenities_de: string[] = ["Klimaanlage & Heizung", "Garagen", "Garten", "Barrierefreier Zugang", "Pool", "Parkplatz", "Wifi", "Haustierfreundlich", "Deckenhohe", "Kamin", "Spielplatz", "Aufzug"];
+
 const DropdownOne = ({
    locale = "es",
    handleBathroomChange,
@@ -78,21 +81,17 @@ const DropdownOne = ({
    handleAmenityChange,
    handleLocationChange,
    handleStatusChange, }: any) => {
-   const isEnglish = locale === "en";
-   const amenities = isEnglish ? ammenities_en : ammenities_es;
-   const typeOptions = isEnglish
-      ? [
-         { value: "", text: "All categories" },
-         { value: "buy-apartments", text: "Buy Apartments" },
-         { value: "rent-apartments", text: "Rent Apartments" },
-         { value: "buy-houses", text: "Buy Houses" },
-         { value: "rent-houses", text: "Rent Houses" },
-         { value: "buy-offices", text: "Buy Offices" },
-         { value: "rent-offices", text: "Rent Offices" },
-         { value: "buy-land", text: "Buy Land" },
-         { value: "sell-land", text: "Sell Land" },
-      ]
-      : [
+   const currentLocale = locale as SiteLocale;
+   const amenitiesMap: Record<SiteLocale, string[]> = {
+      es: ammenities_es,
+      en: ammenities_en,
+      fr: ammenities_fr,
+      it: ammenities_it,
+      de: ammenities_de,
+   };
+   const amenities = amenitiesMap[currentLocale];
+   const typeOptionsMap: Record<SiteLocale, { value: string; text: string }[]> = {
+      es: [
          { value: "", text: "Todas las categorías" },
          { value: "comprar-departamentos", text: "Comprar Departamentos" },
          { value: "rentar-departamentos", text: "Rentar Departamentos" },
@@ -102,14 +101,68 @@ const DropdownOne = ({
          { value: "rentar-oficinas", text: "Rentar Oficinas" },
          { value: "comprar-terrenos", text: "Comprar Terrenos" },
          { value: "vender-terrenos", text: "Vender Terrenos" },
-      ];
+      ],
+      en: [
+         { value: "", text: "All categories" },
+         { value: "buy-apartments", text: "Buy Apartments" },
+         { value: "rent-apartments", text: "Rent Apartments" },
+         { value: "buy-houses", text: "Buy Houses" },
+         { value: "rent-houses", text: "Rent Houses" },
+         { value: "buy-offices", text: "Buy Offices" },
+         { value: "rent-offices", text: "Rent Offices" },
+         { value: "buy-land", text: "Buy Land" },
+         { value: "sell-land", text: "Sell Land" },
+      ],
+      fr: [
+         { value: "", text: "Toutes les categories" },
+         { value: "buy-apartments", text: "Acheter Appartements" },
+         { value: "rent-apartments", text: "Louer Appartements" },
+         { value: "buy-houses", text: "Acheter Maisons" },
+         { value: "rent-houses", text: "Louer Maisons" },
+         { value: "buy-offices", text: "Acheter Bureaux" },
+         { value: "rent-offices", text: "Louer Bureaux" },
+         { value: "buy-land", text: "Acheter Terrains" },
+         { value: "sell-land", text: "Vendre Terrains" },
+      ],
+      it: [
+         { value: "", text: "Tutte le categorie" },
+         { value: "buy-apartments", text: "Comprare Appartamenti" },
+         { value: "rent-apartments", text: "Affittare Appartamenti" },
+         { value: "buy-houses", text: "Comprare Case" },
+         { value: "rent-houses", text: "Affittare Case" },
+         { value: "buy-offices", text: "Comprare Uffici" },
+         { value: "rent-offices", text: "Affittare Uffici" },
+         { value: "buy-land", text: "Comprare Terreni" },
+         { value: "sell-land", text: "Vendere Terreni" },
+      ],
+      de: [
+         { value: "", text: "Alle Kategorien" },
+         { value: "buy-apartments", text: "Wohnungen kaufen" },
+         { value: "rent-apartments", text: "Wohnungen mieten" },
+         { value: "buy-houses", text: "Hauser kaufen" },
+         { value: "rent-houses", text: "Hauser mieten" },
+         { value: "buy-offices", text: "Buros kaufen" },
+         { value: "rent-offices", text: "Buros mieten" },
+         { value: "buy-land", text: "Grundstucke kaufen" },
+         { value: "sell-land", text: "Grundstucke verkaufen" },
+      ],
+   };
+   const labelsMap: Record<SiteLocale, { looking: string; keyword: string; keywordPlaceholder: string; location: string; allLocations: string; bedrooms: string; bathrooms: string; amenities: string; priceRange: string; min: string; max: string; search: string; reset: string; save: string }> = {
+      es: { looking: "Estoy buscando...", keyword: "Palabra clave", keywordPlaceholder: "comprar, casa, loft, departamento", location: "Ubicación", allLocations: "Todas las ubicaciones", bedrooms: "Recámaras", bathrooms: "Baños", amenities: "Amenidades", priceRange: "Rango de precio", min: "Mín", max: "Máx", search: "Buscar", reset: "Reiniciar filtros", save: "Guardar búsqueda" },
+      en: { looking: "I'm looking for...", keyword: "Keyword", keywordPlaceholder: "buy, home, loft, apartment", location: "Location", allLocations: "All locations", bedrooms: "Bedrooms", bathrooms: "Bathrooms", amenities: "Amenities", priceRange: "Price range", min: "Min", max: "Max", search: "Search", reset: "Reset filters", save: "Save search" },
+      fr: { looking: "Je recherche...", keyword: "Mot-cle", keywordPlaceholder: "achat, maison, loft, appartement", location: "Localisation", allLocations: "Toutes les zones", bedrooms: "Chambres", bathrooms: "Salles de bain", amenities: "Equipements", priceRange: "Plage de prix", min: "Min", max: "Max", search: "Rechercher", reset: "Reinitialiser", save: "Sauvegarder la recherche" },
+      it: { looking: "Sto cercando...", keyword: "Parola chiave", keywordPlaceholder: "acquisto, casa, loft, appartamento", location: "Localita", allLocations: "Tutte le localita", bedrooms: "Camere", bathrooms: "Bagni", amenities: "Servizi", priceRange: "Fascia di prezzo", min: "Min", max: "Max", search: "Cerca", reset: "Reimposta filtri", save: "Salva ricerca" },
+      de: { looking: "Ich suche...", keyword: "Stichwort", keywordPlaceholder: "kauf, haus, loft, wohnung", location: "Standort", allLocations: "Alle Standorte", bedrooms: "Schlafzimmer", bathrooms: "Badezimmer", amenities: "Ausstattung", priceRange: "Preisspanne", min: "Min", max: "Max", search: "Suchen", reset: "Filter zurucksetzen", save: "Suche speichern" },
+   };
+   const labels = labelsMap[currentLocale];
+   const typeOptions = typeOptionsMap[currentLocale];
 
    return (
       <form onSubmit={(e) => e.preventDefault()}>
          <div className="row gx-lg-5">
             <div className="col-12">
                <div className="input-box-one mb-35">
-                  <div className="label">{isEnglish ? "I'm looking for..." : "Estoy buscando..."}</div>
+                  <div className="label">{labels.looking}</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={typeOptions}
                      defaultCurrent={0}
@@ -121,11 +174,11 @@ const DropdownOne = ({
 
             <div className="col-12">
                <div className="input-box-one mb-35">
-                  <div className="label">{isEnglish ? "Keyword" : "Palabra clave"}</div>
+                  <div className="label">{labels.keyword}</div>
                   <input
                      onChange={handleSearchChange}
                      type="text"
-                     placeholder={isEnglish ? "buy, home, loft, apartment" : "comprar, casa, loft, departamento"}
+                     placeholder={labels.keywordPlaceholder}
                      className="type-input"
                   />
                </div>
@@ -133,10 +186,10 @@ const DropdownOne = ({
 
             <div className="col-12">
                <div className="input-box-one mb-50">
-                  <div className="label">{isEnglish ? "Location" : "Ubicación"}</div>
+                  <div className="label">{labels.location}</div>
                   <NiceSelect className="nice-select location fw-normal"
                      options={[
-                        { value: "", text: isEnglish ? "All locations" : "Todas las ubicaciones" },
+                        { value: "", text: labels.allLocations },
                         ...locations.map((location) => ({ value: location, text: location })),
                      ]}
                      defaultCurrent={0}
@@ -148,7 +201,7 @@ const DropdownOne = ({
 
             <div className="col-sm-6">
                <div className="input-box-one mb-40">
-                  <div className="label">{isEnglish ? "Bedrooms" : "Recámaras"}</div>
+                  <div className="label">{labels.bedrooms}</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
                         { value: "1", text: "1" },
@@ -165,7 +218,7 @@ const DropdownOne = ({
 
             <div className="col-sm-6">
                <div className="input-box-one mb-40">
-                  <div className="label">{isEnglish ? "Bathrooms" : "Baños"}</div>
+                  <div className="label">{labels.bathrooms}</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
                         { value: "1", text: "1" },
@@ -181,7 +234,7 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mb-30">{isEnglish ? "Amenities" : "Amenidades"}</h6>
+               <h6 className="block-title fw-bold mb-30">{labels.amenities}</h6>
                <ul
                   className="style-none d-flex flex-wrap justify-content-between filter-input">
                   {amenities.map((list, i) => (
@@ -200,7 +253,7 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mt-25 mb-15">{isEnglish ? "Price range" : "Rango de precio"}</h6>
+               <h6 className="block-title fw-bold mt-25 mb-15">{labels.priceRange}</h6>
                <div className="price-ranger">
                   <div
                      className="price-input d-flex align-items-center justify-content-between pt-5">
@@ -226,15 +279,15 @@ const DropdownOne = ({
             <div className="col-12">
                <h6 className="block-title fw-bold mt-45 mb-20">m²</h6>
                <div className="d-flex align-items-center sqf-ranger">
-                  <input type="text" placeholder={isEnglish ? "Min" : "Mín"} />
+                  <input type="text" placeholder={labels.min} />
                   <div className="divider"></div>
-                  <input type="text" placeholder={isEnglish ? "Max" : "Máx"} />
+                  <input type="text" placeholder={labels.max} />
                </div>
             </div>
             <div className="col-12">
                <button className="fw-500 text-uppercase tran3s apply-search w-100 mt-40 mb-25">
                   <i className="fa-light fa-magnifying-glass"></i>
-                  <span>{isEnglish ? "Search" : "Buscar"}</span>
+                  <span>{labels.search}</span>
                </button>
             </div>
 
@@ -242,11 +295,11 @@ const DropdownOne = ({
                <div className="d-flex justify-content-between form-widget">
                   <a onClick={handleResetFilter} style={{ cursor: "pointer" }} className="tran3s">
                      <i className="fa-regular fa-arrows-rotate"></i>
-                     <span>{isEnglish ? "Reset filters" : "Reiniciar filtros"}</span>
+                     <span>{labels.reset}</span>
                   </a>
                   <Link href="#" className="tran3s">
                      <i className="fa-regular fa-star"></i>
-                     <span>{isEnglish ? "Save search" : "Guardar búsqueda"}</span>
+                     <span>{labels.save}</span>
                   </Link>
                </div>
             </div>

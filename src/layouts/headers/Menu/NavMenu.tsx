@@ -1,20 +1,30 @@
 "use client";
 import menu_data from "@/data/home-data/MenuData";
 import menu_data_en from "@/data/home-data/MenuDataEn";
+import menu_data_fr from "@/data/home-data/MenuDataFr";
+import menu_data_it from "@/data/home-data/MenuDataIt";
+import menu_data_de from "@/data/home-data/MenuDataDe";
 import Link from "next/link.js";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { useState } from "react";
+import { SiteLocale } from "@/types/siteLocale";
 
 import logo from "@/assets/images/logo/logo_01.svg";
 
-type Locale = "es" | "en";
-
-const NavMenu = ({ locale = "es" }: { locale?: Locale }) => {
+const NavMenu = ({ locale = "es" }: { locale?: SiteLocale }) => {
     const pathname = usePathname();
     const [navTitle, setNavTitle] = useState("");
-    const menuSource = locale === "en" ? menu_data_en : menu_data;
-    const homeHref = locale === "en" ? "/en" : "/";
+    const menuSource = locale === "en"
+        ? menu_data_en
+        : locale === "fr"
+            ? menu_data_fr
+            : locale === "it"
+                ? menu_data_it
+                : locale === "de"
+                    ? menu_data_de
+                    : menu_data;
+    const homeHref = locale === "en" ? "/en" : locale === "fr" ? "/fr" : locale === "it" ? "/it" : locale === "de" ? "/de" : "/";
 
     const openMobileMenu = (menu: any) => {
         if (navTitle === menu) {

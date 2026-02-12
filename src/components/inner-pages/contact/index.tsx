@@ -1,10 +1,9 @@
 import FooterThree from '@/layouts/footers/FooterThree'
 import HeaderFive from '@/layouts/headers/HeaderFive'
 import ContactArea from './ContactArea'
+import { SiteLocale } from "@/types/siteLocale";
 
-type Locale = "es" | "en";
-
-const Contact = ({ locale = "es" }: { locale?: Locale }) => {
+const Contact = ({ locale = "es" }: { locale?: SiteLocale }) => {
    return (
       <>
          <HeaderFive style={true} locale={locale} />

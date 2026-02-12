@@ -1,7 +1,20 @@
-type Locale = "es" | "en";
+import { SiteLocale } from "@/types/siteLocale";
 
-const FancyBannerOne = ({ locale = "es" }: { locale?: Locale }) => {
-   const isEnglish = locale === "en";
+const FancyBannerOne = ({ locale = "es" }: { locale?: SiteLocale }) => {
+   const roleMap: Record<SiteLocale, string> = {
+      es: "Fundadora y CEO de LC Inmobiliaria",
+      en: "Founder and CEO of LC Inmobiliaria",
+      fr: "Fondatrice et CEO de LC Inmobiliaria",
+      it: "Fondatrice e CEO di LC Inmobiliaria",
+      de: "Gruenderin und CEO von LC Inmobiliaria",
+   };
+   const quoteMap: Record<SiteLocale, string> = {
+      es: "\"Seguimos un proceso para ofrecer a nuestros inversionistas las mejores oportunidades.\"",
+      en: "\"We follow a clear process to offer our investors the best opportunities.\"",
+      fr: "\"Nous suivons une methode claire pour offrir les meilleures opportunites aux investisseurs.\"",
+      it: "\"Seguiamo un processo chiaro per offrire le migliori opportunita ai nostri investitori.\"",
+      de: "\"Wir folgen einem klaren Prozess, um Investoren die besten Chancen zu bieten.\"",
+   };
 
    return (
       <div className="fancy-banner-nine mt-110 lg-mt-80">
@@ -18,18 +31,12 @@ const FancyBannerOne = ({ locale = "es" }: { locale?: Locale }) => {
                      />
                      <div className="ps-3 text">
                         <h6 className="fs-22">Lourdes Cazares</h6>
-                        <span className="fs-20">
-                           {isEnglish ? "Founder and CEO of LC Inmobiliaria" : "Fundadora y CEO de LC Inmobiliaria"}
-                        </span>
+                        <span className="fs-20">{roleMap[locale]}</span>
                      </div>
                   </div>
                </div>
                <div className="col-xxl-7 col-lg-8">
-                  <blockquote>
-                     {isEnglish
-                        ? "\"We follow a clear process to offer our investors the best opportunities.\""
-                        : "\"Seguimos un proceso para ofrecer a nuestros inversionistas las mejores oportunidades.\""}
-                  </blockquote>
+                  <blockquote>{quoteMap[locale]}</blockquote>
                </div>
             </div>
          </div>

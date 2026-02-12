@@ -1,8 +1,7 @@
 import ListingDetailsFiveArea from "./ListingDetailsFiveArea"
+import { SiteLocale } from "@/types/siteLocale";
 
-type Locale = "es" | "en";
-
-const ListingDetailsFour = ({ locale = "es" }: { locale?: Locale }) => {
+const ListingDetailsFour = ({ locale = "es" }: { locale?: SiteLocale }) => {
    return (
       <>
          <ListingDetailsFiveArea locale={locale} />

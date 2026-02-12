@@ -4,13 +4,19 @@ import Link from "next/link"
 import Image from "next/image"
 import UseSticky from "@/hooks/UseSticky"
 import LoginModal from "@/modals/LoginModal"
+import { SiteLocale, getLocalePrefix } from "@/types/siteLocale";
 
-type Locale = "es" | "en";
-
-const HeaderFive = ({ style, locale = "es" }: { style?: boolean; locale?: Locale }) => {
+const HeaderFive = ({ style, locale = "es" }: { style?: boolean; locale?: SiteLocale }) => {
    const { sticky } = UseSticky();
-   const homeHref = locale === "en" ? "/en" : "/";
-   const loginLabel = locale === "en" ? "Login" : "Iniciar sesión";
+   const homeHref = getLocalePrefix(locale) || "/";
+   const loginLabelMap: Record<SiteLocale, string> = {
+      es: "Iniciar sesión",
+      en: "Login",
+      fr: "Connexion",
+      it: "Accesso",
+      de: "Anmelden",
+   };
+   const loginLabel = loginLabelMap[locale] || "Login";
 
    return (
       <>

@@ -7,15 +7,15 @@ import UseSticky from "@/hooks/UseSticky"
 import LoginModal from "@/modals/LoginModal"
 import Offcanvas from "./Menu/Offcanvas"
 import HeaderSearchbar from "./Menu/HeaderSearchbar"
+import { SiteLocale, getLocalePrefix } from "@/types/siteLocale";
 
 const clientLogo = "/logo/LC INMOBILIARIA Imagotipo OFFICIAL 2025.eon.png";
-type Locale = "es" | "en";
 
-const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; style_2?: boolean; locale?: Locale }) => {
+const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; style_2?: boolean; locale?: SiteLocale }) => {
    const { sticky } = UseSticky();
    const [offCanvas, setOffCanvas] = useState<boolean>(false);
    const [isSearch, setIsSearch] = useState<boolean>(false);
-   const homeHref = locale === "en" ? "/en" : "/";
+   const homeHref = getLocalePrefix(locale) || "/";
 
    return (
       <>
