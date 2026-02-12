@@ -28,13 +28,13 @@ const Hero = ({ locale = "es" }: { locale?: SiteLocale }) => {
     <div className="hero-banner-eight z-1 pt-250 xl-pt-200 lg-pt-150 md-pt-120 pb-250 xl-pb-150 lg-pb-100 md-pb-80 position-relative overflow-hidden">
       <Slider {...sliderSettings} className="hero-slider-one m0">
         <div className="item m0">
-          <div className="hero-img" style={{ backgroundImage: `url(/slider/gemini-1.webp)` }} />
+          <div className="hero-img" style={{ backgroundImage: `url(/slider/1.png)` }} />
         </div>
         <div className="item m0">
-          <div className="hero-img" style={{ backgroundImage: `url(/slider/gemini-2.webp)` }} />
+          <div className="hero-img" style={{ backgroundImage: `url(/slider/2.png)` }} />
         </div>
         <div className="item m0">
-          <div className="hero-img" style={{ backgroundImage: `url(/slider/gemini-3.webp)` }} />
+          <div className="hero-img" style={{ backgroundImage: `url(/slider/3.png)` }} />
         </div>
       </Slider>
 
