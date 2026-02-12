@@ -53,10 +53,10 @@ const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; sty
                            <Image
                               src={clientLogo}
                               alt="LC Inmobiliaria"
-                              width={340}
-                              height={120}
+                              width={408}
+                              height={144}
                               priority
-                              style={{ height: "auto", width: "auto", maxHeight: 101 }}
+                              style={{ height: "auto", width: "auto", maxHeight: 121 }}
                            />
                         </Link>
                      </div>

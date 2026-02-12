@@ -10,11 +10,11 @@ const BarChart = () => {
       {
         label: 'Total View',
         width: "14px",
-        backgroundColor: '#ff6725',
-        borderColor: '#ff6725',
+        backgroundColor: '#1879b5',
+        borderColor: '#1879b5',
         borderWidth: 1,
-        hoverBackgroundColor: '#ff6725',
-        hoverBorderColor: '#ff6725',
+        hoverBackgroundColor: '#1879b5',
+        hoverBorderColor: '#1879b5',
         data: [20000, 12000, 6000, 16000, 10000, 5000, 11000],
       },
     ],
@@ -38,5 +38,4 @@ const BarChart = () => {
 };
 
 export default BarChart;
-
 
