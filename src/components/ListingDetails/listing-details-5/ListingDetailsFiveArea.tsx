@@ -8,13 +8,34 @@ import FooterThree from "@/layouts/footers/FooterThree"
 import { DirectusProperty } from "@/services/directusService"
 import { buildDirectusAssetUrl } from "@/lib/directus"
 
+type Locale = "es" | "en";
 type GalleryItem = { url: string; alt?: string | null }
 
-const formatPrice = (price?: number | string, currency?: string[]) => {
-  if (price === undefined || price === null) return "Precio a consultar"
+const formatPrice = (price?: number | string, currency?: string[], locale: Locale = "es") => {
+  if (price === undefined || price === null) {
+    return locale === "en" ? "Price upon request" : "Precio a consultar"
+  }
   const num = typeof price === "string" ? Number(price) : price
   const curr = currency && currency.length ? currency[0] : "MXN"
-  return new Intl.NumberFormat("es-MX", { style: "currency", currency: curr, maximumFractionDigits: 0 }).format(num)
+  const numberLocale = locale === "en" ? "en-US" : "es-MX"
+  return new Intl.NumberFormat(numberLocale, { style: "currency", currency: curr, maximumFractionDigits: 0 }).format(num)
+}
+
+const formatOperationLabel = (operation: string | undefined, locale: Locale = "es") => {
+  if (!operation) return locale === "en" ? "FOR SALE" : "EN VENTA"
+  const normalized = operation
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim()
+
+  if (["venta", "sale", "sell", "comprar", "buy"].includes(normalized)) {
+    return locale === "en" ? "FOR SALE" : "EN VENTA"
+  }
+  if (["renta", "rent", "alquiler", "lease", "leasing"].includes(normalized)) {
+    return locale === "en" ? "FOR RENT" : "EN RENTA"
+  }
+  return operation
 }
 
 const getGallery = (property: DirectusProperty): GalleryItem[] => {
@@ -36,7 +57,8 @@ const getGallery = (property: DirectusProperty): GalleryItem[] => {
   return urls.filter((g) => g.url)
 }
 
-const ListingDetailsFiveArea = () => {
+const ListingDetailsFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
+  const isEnglish = locale === "en"
   const search = useSearchParams()
   const slug = search?.get("slug") || undefined
   const idParam = search?.get("id") || undefined
@@ -82,19 +104,27 @@ const ListingDetailsFiveArea = () => {
 
   return (
     <div className="main-page-wrapper" key={slug || idParam || "detalle"}>
-      <HeaderTwo style_1={false} style_2={true} />
+      <HeaderTwo style_1={false} style_2={true} locale={locale} />
 
       <div className="listing-details-one theme-details-one mt-80 pb-120">
         <div className="container">
-          {loading && <p className="pt-80 text-center">Cargando propiedad...</p>}
-          {error && !loading && <p className="pt-80 text-center text-danger">No se pudo cargar: {error}</p>}
+          {loading && (
+            <p className="pt-80 text-center">
+              {isEnglish ? "Loading property..." : "Cargando propiedad..."}
+            </p>
+          )}
+          {error && !loading && (
+            <p className="pt-80 text-center text-danger">
+              {isEnglish ? `Could not load property: ${error}` : `No se pudo cargar: ${error}`}
+            </p>
+          )}
           {!loading && !error && property && (
             <>
               <div className="mb-30">
                 <div className="position-relative">
                   <Image
                     src={mainImage}
-                    alt={property.Title || "Propiedad"}
+                    alt={property.Title || (isEnglish ? "Property" : "Propiedad")}
                     width={1400}
                     height={800}
                     className="w-100 rounded-4"
@@ -110,8 +140,10 @@ const ListingDetailsFiveArea = () => {
                   <h1 className="mb-10">{property.Title}</h1>
                   <p className="fs-18 text-muted mb-20">{[property.Address, property.City, property.State, property.Country].filter(Boolean).join(", ")}</p>
                   <div className="d-flex flex-wrap align-items-center gap-4 mb-30">
-                    <span className="badge bg-dark text-white px-3 py-2 text-uppercase">{property.Operation_type?.[0] || "EN VENTA"}</span>
-                    <strong className="fs-32">{formatPrice(property.Price, property.Currency)}</strong>
+                    <span className="badge bg-dark text-white px-3 py-2 text-uppercase">
+                      {formatOperationLabel(property.Operation_type?.[0], locale)}
+                    </span>
+                    <strong className="fs-32">{formatPrice(property.Price, property.Currency, locale)}</strong>
                   </div>
 
                   <div className="property-feature-list position-relative z-2 mt-10 mb-40">
@@ -139,14 +171,14 @@ const ListingDetailsFiveArea = () => {
 
                   {property.Descripcion && (
                     <>
-                      <h4 className="mb-15">Descripción</h4>
+                      <h4 className="mb-15">{isEnglish ? "Description" : "Descripción"}</h4>
                       <p className="lh-lg mb-30">{property.Descripcion}</p>
                     </>
                   )}
 
                   {property.Amenidades && property.Amenidades.length > 0 && (
                     <>
-                      <h4 className="mb-15">Amenidades</h4>
+                      <h4 className="mb-15">{isEnglish ? "Amenities" : "Amenidades"}</h4>
                       <ul className="style-none d-flex flex-wrap gap-2">
                         {property.Amenidades.map((a, i) => (
                           <li key={i} className="badge bg-light text-dark border">{a}</li>
@@ -159,7 +191,7 @@ const ListingDetailsFiveArea = () => {
                 <div className="col-xl-4">
                   <div className="card border-0 shadow-sm rounded-4">
                     <div className="card-body">
-                      <h5 className="mb-10">Contacto</h5>
+                      <h5 className="mb-10">{isEnglish ? "Contact" : "Contacto"}</h5>
                       <p className="mb-2">Tel: +52 123 456 7890</p>
                       <p className="mb-0">Email: info@lc-inmobiliaria.com</p>
                     </div>
@@ -219,7 +251,7 @@ const ListingDetailsFiveArea = () => {
             </button>
             <Image
               src={gallery[activeIndex]?.url || mainImage}
-              alt={property?.Title || "Galería"}
+              alt={property?.Title || (isEnglish ? "Gallery" : "Galería")}
               width={1400}
               height={900}
               unoptimized
@@ -301,7 +333,7 @@ const ListingDetailsFiveArea = () => {
         </div>
       )}
 
-      <FooterThree />
+      <FooterThree locale={locale} />
     </div>
   )
 }

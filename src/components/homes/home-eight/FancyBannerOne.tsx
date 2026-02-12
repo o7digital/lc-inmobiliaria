@@ -1,4 +1,8 @@
-const FancyBannerOne = () => {
+type Locale = "es" | "en";
+
+const FancyBannerOne = ({ locale = "es" }: { locale?: Locale }) => {
+   const isEnglish = locale === "en";
+
    return (
       <div className="fancy-banner-nine mt-110 lg-mt-80">
          <div className="container container-large">
@@ -14,12 +18,18 @@ const FancyBannerOne = () => {
                      />
                      <div className="ps-3 text">
                         <h6 className="fs-22">Lourdes Cazares</h6>
-                        <span className="fs-20">Fundadora y CEO de LC Inmobiliaria</span>
+                        <span className="fs-20">
+                           {isEnglish ? "Founder and CEO of LC Inmobiliaria" : "Fundadora y CEO de LC Inmobiliaria"}
+                        </span>
                      </div>
                   </div>
                </div>
                <div className="col-xxl-7 col-lg-8">
-                  <blockquote>&quot;Seguimos un proceso para ofrecer a nuestros inversionistas las mejores oportunidades.&quot;</blockquote>
+                  <blockquote>
+                     {isEnglish
+                        ? "\"We follow a clear process to offer our investors the best opportunities.\""
+                        : "\"Seguimos un proceso para ofrecer a nuestros inversionistas las mejores oportunidades.\""}
+                  </blockquote>
                </div>
             </div>
          </div>

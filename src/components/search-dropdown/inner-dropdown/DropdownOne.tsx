@@ -2,9 +2,71 @@ import NiceSelect from "@/ui/NiceSelect"
 import PriceRange from "../../common/PriceRange";
 import Link from "next/link";
 
-const ammenities_data: string[] = ["A/C y Calefacción", "Garajes", "Jardín", "Acceso para discapacitados", "Alberca", "Estacionamiento", "Wifi", "Pet Friendly", "Altura de techo", "Chimenea", "Área de juegos", "Elevador"]
+type Locale = "es" | "en";
+
+const locations = [
+   "Ciudad de México",
+   "Estado de México",
+   "Guadalajara, Jalisco",
+   "Monterrey, Nuevo León",
+   "Puebla, Puebla",
+   "Querétaro, Querétaro",
+   "Mérida, Yucatán",
+   "Cancún, Quintana Roo",
+   "Tijuana, Baja California",
+   "León, Guanajuato",
+   "Toluca, Estado de México",
+   "Playa del Carmen, Quintana Roo",
+   "Los Cabos, B.C.S.",
+   "Oaxaca, Oaxaca",
+   "Veracruz, Veracruz",
+   "Chihuahua, Chihuahua",
+   "Hermosillo, Sonora",
+   "Culiacán, Sinaloa",
+   "Tuxtla Gutiérrez, Chiapas",
+   "San Luis Potosí, SLP",
+   "Morelia, Michoacán",
+   "Aguascalientes, Ags.",
+   "Zacatecas, Zac.",
+   "Saltillo, Coahuila",
+   "Torreón, Coahuila",
+   "Villahermosa, Tabasco",
+   "Tampico, Tamaulipas",
+   "La Paz, B.C.S.",
+];
+
+const ammenities_es: string[] = [
+   "A/C y Calefacción",
+   "Garajes",
+   "Jardín",
+   "Acceso para discapacitados",
+   "Alberca",
+   "Estacionamiento",
+   "Wifi",
+   "Pet Friendly",
+   "Altura de techo",
+   "Chimenea",
+   "Área de juegos",
+   "Elevador",
+];
+
+const ammenities_en: string[] = [
+   "A/C & Heating",
+   "Garages",
+   "Garden",
+   "Disabled Access",
+   "Pool",
+   "Parking",
+   "Wifi",
+   "Pet Friendly",
+   "Ceiling Height",
+   "Fireplace",
+   "Playground",
+   "Elevator",
+];
 
 const DropdownOne = ({
+   locale = "es",
    handleBathroomChange,
    handleBedroomChange,
    handleSearchChange,
@@ -16,74 +78,66 @@ const DropdownOne = ({
    handleAmenityChange,
    handleLocationChange,
    handleStatusChange, }: any) => {
+   const isEnglish = locale === "en";
+   const amenities = isEnglish ? ammenities_en : ammenities_es;
+   const typeOptions = isEnglish
+      ? [
+         { value: "", text: "All categories" },
+         { value: "buy-apartments", text: "Buy Apartments" },
+         { value: "rent-apartments", text: "Rent Apartments" },
+         { value: "buy-houses", text: "Buy Houses" },
+         { value: "rent-houses", text: "Rent Houses" },
+         { value: "buy-offices", text: "Buy Offices" },
+         { value: "rent-offices", text: "Rent Offices" },
+         { value: "buy-land", text: "Buy Land" },
+         { value: "sell-land", text: "Sell Land" },
+      ]
+      : [
+         { value: "", text: "Todas las categorías" },
+         { value: "comprar-departamentos", text: "Comprar Departamentos" },
+         { value: "rentar-departamentos", text: "Rentar Departamentos" },
+         { value: "comprar-casas", text: "Comprar Casas" },
+         { value: "rentar-casas", text: "Rentar Casas" },
+         { value: "comprar-oficinas", text: "Comprar Oficinas" },
+         { value: "rentar-oficinas", text: "Rentar Oficinas" },
+         { value: "comprar-terrenos", text: "Comprar Terrenos" },
+         { value: "vender-terrenos", text: "Vender Terrenos" },
+      ];
 
    return (
       <form onSubmit={(e) => e.preventDefault()}>
          <div className="row gx-lg-5">
             <div className="col-12">
                <div className="input-box-one mb-35">
-                  <div className="label">Estoy buscando...</div>
+                  <div className="label">{isEnglish ? "I'm looking for..." : "Estoy buscando..."}</div>
                   <NiceSelect className="nice-select fw-normal"
-                     options={[
-                        { value: "", text: "Todas las categorías" },
-                        { value: "comprar-departamentos", text: "Comprar Departamentos" },
-                        { value: "rentar-departamentos", text: "Rentar Departamentos" },
-                        { value: "comprar-casas", text: "Comprar Casas" },
-                        { value: "rentar-casas", text: "Rentar Casas" },
-                        { value: "comprar-oficinas", text: "Comprar Oficinas" },
-                        { value: "rentar-oficinas", text: "Rentar Oficinas" },
-                        { value: "comprar-terrenos", text: "Comprar Terrenos" },
-                        { value: "vender-terrenos", text: "Vender Terrenos" },
-                     ]}
+                     options={typeOptions}
                      defaultCurrent={0}
                      onChange={handleStatusChange}
                      name=""
                      placeholder="" />
                </div>
             </div>
-            
+
             <div className="col-12">
                <div className="input-box-one mb-35">
-                  <div className="label">Palabra clave</div>
-                  <input onChange={handleSearchChange} type="text" placeholder="comprar, casa, loft, departamento"
-                     className="type-input" />
+                  <div className="label">{isEnglish ? "Keyword" : "Palabra clave"}</div>
+                  <input
+                     onChange={handleSearchChange}
+                     type="text"
+                     placeholder={isEnglish ? "buy, home, loft, apartment" : "comprar, casa, loft, departamento"}
+                     className="type-input"
+                  />
                </div>
             </div>
 
             <div className="col-12">
                <div className="input-box-one mb-50">
-                  <div className="label">Ubicación</div>
+                  <div className="label">{isEnglish ? "Location" : "Ubicación"}</div>
                   <NiceSelect className="nice-select location fw-normal"
                      options={[
-                        { value: "", text: "Todas las ubicaciones" },
-                        { value: "Ciudad de México", text: "Ciudad de México" },
-                        { value: "Estado de México", text: "Estado de México" },
-                        { value: "Guadalajara, Jalisco", text: "Guadalajara, Jalisco" },
-                        { value: "Monterrey, Nuevo León", text: "Monterrey, Nuevo León" },
-                        { value: "Puebla, Puebla", text: "Puebla, Puebla" },
-                        { value: "Querétaro, Querétaro", text: "Querétaro, Querétaro" },
-                        { value: "Mérida, Yucatán", text: "Mérida, Yucatán" },
-                        { value: "Cancún, Quintana Roo", text: "Cancún, Quintana Roo" },
-                        { value: "Tijuana, Baja California", text: "Tijuana, Baja California" },
-                        { value: "León, Guanajuato", text: "León, Guanajuato" },
-                        { value: "Toluca, Estado de México", text: "Toluca, Estado de México" },
-                        { value: "Playa del Carmen, Quintana Roo", text: "Playa del Carmen, Quintana Roo" },
-                        { value: "Los Cabos, B.C.S.", text: "Los Cabos, B.C.S." },
-                        { value: "Oaxaca, Oaxaca", text: "Oaxaca, Oaxaca" },
-                        { value: "Veracruz, Veracruz", text: "Veracruz, Veracruz" },
-                        { value: "Chihuahua, Chihuahua", text: "Chihuahua, Chihuahua" },
-                        { value: "Hermosillo, Sonora", text: "Hermosillo, Sonora" },
-                        { value: "Culiacán, Sinaloa", text: "Culiacán, Sinaloa" },
-                        { value: "Tuxtla Gutiérrez, Chiapas", text: "Tuxtla Gutiérrez, Chiapas" },
-                        { value: "San Luis Potosí, SLP", text: "San Luis Potosí, SLP" },
-                        { value: "Morelia, Michoacán", text: "Morelia, Michoacán" },
-                        { value: "Aguascalientes, Ags.", text: "Aguascalientes, Ags." },
-                        { value: "Zacatecas, Zac.", text: "Zacatecas, Zac." },
-                        { value: "Saltillo, Coahuila", text: "Saltillo, Coahuila" },
-                        { value: "Torreón, Coahuila", text: "Torreón, Coahuila" },
-                        { value: "Villahermosa, Tabasco", text: "Villahermosa, Tabasco" },
-                        { value: "Tampico, Tamaulipas", text: "Tampico, Tamaulipas" },
-                        { value: "La Paz, B.C.S.", text: "La Paz, B.C.S." },
+                        { value: "", text: isEnglish ? "All locations" : "Todas las ubicaciones" },
+                        ...locations.map((location) => ({ value: location, text: location })),
                      ]}
                      defaultCurrent={0}
                      onChange={handleLocationChange}
@@ -94,7 +148,7 @@ const DropdownOne = ({
 
             <div className="col-sm-6">
                <div className="input-box-one mb-40">
-                  <div className="label">Recámaras</div>
+                  <div className="label">{isEnglish ? "Bedrooms" : "Recámaras"}</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
                         { value: "1", text: "1" },
@@ -111,7 +165,7 @@ const DropdownOne = ({
 
             <div className="col-sm-6">
                <div className="input-box-one mb-40">
-                  <div className="label">Baños</div>
+                  <div className="label">{isEnglish ? "Bathrooms" : "Baños"}</div>
                   <NiceSelect className="nice-select fw-normal"
                      options={[
                         { value: "1", text: "1" },
@@ -127,10 +181,10 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mb-30">Amenidades</h6>
+               <h6 className="block-title fw-bold mb-30">{isEnglish ? "Amenities" : "Amenidades"}</h6>
                <ul
                   className="style-none d-flex flex-wrap justify-content-between filter-input">
-                  {ammenities_data.map((list, i) => (
+                  {amenities.map((list, i) => (
                      <li key={i}>
                         <input
                            type="checkbox"
@@ -146,7 +200,7 @@ const DropdownOne = ({
             </div>
 
             <div className="col-12">
-               <h6 className="block-title fw-bold mt-25 mb-15">Rango de precio</h6>
+               <h6 className="block-title fw-bold mt-25 mb-15">{isEnglish ? "Price range" : "Rango de precio"}</h6>
                <div className="price-ranger">
                   <div
                      className="price-input d-flex align-items-center justify-content-between pt-5">
@@ -172,15 +226,15 @@ const DropdownOne = ({
             <div className="col-12">
                <h6 className="block-title fw-bold mt-45 mb-20">m²</h6>
                <div className="d-flex align-items-center sqf-ranger">
-                  <input type="text" placeholder="Mín" />
+                  <input type="text" placeholder={isEnglish ? "Min" : "Mín"} />
                   <div className="divider"></div>
-                  <input type="text" placeholder="Máx" />
+                  <input type="text" placeholder={isEnglish ? "Max" : "Máx"} />
                </div>
             </div>
             <div className="col-12">
                <button className="fw-500 text-uppercase tran3s apply-search w-100 mt-40 mb-25">
                   <i className="fa-light fa-magnifying-glass"></i>
-                  <span>Buscar</span>
+                  <span>{isEnglish ? "Search" : "Buscar"}</span>
                </button>
             </div>
 
@@ -188,11 +242,11 @@ const DropdownOne = ({
                <div className="d-flex justify-content-between form-widget">
                   <a onClick={handleResetFilter} style={{ cursor: "pointer" }} className="tran3s">
                      <i className="fa-regular fa-arrows-rotate"></i>
-                     <span>Reiniciar filtros</span>
+                     <span>{isEnglish ? "Reset filters" : "Reiniciar filtros"}</span>
                   </a>
                   <Link href="#" className="tran3s">
                      <i className="fa-regular fa-star"></i>
-                     <span>Guardar búsqueda</span>
+                     <span>{isEnglish ? "Save search" : "Guardar búsqueda"}</span>
                   </Link>
                </div>
             </div>

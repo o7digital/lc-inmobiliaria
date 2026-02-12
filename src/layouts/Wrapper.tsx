@@ -5,12 +5,18 @@ import { ToastContainer } from "react-toastify";
 import { animationCreate } from "@/utils/utils";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 if (typeof window !== "undefined") {
     require("bootstrap/dist/js/bootstrap");
 }
 
 const Wrapper = ({ children }: any) => {
+    const pathname = usePathname();
+    const isEnglish = pathname?.startsWith("/en");
+    const privacyHref = isEnglish ? "/en/privacy-policy" : "/aviso-privacidad";
+    const privacyLabel = isEnglish ? "🔒 Privacy Policy" : "🔒 Aviso de Privacidad";
+
     useEffect(() => {
         // animation
         const timer = setTimeout(() => {
@@ -53,7 +59,7 @@ const Wrapper = ({ children }: any) => {
 
          {/* Bouton Aviso de Privacidad en bas à gauche */}
          <Link
-            href="/aviso-privacidad"
+            href={privacyHref}
             className="btn btn-primary position-fixed"
             style={{
                bottom: '20px',
@@ -66,7 +72,7 @@ const Wrapper = ({ children }: any) => {
                textDecoration: 'none'
             }}
          >
-            🔒 Aviso de Privacidad
+            {privacyLabel}
          </Link>
     </>;
 }

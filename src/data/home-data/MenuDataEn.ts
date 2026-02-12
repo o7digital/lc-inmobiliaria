@@ -18,37 +18,37 @@ interface MenuItem {
   }[];
 }
 
-const menu_data: MenuItem[] = [
+const menu_data_en: MenuItem[] = [
   {
     id: 1,
-    title: "Inicio",
-    link: "/",
+    title: "Home",
+    link: "/en",
     has_dropdown: false,
   },
   {
     id: 2,
-    title: "Propiedades",
-    link: "/listing_05",
+    title: "Properties",
+    link: "/en/properties",
     has_dropdown: false,
   },
   {
     id: 3,
-    title: "Quiénes Somos",
-    link: "/#quienes-somos",
+    title: "About Us",
+    link: "/en/#about-us",
     has_dropdown: false,
   },
   {
     id: 4,
-    title: "Contacto",
-    link: "/contact",
+    title: "Contact",
+    link: "/en/contact",
     has_dropdown: false,
   },
   {
     id: 5,
-    title: "EN",
-    link: "/en",
+    title: "ES",
+    link: "/",
     has_dropdown: false,
   },
 ];
 
-export default menu_data;
+export default menu_data_en;

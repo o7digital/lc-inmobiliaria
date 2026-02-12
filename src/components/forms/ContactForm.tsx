@@ -1,16 +1,18 @@
 "use client"
-import React, { useRef } from 'react';
-import emailjs from '@emailjs/browser';
-import { toast } from 'react-toastify';
+import React, { useRef } from "react";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface FormData {
    user_name: string;
    user_email: string;
    message: string;
 }
+
+type Locale = "es" | "en";
 
 const schema = yup
    .object({
@@ -20,18 +22,21 @@ const schema = yup
    })
    .required();
 
-const ContactForm = () => {
-
-   const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({ resolver: yupResolver(schema), });
+const ContactForm = ({ locale = "es" }: { locale?: Locale }) => {
+   const isEnglish = locale === "en";
+   const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({
+      resolver: yupResolver(schema),
+   });
 
    const form = useRef<HTMLFormElement>(null);
 
-   const sendEmail = (data: FormData) => {
+   const sendEmail = (_data: FormData) => {
       if (form.current) {
-         emailjs.sendForm('service_070078r', 'template_lojvsvb', form.current, 'mtLgOuG25NnIwGeKm')
+         emailjs.sendForm("service_070078r", "template_lojvsvb", form.current, "mtLgOuG25NnIwGeKm")
             .then((result) => {
-               const notify = () => toast('Message sent successfully', { position: 'top-center' });
-               notify();
+               toast(isEnglish ? "Message sent successfully" : "Mensaje enviado correctamente", {
+                  position: "top-center",
+               });
                reset();
                console.log(result.text);
             }, (error) => {
@@ -44,31 +49,47 @@ const ContactForm = () => {
 
    return (
       <form ref={form} onSubmit={handleSubmit(sendEmail)}>
-         <h3>Enviar Mensaje</h3>
+         <h3>{isEnglish ? "Send Message" : "Enviar Mensaje"}</h3>
          <div className="messages"></div>
          <div className="row controls">
             <div className="col-12">
                <div className="input-group-meta form-group mb-30">
-                  <label htmlFor="">Nombre*</label>
-                  <input type="text" {...register("user_name")} name="user_name" placeholder="Tu Nombre*" />
+                  <label htmlFor="">{isEnglish ? "Name*" : "Nombre*"}</label>
+                  <input
+                     type="text"
+                     {...register("user_name")}
+                     name="user_name"
+                     placeholder={isEnglish ? "Your Name*" : "Tu Nombre*"}
+                  />
                   <p className="form_error">{errors.user_name?.message}</p>
                </div>
             </div>
             <div className="col-12">
                <div className="input-group-meta form-group mb-40">
-                  <label htmlFor="">Correo Electrónico*</label>
-                  <input type="email" {...register("user_email")} placeholder="Tu Correo Electrónico*" name="user_email" />
+                  <label htmlFor="">{isEnglish ? "Email*" : "Correo Electrónico*"}</label>
+                  <input
+                     type="email"
+                     {...register("user_email")}
+                     placeholder={isEnglish ? "Your Email*" : "Tu Correo Electrónico*"}
+                     name="user_email"
+                  />
                   <p className="form_error">{errors.user_email?.message}</p>
                </div>
             </div>
             <div className="col-12">
                <div className="input-group-meta form-group mb-35">
-                  <textarea {...register("message")} placeholder="Tu mensaje*" rows={6}></textarea>
+                  <textarea
+                     {...register("message")}
+                     placeholder={isEnglish ? "Your message*" : "Tu mensaje*"}
+                     rows={6}
+                  ></textarea>
                   <p className="form_error">{errors.message?.message}</p>
                </div>
             </div>
             <div className="col-12">
-               <button type='submit' className="btn-nine text-uppercase rounded-3 fw-normal w-100">Enviar Mensaje</button>
+               <button type="submit" className="btn-nine text-uppercase rounded-3 fw-normal w-100">
+                  {isEnglish ? "Send Message" : "Enviar Mensaje"}
+               </button>
             </div>
          </div>
       </form>

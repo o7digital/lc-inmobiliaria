@@ -9,22 +9,23 @@ import BLockFeatureFour from "../home-one/BLockFeatureFour";
 import FancyBannerTwo from "../home-two/FancyBannerTwo";
 import FooterThree from "@/layouts/footers/FooterThree";
 
-const HomeEight = () => {
+type Locale = "es" | "en";
+
+const HomeEight = ({ locale = "es" }: { locale?: Locale }) => {
   return (
     <div className="main-page-wrapper">
-      <HeaderTwo style_1={false} style_2={true} />
-      <Hero />
+      <HeaderTwo style_1={false} style_2={true} locale={locale} />
+      <Hero locale={locale} />
 
-      {/* 🔥 Bloques añadidos */}
-      <AboutSection />
-      <ConsultoriaSection />
+      <AboutSection locale={locale} />
+      <ConsultoriaSection locale={locale} />
 
-      <BLockFeatureOne />
-      <FancyBannerOne />
-      <BLockFeatureTwo />   {/* 👈 Mantiene el bloque de Servicios original */}
-      <BLockFeatureFour />
-      <FancyBannerTwo />
-      <FooterThree />
+      <BLockFeatureOne locale={locale} />
+      <FancyBannerOne locale={locale} />
+      <BLockFeatureTwo locale={locale} />
+      <BLockFeatureFour locale={locale} />
+      <FancyBannerTwo locale={locale} />
+      <FooterThree locale={locale} />
     </div>
   );
 };

@@ -5,8 +5,12 @@ import Image from "next/image"
 import UseSticky from "@/hooks/UseSticky"
 import LoginModal from "@/modals/LoginModal"
 
-const HeaderFive = ({ style }: any) => {
+type Locale = "es" | "en";
+
+const HeaderFive = ({ style, locale = "es" }: { style?: boolean; locale?: Locale }) => {
    const { sticky } = UseSticky();
+   const homeHref = locale === "en" ? "/en" : "/";
+   const loginLabel = locale === "en" ? "Login" : "Iniciar sesión";
 
    return (
       <>
@@ -16,7 +20,7 @@ const HeaderFive = ({ style }: any) => {
                   <div className="d-flex align-items-center justify-content-between">
                      {/* LOGO */}
                      <div className="logo order-lg-0">
-                        <Link href="/" className="d-flex align-items-center">
+                        <Link href={homeHref} className="d-flex align-items-center">
                            <Image 
                               src="/images/logo.png"
                               alt="LC Inmobiliaria" 
@@ -32,7 +36,7 @@ const HeaderFive = ({ style }: any) => {
                         <ul className="d-flex align-items-center style-none">
                            <li>
                               <Link href="#" data-bs-toggle="modal" data-bs-target="#loginModal" className="btn-one">
-                                 <i className="fa-regular fa-lock"></i> <span>Login</span>
+                                 <i className="fa-regular fa-lock"></i> <span>{loginLabel}</span>
                               </Link>
                            </li>
                         </ul>
@@ -46,7 +50,7 @@ const HeaderFive = ({ style }: any) => {
                            <span></span>
                         </button>
                         <div className="collapse navbar-collapse" id="navbarNav">
-                           <NavMenu />
+                           <NavMenu locale={locale} />
                         </div>
                      </nav>
                   </div>

@@ -14,7 +14,12 @@ import featureIcon_1 from "@/assets/images/icon/icon_32.svg"
 import featureIcon_2 from "@/assets/images/icon/icon_33.svg"
 import featureIcon_3 from "@/assets/images/icon/icon_34.svg"
 
-const ListingFiveArea = () => {
+type Locale = "es" | "en";
+
+const ListingFiveArea = ({ locale = "es" }: { locale?: Locale }) => {
+  const isEnglish = locale === "en"
+  const listViewHref = isEnglish ? "/en/properties" : "/listing_06"
+  const detailsBasePath = isEnglish ? "/en/property-details" : "/listing_details_05"
   const itemsPerPage = 6
   const page = "listing_2"
 
@@ -151,6 +156,14 @@ const ListingFiveArea = () => {
     "rentar-oficinas": ["oficina", "oficinas", "office"],
     "comprar-terrenos": ["terreno", "lote", "lot"],
     "vender-terrenos": ["terreno", "lote", "lot"],
+    "buy-apartments": ["departamento", "departamentos", "depto", "aparta", "apartment"],
+    "rent-apartments": ["departamento", "departamentos", "depto", "aparta", "apartment"],
+    "buy-houses": ["casa", "casas", "house"],
+    "rent-houses": ["casa", "casas", "house"],
+    "buy-offices": ["oficina", "oficinas", "office"],
+    "rent-offices": ["oficina", "oficinas", "office"],
+    "buy-land": ["terreno", "lote", "land", "lot"],
+    "sell-land": ["terreno", "lote", "land", "lot"],
   }
 
   const OP_SYNONYMS: Record<string, string[]> = {
@@ -162,6 +175,14 @@ const ListingFiveArea = () => {
     "rentar-departamentos": ["renta", "alquiler", "rent"],
     "rentar-casas": ["renta", "alquiler", "rent"],
     "rentar-oficinas": ["renta", "alquiler", "rent"],
+    "buy-apartments": ["venta", "comprar", "sell", "sale", "buy"],
+    "buy-houses": ["venta", "comprar", "sell", "sale", "buy"],
+    "buy-offices": ["venta", "comprar", "sell", "sale", "buy"],
+    "buy-land": ["venta", "comprar", "sell", "sale", "buy"],
+    "sell-land": ["venta", "vender", "sell", "sale"],
+    "rent-apartments": ["renta", "alquiler", "rent"],
+    "rent-houses": ["renta", "alquiler", "rent"],
+    "rent-offices": ["renta", "alquiler", "rent"],
   }
 
   const filteredDato = useMemo(() => {
@@ -251,14 +272,27 @@ const ListingFiveArea = () => {
   }
 
   const formatPrice = (price: number | string | undefined, currency?: string[] | null) => {
-    if (!price && price !== 0) return "Precio a consultar"
+    if (!price && price !== 0) return isEnglish ? "Price upon request" : "Precio a consultar"
     const num = typeof price === "string" ? Number(price) : price
     const curr = Array.isArray(currency) && currency.length ? currency[0] : "MXN"
-    return new Intl.NumberFormat("es-MX", {
+    return new Intl.NumberFormat(isEnglish ? "en-US" : "es-MX", {
       style: "currency",
       currency: curr,
       maximumFractionDigits: 0,
     }).format(num || 0)
+  }
+
+  const formatOperationLabel = (operation?: string) => {
+    if (!operation) return isEnglish ? "FOR SALE" : "EN VENTA"
+
+    const normalized = normalizeText(operation)
+    if (["venta", "sale", "sell", "comprar", "buy"].includes(normalized)) {
+      return isEnglish ? "FOR SALE" : "EN VENTA"
+    }
+    if (["renta", "rent", "alquiler", "lease", "leasing"].includes(normalized)) {
+      return isEnglish ? "FOR RENT" : "EN RENTA"
+    }
+    return operation
   }
 
   const handleResetFilter = () => {
@@ -283,24 +317,25 @@ const ListingFiveArea = () => {
               <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
                 <div>
                   <>
-                    Mostrando{" "}
+                    {isEnglish ? "Showing" : "Mostrando"}{" "}
                     <span className="color-dark fw-500">
                       {filteredDato.length === 0 ? 0 : datoOffset + 1}–{Math.min(datoOffset + datoCurrentItems.length, filteredDato.length)}
                     </span>{" "}
-                    de <span className="color-dark fw-500">{filteredDato.length}</span> resultados
+                    {isEnglish ? "of" : "de"} <span className="color-dark fw-500">{filteredDato.length}</span>{" "}
+                    {isEnglish ? "results" : "resultados"}
                   </>
                 </div>
                 <div className="d-flex align-items-center xs-mt-20">
                   <div className="short-filter d-flex align-items-center">
-                    <div className="fs-16 me-2">Ordenar por:</div>
+                    <div className="fs-16 me-2">{isEnglish ? "Sort by:" : "Ordenar por:"}</div>
                     <NiceSelect
                       className="nice-select rounded-0"
                       options={[
-                        { value: "newest", text: "Más recientes" },
-                        { value: "best_seller", text: "Más vendidos" },
-                        { value: "best_match", text: "Mejor coincidencia" },
-                        { value: "price_low", text: "Precio menor" },
-                        { value: "price_high", text: "Precio mayor" },
+                        { value: "newest", text: isEnglish ? "Newest" : "Más recientes" },
+                        { value: "best_seller", text: isEnglish ? "Best sellers" : "Más vendidos" },
+                        { value: "best_match", text: isEnglish ? "Best match" : "Mejor coincidencia" },
+                        { value: "price_low", text: isEnglish ? "Lowest price" : "Precio menor" },
+                        { value: "price_high", text: isEnglish ? "Highest price" : "Precio mayor" },
                       ]}
                       defaultCurrent={0}
                       onChange={handleTypeChange}
@@ -309,10 +344,10 @@ const ListingFiveArea = () => {
                     />
                   </div>
                   <Link
-                    href="/listing_06"
+                    href={listViewHref}
                     className="tran3s layout-change rounded-circle ms-auto ms-sm-3"
                     data-bs-toggle="tooltip"
-                    title="Switch To List View"
+                    title={isEnglish ? "Switch to list view" : "Cambiar a vista de lista"}
                   >
                     <i className="fa-regular fa-bars"></i>
                   </Link>
@@ -322,15 +357,19 @@ const ListingFiveArea = () => {
               {datoLoading && (
                 <div className="py-5 text-center">
                   <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Cargando...</span>
+                    <span className="visually-hidden">{isEnglish ? "Loading..." : "Cargando..."}</span>
                   </div>
-                  <p className="mt-3 mb-0">Cargando propiedades desde DatoCMS...</p>
+                  <p className="mt-3 mb-0">
+                    {isEnglish ? "Loading properties from DatoCMS..." : "Cargando propiedades desde DatoCMS..."}
+                  </p>
                 </div>
               )}
 
               {datoError && !datoLoading && (
                 <div className="alert alert-warning">
-                  No pudimos cargar DatoCMS ({datoError}). Intenta recargar la página.
+                  {isEnglish
+                    ? `We could not load DatoCMS (${datoError}). Please refresh the page.`
+                    : `No pudimos cargar DatoCMS (${datoError}). Intenta recargar la página.`}
                 </div>
               )}
 
@@ -340,15 +379,15 @@ const ListingFiveArea = () => {
                     <div className="listing-card-one style-two shadow-none h-100 w-100">
                       <div className="img-gallery">
                         <div className="position-relative overflow-hidden">
-                          <div className="tag fw-500">{item.Operation_type?.[0] || "EN VENTA"}</div>
+                          <div className="tag fw-500">{formatOperationLabel(item.Operation_type?.[0])}</div>
                           <Link href="#" className="fav-btn tran3s">
                             <i className="fa-light fa-heart"></i>
                           </Link>
                           {true ? (
-                            <Link href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}>
+                            <Link href={`${detailsBasePath}?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}>
                               <Image
                                 src={getDatoImage(item)}
-                                alt={item.Title || "Propiedad"}
+                                alt={item.Title || (isEnglish ? "Property" : "Propiedad")}
                                 width={900}
                                 height={600}
                                 className="w-100"
@@ -373,7 +412,7 @@ const ListingFiveArea = () => {
                               <div className="carousel-inner">
                                 {item.carousel_thumb.map((thumb: any, i: any) => (
                                   <div key={i} className={`carousel-item ${thumb.active}`} data-bs-interval="1000000">
-                                    <Link href={`/listing_details_05?id=${item.id}`} className="d-block">
+                                    <Link href={`${detailsBasePath}?id=${item.id}`} className="d-block">
                                       <Image src={thumb.img} className="w-100" alt="..." />
                                     </Link>
                                   </div>
@@ -386,7 +425,7 @@ const ListingFiveArea = () => {
 
                       <div className="property-info pt-20">
                         <Link
-                          href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}
+                          href={`${detailsBasePath}?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}
                           className="title tran3s d-inline-block"
                         >
                           {item.Title}
@@ -405,13 +444,15 @@ const ListingFiveArea = () => {
                           <li className="d-flex align-items-center">
                             <Image src={featureIcon_2} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
-                              <span className="color-dark">{item.Bedrooms || "—"}</span> bed
+                              <span className="color-dark">{item.Bedrooms || "—"}</span>{" "}
+                              {isEnglish ? "bed" : "rec"}
                             </span>
                           </li>
                           <li className="d-flex align-items-center">
                             <Image src={featureIcon_3} alt="" className="lazy-img icon me-2" />
                             <span className="fs-16">
-                              <span className="color-dark">{item.Bathrooms || "—"}</span> bath
+                              <span className="color-dark">{item.Bathrooms || "—"}</span>{" "}
+                              {isEnglish ? "bath" : "baño"}
                             </span>
                           </li>
                         </ul>
@@ -420,7 +461,7 @@ const ListingFiveArea = () => {
                             {formatPrice(item.Price, item.Currency)}
                           </strong>
                           <Link
-                            href={`/listing_details_05?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}
+                            href={`${detailsBasePath}?slug=${encodeURIComponent(item.Slug || item.id)}&id=${encodeURIComponent(item.id)}`}
                             className="btn-four"
                           >
                             <i className="bi bi-arrow-up-right"></i>
@@ -452,6 +493,7 @@ const ListingFiveArea = () => {
             <div className="advance-search-panel dot-bg md-mt-80">
               <div className="main-bg rounded-0">
                 <DropdownOne
+                  locale={locale}
                   handleSearchChange={handleKeywordChange}
                   handleBedroomChange={handleBedroomChange}
                   handleBathroomChange={handleBathroomChange}
@@ -462,7 +504,7 @@ const ListingFiveArea = () => {
                   selectedAmenities={selectedAmenities}
                   handleAmenityChange={handleAmenityChange}
                   handleLocationChange={handleLocationFilterChange}
-                  handleStatusChange={handleStatusChange}
+                  handleStatusChange={handleTypeFilterChange}
                 />
               </div>
             </div>

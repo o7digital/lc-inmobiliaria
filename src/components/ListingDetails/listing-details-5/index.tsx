@@ -1,15 +1,11 @@
 import ListingDetailsFiveArea from "./ListingDetailsFiveArea"
-import FancyBanner from "@/components/common/FancyBanner"
-import FooterFour from "@/layouts/footers/FooterFour"
-import HeaderFour from "@/layouts/headers/HeaderFour"
 
-const ListingDetailsFour = () => {
+type Locale = "es" | "en";
+
+const ListingDetailsFour = ({ locale = "es" }: { locale?: Locale }) => {
    return (
       <>
-         <HeaderFour />
-         <ListingDetailsFiveArea />
-         <FancyBanner />
-         <FooterFour />
+         <ListingDetailsFiveArea locale={locale} />
       </>
    )
 }

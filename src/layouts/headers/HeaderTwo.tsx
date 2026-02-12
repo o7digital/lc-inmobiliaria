@@ -9,11 +9,13 @@ import Offcanvas from "./Menu/Offcanvas"
 import HeaderSearchbar from "./Menu/HeaderSearchbar"
 
 const clientLogo = "/logo/LC INMOBILIARIA Imagotipo OFFICIAL 2025.eon.png";
+type Locale = "es" | "en";
 
-const HeaderTwo = ({ style_1, style_2 }: any) => {
+const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; style_2?: boolean; locale?: Locale }) => {
    const { sticky } = UseSticky();
    const [offCanvas, setOffCanvas] = useState<boolean>(false);
    const [isSearch, setIsSearch] = useState<boolean>(false);
+   const homeHref = locale === "en" ? "/en" : "/";
 
    return (
       <>
@@ -22,7 +24,7 @@ const HeaderTwo = ({ style_1, style_2 }: any) => {
                <div className="top-header position-relative">
                   <div className="d-flex align-items-center">
                      <div className="logo order-lg-0" style={{ marginLeft: "-18px" }}>
-                        <Link href="/" className="d-flex align-items-center">
+                        <Link href={homeHref} className="d-flex align-items-center">
                            <Image
                               src={clientLogo}
                               alt="LC Inmobiliaria"
@@ -69,7 +71,7 @@ const HeaderTwo = ({ style_1, style_2 }: any) => {
                            <span></span>
                         </button>
                         <div className={`collapse navbar-collapse ${style_2 ? "ms-xl-5" : ""}`} id="navbarNav">
-                           <NavMenu />
+                           <NavMenu locale={locale} />
                         </div>
                      </nav>
                   </div>

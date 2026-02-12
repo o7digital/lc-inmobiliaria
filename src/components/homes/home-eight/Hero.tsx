@@ -14,7 +14,10 @@ const sliderSettings = {
   autoplaySpeed: 7000,
 }
 
-const Hero = () => {
+type Locale = "es" | "en";
+
+const Hero = ({ locale = "es" }: { locale?: Locale }) => {
+  const isEnglish = locale === "en";
   return (
     <div className="hero-banner-eight z-1 pt-250 xl-pt-200 lg-pt-150 md-pt-120 pb-250 xl-pb-150 lg-pb-100 md-pb-80 position-relative overflow-hidden">
       <Slider {...sliderSettings} className="hero-slider-one m0">
@@ -47,7 +50,9 @@ const Hero = () => {
               className="fs-24 text-white text-center pt-35 lg-pt-25 md-pt-20 wow fadeInUp"
               data-wow-delay="0.1s"
             >
-              Encuentra la casa de tus sueños con nosotros.
+              {isEnglish
+                ? "Find the home of your dreams with us."
+                : "Encuentra la casa de tus sueños con nosotros."}
             </p>
           </div>
         </div>
@@ -56,7 +61,7 @@ const Hero = () => {
           <div className="col-xxl-10 m-auto">
             <div className="search-wrapper-one layout-one position-relative wow fadeInUp" data-wow-delay="0.2s">
               <div className="bg-wrapper">
-                <DropdownOne style={true} />
+                <DropdownOne style={true} locale={locale} />
               </div>
             </div>
           </div>
