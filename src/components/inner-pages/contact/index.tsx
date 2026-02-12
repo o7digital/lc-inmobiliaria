@@ -1,12 +1,12 @@
 import FooterThree from '@/layouts/footers/FooterThree'
-import HeaderFive from '@/layouts/headers/HeaderFive'
+import HeaderTwo from '@/layouts/headers/HeaderTwo'
 import ContactArea from './ContactArea'
 import { SiteLocale } from "@/types/siteLocale";
 
 const Contact = ({ locale = "es" }: { locale?: SiteLocale }) => {
    return (
       <>
-         <HeaderFive style={true} locale={locale} />
+         <HeaderTwo style_2={true} locale={locale} />
          <ContactArea locale={locale} />
          <FooterThree locale={locale} />
       </>

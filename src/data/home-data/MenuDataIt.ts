@@ -45,14 +45,12 @@ const menu_data_it: MenuItem[] = [
   },
   {
     id: 5,
-    title: "Lingue",
+    title: "IT",
     link: "#",
     has_dropdown: true,
     sub_menus: [
-      { link: "/", title: "Espanol" },
-      { link: "/en", title: "English" },
-      { link: "/fr", title: "Francais" },
-      { link: "/de", title: "Deutsch" },
+      { link: "/", title: "ES" },
+      { link: "/en", title: "EN" },
     ],
   },
 ];

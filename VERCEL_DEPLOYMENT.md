@@ -12,7 +12,7 @@ Pour que l'application fonctionne correctement sur Vercel, vous devez configurer
    - Environnements: Production, Preview, Development
 
 2. **NEXT_PUBLIC_DIRECTUS_EMAIL** (optionnel - pour login automatique)
-   - Valeur: `olivier.steineur@gmail.com`
+   - Valeur: `olivier.steineur@integra365.digital`
    - Type: Environment Variable
    - Environnements: Production, Preview, Development
 
@@ -42,7 +42,7 @@ Pour que l'application fonctionne correctement sur Vercel, vous devez configurer
 
 *Option A - Login automatique:*
    - Name: `NEXT_PUBLIC_DIRECTUS_EMAIL`
-   - Value: `olivier.steineur@gmail.com`
+   - Value: `olivier.steineur@integra365.digital`
    - Environments: Cocher Production, Preview, Development
    
    - Name: `NEXT_PUBLIC_DIRECTUS_PASSWORD`
