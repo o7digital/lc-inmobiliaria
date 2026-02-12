@@ -147,17 +147,17 @@
         font-weight: 500;
         font-size: 18px;
         line-height: initial;
-        color: $color-one;
+        color: $text-dark;
         padding: 10px 0;
         margin: 0 18px;
         position: relative;
         @include transition(0.2s);
     }
     .nav-item:hover .nav-link {
-        color: $color-one;
+        color: $text-dark;
     }
     .nav-item .nav-link.active {
-        color: $color-one;
+        color: $text-dark;
     }
     &.white-vr {
         .nav-item .nav-link {color: #fff;}
@@ -196,14 +196,7 @@
     &.menu-style-four {
         background: #fff;
         &:before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 128px;
-            height: 100%;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
+            display: none;
         }
         &.fixed:before {
             display: none;
