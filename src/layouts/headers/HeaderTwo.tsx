@@ -2,7 +2,7 @@
 import NavMenu from "./Menu/NavMenu"
 import Link from "next/link"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import UseSticky from "@/hooks/UseSticky"
 import LoginModal from "@/modals/LoginModal"
 import Offcanvas from "./Menu/Offcanvas"
@@ -15,11 +15,36 @@ const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; sty
    const { sticky } = UseSticky();
    const [offCanvas, setOffCanvas] = useState<boolean>(false);
    const [isSearch, setIsSearch] = useState<boolean>(false);
+   const [hideOnScrollDown, setHideOnScrollDown] = useState(false);
+   const lastScrollY = useRef(0);
    const homeHref = getLocalePrefix(locale) || "/";
+
+   useEffect(() => {
+      const handleScroll = () => {
+         const current = window.scrollY;
+         const scrollingDown = current > lastScrollY.current;
+
+         if (current > 220 && scrollingDown) {
+            setHideOnScrollDown(true);
+         } else {
+            setHideOnScrollDown(false);
+         }
+
+         lastScrollY.current = current;
+      };
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      return () => {
+         window.removeEventListener("scroll", handleScroll);
+      };
+   }, []);
 
    return (
       <>
-         <div className={`theme-main-menu menu-overlay sticky-menu ${style_2 ? "menu-style-four" : style_1 ? "menu-style-three" : "menu-style-two"} ${sticky ? "fixed" : ""}`}>
+         <div
+            className={`theme-main-menu menu-overlay sticky-menu ${style_2 ? "menu-style-four" : style_1 ? "menu-style-three" : "menu-style-two"} ${sticky ? "fixed" : ""} ${sticky && hideOnScrollDown ? "header-two-hidden" : ""}`}
+         >
             <div className={`inner-content ${style_2 ? "gap-two" : "gap-one"}`}>
                <div className="top-header position-relative">
                   <div className="d-flex align-items-center">
@@ -31,7 +56,7 @@ const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; sty
                               width={340}
                               height={120}
                               priority
-                              style={{ height: "auto", width: "auto", maxHeight: 120 }}
+                              style={{ height: "auto", width: "auto", maxHeight: 101 }}
                            />
                         </Link>
                      </div>
@@ -82,6 +107,14 @@ const HeaderTwo = ({ style_1, style_2, locale = "es" }: { style_1?: boolean; sty
          <Offcanvas offCanvas={offCanvas} setOffCanvas={setOffCanvas} />
          <LoginModal />
          <HeaderSearchbar isSearch={isSearch} setIsSearch={setIsSearch} />
+
+         <style jsx global>{`
+            .theme-main-menu.header-two-hidden {
+               transform: translateY(calc(-100% - 8px));
+               opacity: 0;
+               pointer-events: none;
+            }
+         `}</style>
       </>
    )
 }
